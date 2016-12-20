@@ -1,0 +1,40 @@
+{{{<header.html}}}
+<script type="text/javascript">var CURRENT_PAGE_IS_HOME_PAGE = true;</script>
+{{{SCRIPTS getrepos.js}}}
+{{{EMITSCRIPTS}}}
+<div class="centercontent primary">
+	<h2 class="outerheading">Repositories</h2>
+
+  <div class="outercontainer">
+	<table id="tablerepos" class="datatable" cellpadding="0" cellspacing="0">
+		<thead>
+			<tr class="dataheaderrow">
+				<th class="tdrepocontext" width="100px"></th><th width="60%">Name</th><th>Most Recent</th><th></th>
+			</tr>
+		</thead>
+		<tbody>
+		
+		</tbody>
+	</table>
+    <div id="divnewrepo" style="display:none"><a href="#" id="linknewrepo" class="newrepo">New Repository</a></div>
+	</div>
+
+<div  id="repocontextmenu" style="display:none">
+<div class="contextMenu shadow" >
+<ul id="ulrepocontextmenu">
+<li action="clone" class="ctxMenuItem">Clone</li>
+<li action="rename" class="ctxMenuItem">Rename</li>
+<li action="setdefault" class="ctxMenuItem" title="Make this the default repository">Set Default</li>
+
+</ul>
+</div>
+</div>
+
+</div>
+<div id="colorSquare" class="buildColorSquare" style="display:none"></div>
+
+
+
+
+
+{{{<footer.html}}}

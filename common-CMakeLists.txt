@@ -1,0 +1,459 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Copyright 2010-2013 SourceGear, LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+set (COMMON_INCLUDED 1)
+
+project(veracity C CXX)
+
+set(VV_MAJOR_VERSION "2" CACHE STRING "Veracity major version.")
+set(VV_MINOR_VERSION "5" CACHE STRING "Veracity minor version.")
+set(VV_REV_VERSION "0" CACHE STRING "Veracity revision version.")
+set(VV_SHORT_VERSION "${VV_MAJOR_VERSION}.${VV_MINOR_VERSION}.${VV_REV_VERSION}" CACHE STRING "Veracity short version string (like 0.7.0).")
+
+include(CheckFunctionExists)
+
+IF (NOT CMAKE_BUILD_TYPE)
+SET(CMAKE_BUILD_TYPE "Debug" CACHE STRING  "build type determining compiler flags" FORCE )
+ENDIF (NOT CMAKE_BUILD_TYPE)
+
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
+
+set(SG_OS_LIBS "")
+
+IF (NOT BUILDNUMBER)
+	SET (BUILDNUMBER "0" CACHE STRING "Build number for this build version - !!QUOTED!!")
+	mark_as_advanced(BUILDNUMBER)
+ENDIF (NOT BUILDNUMBER)
+IF (BUILDNUMBER)
+	add_definitions(-DBUILDNUMBER=${BUILDNUMBER})
+ENDIF (BUILDNUMBER)
+IF (BUILD_CSID)
+	add_definitions(-DBUILD_CSID=${BUILD_CSID})
+ENDIF (BUILD_CSID)
+IF (WD_DIRTY)
+	add_definitions(-DWD_DIRTY)
+ENDIF (WD_DIRTY)
+
+string(REPLACE "\"" "" VV_BUILDNUMBER "${BUILDNUMBER}")
+set(VV_FULL_VERSION "${VV_MAJOR_VERSION}.${VV_MINOR_VERSION}.${VV_REV_VERSION}.${VV_BUILDNUMBER}"
+	CACHE STRING "Veracity full version string (like 0.7.0.2929)")
+set(VV_FULL_VERSION_COMMAS "${VV_MAJOR_VERSION},${VV_MINOR_VERSION},${VV_REV_VERSION},${VV_BUILDNUMBER}"
+	CACHE STRING "Veracity full version string, with commas (for windows .rc files) (like 0,7,0,2929)")
+	
+IF ("$ENV{SPRAWL_BUILDER}" STREQUAL "1")
+	add_definitions(-DSG_REAL_BUILD)
+ENDIF()
+
+OPTION(SG_NIGHTLY_BUILD "When enabled, slower nightly build tasks are performed." OFF)
+if (SG_NIGHTLY_BUILD)
+	ADD_DEFINITIONS(-DSG_NIGHTLY_BUILD)
+endif()
+
+OPTION(SG_LONGTESTS "When enabled, really slow occasional build tasks are performed." OFF)
+if (SG_LONGTESTS)
+	ADD_DEFINITIONS(-DSG_LONGTESTS)
+endif()
+
+if (UNIX)
+	if (NOT CMAKE_INSTALL_PREFIX)
+		SET(CMAKE_INSTALL_PREFIX "/usr/local/")
+	ENDIF(NOT CMAKE_INSTALL_PREFIX)
+endif(UNIX)
+
+#
+# Determine the bitness of the machine
+if (APPLE)
+	EXECUTE_PROCESS(COMMAND sysctl -n hw.cpu64bit_capable RESULT_VARIABLE error_code OUTPUT_VARIABLE SYSCTL_OUTPUT)
+	STRING(REGEX REPLACE "\n" "" OSX_64BIT "${SYSCTL_OUTPUT}")
+	if (OSX_64BIT)
+		MESSAGE(STATUS "Build universal binary - yes")
+		SET(MACHINETYPE "universal")
+	else()
+		MESSAGE(STATUS "Build universal binary - no")
+		SET(MACHINETYPE "i386")
+	endif()
+ELSEIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+	EXECUTE_PROCESS(COMMAND /bin/uname -m RESULT_VARIABLE error_code OUTPUT_VARIABLE UNAME_OUTPUT)
+	IF (error_code)
+		MESSAGE(FATAL_ERROR "Unable to determine machine archtecture")
+	ENDIF(error_code)
+	
+	STRING(REGEX REPLACE "\n" "" MACHINETYPE "${UNAME_OUTPUT}")
+	
+	MESSAGE(STATUS "Machine Type: ${MACHINETYPE}")
+	
+	EXECUTE_PROCESS(COMMAND /usr/bin/lsb_release -s -i RESULT_VARIABLE error_code OUTPUT_VARIABLE LSB_OUTPUT)
+	IF (NOT error_code)
+		STRING(REGEX REPLACE "\n" "" LINUX_VENDOR "${LSB_OUTPUT}")
+		EXECUTE_PROCESS(COMMAND /usr/bin/lsb_release -s -c RESULT_VARIABLE ec OUTPUT_VARIABLE LSB_CODENAME)
+		IF (NOT ec)
+			STRING(REGEX REPLACE "\n" "" LINUX_CODENAME "${LSB_OUTPUT}")
+		ENDIF(NOT ec)
+	ELSE()
+		SET(LINUX_VENDOR "Unknown")
+	ENDIF()
+ELSEIF(WIN32)
+	EXECUTE_PROCESS(COMMAND cl.exe RESULT_VARIABLE error_code OUTPUT_VARIABLE CL_OUTPUT ERROR_VARIABLE CL_ERR)
+	
+	STRING(REGEX MATCH ".*x64.*" WIN64 "${CL_ERR}")
+	
+	IF(WIN64 STREQUAL "")
+		SET(MACHINETYPE "x86")
+	ELSE()
+		SET(MACHINETYPE "amd64")
+	ENDIF()
+ENDIF(APPLE)
+
+MESSAGE(STATUS "Machine type: ${MACHINETYPE}")
+
+
+IF (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" OR "$ENV{BUILD_CURL}" STREQUAL "on")
+	# 
+	# If VVTHIRDPARTY isn't already defined, set it to the default for this machine's
+	# bitness
+	IF (NOT DEFINED VVTHIRDPARTY)
+		SET (VVTHIRDPARTY "${CMAKE_SOURCE_DIR}/../vv-thirdparty/${MACHINETYPE}" CACHE STRING "Location where certain thirdparty dependencies are installed.")
+	ENDIF (NOT DEFINED VVTHIRDPARTY)
+
+	MESSAGE(STATUS "Expected vv-thirdparty path: ${VVTHIRDPARTY}")
+	# 
+	# Check to see if VVTHIRDPARTY looks sane
+	# If it isn't or if it doesn't exist, try to build it
+	IF (NOT EXISTS "${VVTHIRDPARTY}/include" OR NOT EXISTS "${VVTHIRDPARTY}/lib")
+		MESSAGE(STATUS "VVTHIRDPARTY is missing or invalid.  Trying to build VVTHIRDPARTY")
+	
+		IF (APPLE)
+			EXECUTE_PROCESS(COMMAND /bin/bash ${PUBLIC_SOURCE_TOP_DIR}/thirdparty/build_mac.sh)
+		ENDIF()
+	
+		IF (WIN32)
+			EXECUTE_PROCESS(COMMAND sh ${PUBLIC_SOURCE_TOP_DIR}/thirdparty/build_win.sh)
+		ENDIF()
+		
+		IF ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+			EXECUTE_PROCESS(COMMAND /bin/bash ${PUBLIC_SOURCE_TOP_DIR}/thirdparty/build_linux.sh)
+		ENDIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+		
+		#SET (VVTHIRDPARTY "${CMAKE_SOURCE_DIR}/../vv-thirdparty/${MACHINETYPE}")
+	
+		MESSAGE(STATUS "Installed vv-thirdparty path: ${VVTHIRDPARTY}")
+	
+		IF (NOT EXISTS "${VVTHIRDPARTY}/include" OR NOT EXISTS "${VVTHIRDPARTY}/lib")
+			MESSAGE(FATAL_ERROR "Missing or invalid VVTHIRDPARTY directory. Set cmake variable VVTHIRDPARTY to point to 'vv-thirdparty/<architecture>'.")
+		ENDIF()
+	ENDIF (NOT EXISTS "${VVTHIRDPARTY}/include" OR NOT EXISTS "${VVTHIRDPARTY}/lib")
+	
+	set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${VVTHIRDPARTY}/include)
+	set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${VVTHIRDPARTY}/lib)
+	
+ENDIF (NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" OR "$ENV{BUILD_CURL}" STREQUAL "on")
+
+
+# ----------------------------------------------------------------
+if(CMAKE_COMPILER_IS_GNUCC)
+# TODO should we add -Wconversion to make this more like the MSFT compiler?
+# TODO or -Wsign-conversion ?
+
+# TODO would -Wunreachable-code make this more like the MSFT compiler?
+
+# TODO how about -Wmissing-prototypes ??  this would make the compiler VERY
+# TODO fussy, but it might catch some interesting problems
+
+# TODO I would love to add 
+# TODO -Wdisallowed-function-list=strcpy,sprintf,etc
+# TODO but gcc on the Mac is at version 4.0 and this
+# TODO option was added in some later version.
+
+execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
+                OUTPUT_VARIABLE GCC_VERSION)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wdeclaration-after-statement -Werror -Wstrict-prototypes")
+
+# the apple_unicode code violates the strict-aliasing rules
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing")
+
+# TODO 2013/01/03 There are a couple of places in the code that assume "char *"
+# TODO            refers to a signed character without actually stating it.
+# TODO            For example, the base64, utf8, and is-ascii code test for (c < 0).
+# TODO            Most of the code doesn't care and these spots should be
+# TODO            fixed and/or made unambiguous.  Until then, tell the compiler
+# TODO            to make then signed.
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsigned-char")
+
+# Add -Wunused when using gcc 4.6 so we get the same errors as when building
+# with cdbs (Common Debian Build System)
+if (GCC_VERSION VERSION_GREATER 4.6 OR GCC_VERSION VERSION_EQUAL 4.6)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunused")
+endif()
+
+OPTION(SG_GCOV "Compile everything with -fprofile-arcs -ftest-coverage for gcov" OFF)
+
+if(SG_GCOV)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
+OPTION(SG_GPROF "Compile everything with -pg for gprof" OFF)
+
+if(SG_GPROF)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+endif()
+
+endif() #CMAKE_COMPILER_IS_GNUCC
+
+# ----------------------------------------------------------------
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Darwin")
+
+add_definitions(-DMAC)
+
+# the following two lines are needed for spidermonkey
+add_definitions(-DXP_UNIX)
+#add_definitions(-DDARWIN)
+
+## CMAKE_OSX_ARCHITECTURES is a built-in variable that lets you list
+## the chips that you want to compile for.  If you list more than
+## one value, you get a universal binary.  Each listed value will be
+## converted into a '-arch v' argument to GCC.  This was useful when
+## the choices when set to "i386;ppc", but not so much when set
+## to "i386;x86_64".
+##
+## From what I can tell, when -arch is set we don't need -m32 or -m64.
+## Warning: If you mix -m32, -m64 and one or more -arch arguments,
+## you don't always get what you expect.  (Use /usr/bin/file on a
+## generated .o or exe to confirm.)
+##
+if(OSX_64BIT)
+	SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
+else()
+	SET(CMAKE_OSX_ARCHITECTURES "i386")	
+endif()
+
+## These are noise for now. Hide them from the basic display in the
+## GUI tools.
+mark_as_advanced(CMAKE_OSX_DEPLOYMENT_TARGET)
+mark_as_advanced(CMAKE_OSX_SYSROOT)
+mark_as_advanced(CMAKE_INSTALL_PREFIX)
+
+endif () # Darwin
+
+# ----------------------------------------------------------------
+IF(WIN32 AND NOT CMAKE_COMPILER_IS_GNUCC)
+
+add_definitions(-DWINDOWS)
+add_definitions(-DXP_WIN)
+add_definitions(-DEXPORT_JS_API)
+
+SET(CMAKE_C_WARNING_LEVEL 4)
+IF(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+  STRING(REGEX REPLACE "/W[0-4]" "/W4"
+         CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+ELSE(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
+ENDIF(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -WX -DUNICODE -MP${VC_MP}")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Zi -MDd")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Zi -MD")
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:msvcrt.lib ")
+	SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:msvcrt.lib ")
+endif() # (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+if (MACHINETYPE STREQUAL "x86")
+	set(VS_ANALYZE CACHE BOOL "Compile with /analyze. Available only on Windows with VS 2010 Premium and for 32-bit builds.")
+	if (VS_ANALYZE)
+		add_definitions(-DCODE_ANALYSIS -analyze)
+	endif()
+endif()
+
+set(SG_OS_LIBS rpcrt4.lib winmm.lib advapi32.lib wininet.lib shlwapi.lib)
+
+endif () # WIN32 AND NOT CMAKE_COMPILER_IS_GNUCC
+
+# ----------------------------------------------------------------
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+
+add_definitions(-DLINUX)
+add_definitions(-DXP_UNIX)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+
+# This link describes all of the various feature flags such as largefiles
+# and posix vs gnu vs bsd.
+#     http://www.gnu.org/s/libc/manual/html_node/Feature-Test-Macros.html
+#
+# I added _GNU_SOURCE go get declarations for qsort_r() on Linux.
+#
+# _GNU_SOURCE causes the definition of strerror_r() to change, see sg_error.c
+#
+add_definitions(-D_GNU_SOURCE)
+
+# TODO this should probably call getconf LFS_CFLAGS instead
+#
+# TODO _GNU_SOURCE also turns on the LFS stuff, so we may not 
+# TODO need to explicitly set them below.
+add_definitions(-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64) 
+
+set(SG_OS_LIBS uuid pthread dl m)
+
+endif () # "${CMAKE_SYSTEM_NAME}" STREQUAL "Linux"
+
+# ----------------------------------------------------------------
+# Now the vv-thirdparty stuff
+# ----------------------------------------------------------------
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PUBLIC_SOURCE_TOP_DIR}/cmake_modules/")
+
+find_package(ZLIB REQUIRED)
+INCLUDE_DIRECTORIES(${zlib_INCLUDE_DIR})
+set(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${ZLIB_LIBRARIES})
+
+find_package(ICU REQUIRED)
+INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIR})
+set(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${ICU_LIBRARIES})
+
+#### find_package(OpenSSL REQUIRED)
+#### INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
+#### set(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${OPENSSL_LIBRARIES})
+
+find_package(CURL REQUIRED)
+INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
+set(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${CURL_LIBRARIES})
+
+FIND_PACKAGE(NSPR REQUIRED)
+FIND_PACKAGE(SPIDERMONKEY REQUIRED)
+set(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${NSPR_LIB} ${SPIDERMONKEY_LIB})
+
+INCLUDE_DIRECTORIES(${SPIDERMONKEY_INCLUDE_DIR})
+
+IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  find_package(GNOMEKEYRING)
+  find_package(GLIB)
+  IF(GNOMEKEYRING_FOUND AND GLIB_FOUND)
+    INCLUDE_DIRECTORIES(${GNOMEKEYRING_INCLUDE_DIR} ${GLIB_INCLUDE_DIR} ${GLIB_INTERNAL_INCLUDE_DIR})
+    SET(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${GNOMEKEYRING_LIBRARIES} ${GLIB_LIBRARIES})
+    MARK_AS_ADVANCED(GNOMEKEYRING_LIBRARIES)
+    MARK_AS_ADVANCED(GLIB_LIBRARIES)
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DVVGNOMEKEYRING")
+  ELSE()
+    message(STATUS "Gnome Keyring and/or GLIB not found, won't build remember-password support")
+  ENDIF(GNOMEKEYRING_FOUND AND GLIB_FOUND)
+ENDIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+
+# Only look for libuuid on Linux.  OSX and Windows have this built in
+IF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+  FIND_PACKAGE(UUID REQUIRED)
+  INCLUDE_DIRECTORIES(${UUID_INCLUDE_DIR})
+  SET(SG_THIRDPARTY_LIBRARIES ${SG_THIRDPARTY_LIBRARIES} ${UUID_LIBRARIES})
+  MARK_AS_ADVANCED(UUID_LIBRARIES)
+ENDIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+
+
+SET(CMAKE_DATA_DIR "share/veracity" CACHE STRING "Install location for data (relative to prefix).")
+SET(CMAKE_DOC_DIR "share/veracity" CACHE STRING "Install location for documentation (relative to prefix).")
+SET(CMAKE_MAN_DIR "man" CACHE STRING "Install location for man pages (relative to prefix).")
+SET(CMAKE_LIB_DIR "lib" CACHE STRING "Install location for libraries (relative to prefix).")
+MARK_AS_ADVANCED(CMAKE_DATA_DIR CMAKE_DOC_DIR CMAKE_MAN_DIR)
+IF(CYGWIN)
+  # Force doc, data and man dirs to conform to cygwin layout.
+  SET(CMAKE_DOC_DIR  "share/doc/veracity")
+  SET(CMAKE_DATA_DIR "share/veracity")
+  SET(CMAKE_MAN_DIR  "share/man")
+  # let the user know we just forced these values
+  MESSAGE(STATUS "Setup for Cygwin packaging")
+  MESSAGE(STATUS "Override cache CMAKE_DOC_DIR = ${CMAKE_DOC_DIR}")
+  MESSAGE(STATUS "Override cache CMAKE_DATA_DIR = ${CMAKE_DATA_DIR}")
+  MESSAGE(STATUS "Override cache CMAKE_MAN_DIR = ${CMAKE_MAN_DIR}")
+ENDIF()
+STRING(REGEX REPLACE "^/" "" Veracity_DATA_DEST "${CMAKE_DATA_DIR}")
+STRING(REGEX REPLACE "^/" "" Veracity_DOC_DEST "${CMAKE_DOC_DIR}")
+STRING(REGEX REPLACE "^/" "" Veracity_MAN_DEST "${CMAKE_MAN_DIR}")
+STRING(REGEX REPLACE "^/" "" Veracity_LIB_DEST "${CMAKE_LIB_DIR}")
+
+# add the uninstall support
+CONFIGURE_FILE(
+  "${PUBLIC_SOURCE_TOP_DIR}/cmake_modules/veracity_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/veracity_uninstall.cmake"
+  @ONLY)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/veracity_uninstall.cmake")
+set_target_properties(uninstall PROPERTIES FOLDER "CMakePredefinedTargets")
+
+INCLUDE(${PUBLIC_SOURCE_TOP_DIR}/cmake_modules/VeracityCPack.cmake)
+INCLUDE(CPack)
+
+# TODO the cmake wiki says we'll need this snippet.  Also, it
+# TODO shows an interesting use of set_target_properties
+# if(WIN32)
+# set_target_properties(WindowApplicationExample PROPERTIES LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE")
+# set_target_properties(WindowApplicationExample PROPERTIES COMPILE_DEFINITIONS_DEBUG "_CONSOLE")
+# set_target_properties(WindowApplicationExample PROPERTIES LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE")
+# set_target_properties(WindowApplicationExample PROPERTIES COMPILE_DEFINITIONS_RELWITHDEBINFO "_CONSOLE")
+# set_target_properties(WindowApplicationExample PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS")
+# set_target_properties(WindowApplicationExample PROPERTIES LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:WINDOWS")
+# endif(WIN32)
+
+if(SG_GCOV)
+    add_custom_target(
+        root_coverage_prep
+        COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/html
+        COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/lcov-html
+        COMMAND rm -rf ${CMAKE_CURRENT_BINARY_DIR}/zcov-html
+        COMMAND rm -f ${CMAKE_CURRENT_BINARY_DIR}/_lcov_.info
+        COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --zerocounters
+        COMMENT "Prepping for root code coverage"
+        )
+
+    add_custom_target(
+        root_coverage_lcov
+        COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --capture --output-file _lcov_.info
+        COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/lcov-html _lcov_.info
+        COMMAND echo "Results are in ${CMAKE_CURRENT_BINARY_DIR}/lcov-html/index.html"
+        COMMENT "Publishing gcov/lcov code coverage"
+        )
+
+    add_custom_target(
+        root_coverage_zcov
+        COMMAND zcov-scan "./output.zcov" .
+        COMMAND zcov-genhtml --root="${CMAKE_SOURCE_DIR}" "./output.zcov" "./zcov-html"
+        COMMAND echo "Results are in ${CMAKE_CURRENT_BINARY_DIR}/zcov-html/index.html"
+        COMMENT "Publishing zcov code coverage"
+        )
+
+    add_custom_target(
+        root_showvars
+        COMMAND echo "CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}"
+        COMMAND echo "SGLIB_OBJECT_DIR = ${SGLIB_OBJECT_DIR}"
+        COMMAND echo "CMAKE_FILES_DIRECTORY = ${CMAKE_FILES_DIRECTORY}"
+        COMMAND echo "CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMAND echo "CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}"
+        COMMENT "SHOWVARS"
+	)
+endif()
+
+# ----------------------------------------------------------------
+
+include_directories(${PUBLIC_SOURCE_TOP_DIR}/src/libraries/include)
+include_directories(${PUBLIC_SOURCE_TOP_DIR}/src/libraries/sghash)
+include_directories(${PUBLIC_SOURCE_TOP_DIR}/src/libraries/wc)
+include_directories(${PUBLIC_SOURCE_TOP_DIR}/src/libraries/vv2)
+include_directories(${PUBLIC_SOURCE_TOP_DIR}/src/thirdparty/sqlite3)
+
+# ----------------------------------------------------------------
+
+enable_testing()

@@ -1,0 +1,50 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {FA2FE306-E2C2-11DF-BEA7-DCBADFD72085} = s 'VeracityContextMenu Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Both'
+			}
+			TypeLib = s '{5D5E835D-0469-4637-8EF7-84798F66996C}'
+			Version = s '1.0'
+		}
+	}
+	NoRemove *
+    {
+        NoRemove ShellEx
+        {
+            NoRemove ContextMenuHandlers
+            {
+                ForceRemove VeracityContextMenu = s '{FA2FE306-E2C2-11DF-BEA7-DCBADFD72085}'
+            }
+        }
+    }
+	NoRemove Directory
+    {
+        NoRemove ShellEx
+        {
+            NoRemove ContextMenuHandlers
+            {
+                ForceRemove VeracityContextMenu = s '{FA2FE306-E2C2-11DF-BEA7-DCBADFD72085}'
+            }
+        }
+    }
+	NoRemove Directory
+    {
+		NoRemove Background
+		{
+			NoRemove ShellEx
+			{
+				NoRemove ContextMenuHandlers
+				{
+					ForceRemove VeracityContextMenu = s '{FA2FE306-E2C2-11DF-BEA7-DCBADFD72085}'
+				}
+			}
+		}
+    }
+}
+

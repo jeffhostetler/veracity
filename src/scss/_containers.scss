@@ -1,0 +1,244 @@
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+
+.outercontainer {
+	border: none;
+	padding: 10px;
+	@include border-box;
+	overflow: hidden;
+	position: relative;
+}
+
+.innercontainer {
+	border: 1px solid $primeinnerchrome;
+	background-color: #FFF;
+	padding: 5px;
+	margin-bottom: 15px;
+	clear: left;
+	margin-top: 0;
+	display: block;
+	@include border-box;
+	overflow: hidden;
+
+	&.blank {
+		padding: 0;
+	}
+}
+
+.innerheading-common {
+	font-size: 14px;
+	font-weight: bold;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding-left: 5px;
+	padding-top: $ihPadding;
+	text-align: left;
+	vertical-align: baseline;
+	@include border-box;
+}
+
+.innerheading {
+	@extend .innerheading-common;
+	display: block;
+	width: 100%;
+	@include top-right-radius(12px);
+}
+
+.popup .outerheading {
+	font-weight: normal;
+}
+
+.outerheading {
+	@include top-right-radius(14px);
+	padding-left: 5px;
+	width: auto;
+	font-size: 16px;
+	margin-bottom: 0;
+	padding-left: 10px;
+	padding-top: $ohPadding;
+	@include border-box;
+	font-weight: bold;
+
+	&.second {
+		margin-top: 10px;
+	}
+
+	img {
+		margin: 0 0 0 5px;
+	}
+
+	h1 {
+		margin: 0;
+		padding: 0;
+		font-size: 16px;
+	}
+}
+
+h1.outerheading {
+	margin-top: 0;
+}
+
+.button, input[type=button], input[type=submit] {
+	font-family: $bodyfonts;
+}
+
+.primary {
+	.button, input[type=button], input[type=submit] {
+		@include greenbutton();
+	}
+
+	.inputwrapper {
+		border: 1px solid $primeinnerchrome;
+	}
+
+	.innerheading, .outerheading, .formlabel {
+		background-color: $primeinnerchrome;
+		color: rgb(46,62,0);
+
+		a, a:active, a:visited, a:hover {
+			color: rgb(102,122,48);
+		}
+	}
+
+	.innercontainer, .outercontainer {
+		a, a:active, a:visited, a:hover {
+			color: rgb(102,122,48);
+		}
+	}
+
+	.outercontainer {
+		background-color: $primeouterbg;
+	}
+
+	.innercontainer.reader {
+		background-color: #FFF;
+		min-height: 1.5em;
+	}
+
+	textarea, input {
+		border-color: $primeinnerchrome;
+
+		&:focus {
+			border-color: $primefocuschrome;
+		}
+	}
+}
+
+
+.secondary {
+	.innercontainer, .outercontainer {
+
+		a, a:link, a:active, a:visited, a:hover {
+			color: rgb(17, 117, 130);
+//			color: rgb(102,122,48);
+		}
+	}
+
+	.innercontainer {
+		background-color: #FFF;
+		border-color: $secondarychrome;
+	}
+
+	.inputwrapper {
+		border: 1px solid $secondarychrome;
+	}
+
+	.outercontainer {
+		background-color: $secondarybg;
+	}
+
+	.innerheading, .outerheading {
+		background-color: $secondarychrome;
+		color: rgb(35,44,45);
+	}
+
+	textarea, input, .progressBar {
+		border-color: rgb(192,212,215);
+
+	}
+
+	textarea, input {
+		&:focus {
+			border-color: $secondaryfocuschrome;
+		}
+	}
+
+	.button, input[type=button] {
+		border: 1px solid rgb(0,65,73);
+	}
+
+	.outerheading {
+		a, img {
+			vertical-align: top;
+		}
+	}
+}
+
+
+.primary .innercontainer.blank,
+.primary .innercontainer.empty,
+.secondary .innercontainer.empty {
+	background-color: #FFF;
+}
+
+
+.primarydetails {
+	@extend .clearfix;
+	background-color: rgb(230,237,212);
+	width: 100%;
+	@include border-box;
+	padding: 5px 10px;
+	margin-top: 0;
+	margin-bottom: 0;
+
+	th {
+		text-align: left;
+		padding-right: 10px;
+	}
+
+	&.nav {
+		text-align: right;
+	}
+}
+
+
+.primary .primarydetails .innercontainer {
+	background-color: transparent;
+	padding: 0;
+	border: none;
+}
+
+.editable {
+	.innerheading, .formlabel {
+		width: auto;
+		float: left;
+		padding-right: 10px;
+		font-weight: normal;
+	}
+
+	.innerheading.neveredit {
+		font-weight: bold;
+		width: 100%;
+	}
+}
+
+.floater {
+	margin: 0 15px 10px 0;
+	float: left;
+
+	input.formel, .formel input {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+
+	&.outer {
+		margin-bottom: 0;
+	}
+}
+

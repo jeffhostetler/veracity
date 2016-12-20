@@ -1,0 +1,11 @@
+blob
+mark :1
+data 12
+Text file 1
+
+tag my_tag
+from :1
+tagger U-CDESG\andy <andy@andy.ad.sourcegear.com> 1342734145 -0500
+data 16
+This is my tag.
+

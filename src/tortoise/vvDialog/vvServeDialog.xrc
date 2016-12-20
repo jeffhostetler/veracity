@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvServeDialog">
+		<title>Veracity Web Server</title>
+		<icon stock_id="ApplicationIcon"></icon>
+		<style> wxMINIMIZE_BOX | wxDEFAULT_DIALOG_STYLE</style>
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!--<minsize>350,-1</minsize>-->
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+          <!--Header-->
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <object class="unknown" name="wHeader">
+            </object>
+          </object>
+          
+          <!-- Public server.-->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxTOP</flag>
+            <border>8</border>
+						<object class="wxCheckBox" name="wPrivate">
+              <label>Only accept connections from this computer</label>
+						</object>
+					</object>
+
+          <!-- Only serve the local repo. -->
+          <object class="sizeritem">
+            <flag>wxEXPAND| wxTOP</flag>
+            <border>8</border>
+            <object class="wxRadioButton" name="wLocalRepoOnly">
+              <label></label>
+              <value>1</value>
+              <style>wxRB_GROUP</style>
+            </object>
+          </object>
+
+          <!-- All repos radio box. -->
+          <object class="sizeritem">
+            <flag>wxEXPAND| wxTOP</flag>
+            <border>8</border>
+            <object class="wxRadioButton" name="wAllRepos">
+              <label>Serve all repositories</label>
+              <value>0</value>
+            </object>
+          </object>
+
+          <!-- Port choosing line -->
+          <object class="sizeritem">
+            <flag>wxEXPAND| wxTOP</flag>
+            <border>8</border>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL | wxRIGHT</flag>
+                <border>8</border>
+                <object class="wxStaticText">
+                  <label>Listen for connections on port:</label>
+                </object>
+              </object>
+
+              
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <object class="wxSpinCtrl" name="wPortCtrl">
+                  <style>wxSP_ARROW_KEYS | wxSP_WRAP</style>
+                  <value>8080</value>
+                  <min>1</min>
+                  <max>65535</max><!--maximum port number-->
+                </object>
+              </object>
+
+            </object>
+          </object>
+
+          <!-- Status of the server -->
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxBOTTOM | wxTOP</flag>
+            <border>8</border>
+            <object class="wxStaticBoxSizer">
+              <orient>wxVERTICAL</orient>
+              <!--<minsize>150,-1</minsize>-->
+              <label>Server Status:</label>
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                <border>8</border>
+                <object class="wxAnimationCtrl" name="wStatusAnimation">
+                </object>
+              </object>
+
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL | wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                <border>8</border>
+                <object class="wxBoxSizer">
+                  <orient>wxHORIZONTAL</orient>
+                  <!-- plain text description.-->
+                  <object class="sizeritem">
+                    <flag>wxRIGHT</flag>
+                    <option>1</option>
+                    <border>8</border>
+                    <object class="wxStaticText" name="wStatusText">
+                      <style>wxALIGN_RIGHT | wxST_NO_AUTORESIZE</style>
+                      <label>Now serving at:</label>
+                    </object>
+                  </object>
+
+                  <object class="sizeritem">
+                    <option>1</option>
+                    <object class="wxHyperlinkCtrl" name="wURLLink">
+                      <style>wxHL_ALIGN_LEFT | wxNO_BORDER | wxHL_CONTEXTMENU</style>
+                      <label>http://localhost:8080</label>
+                    </object>
+                  </object>
+
+                </object>
+              </object>
+              
+            </object>
+          </object>
+
+          <!-- Buttons -->
+					<object class="sizeritem">
+            <!--<minsize>-1,30</minsize>-->
+						<flag>wxALIGN_RIGHT</flag>
+						<object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+
+              <object class="sizeritem">
+                <flag>wxEXPAND | wxRIGHT</flag>
+                <border>8</border>
+                <object class="wxButton" name="wStart">
+                  <label>Start</label>
+                </object>
+              </object>
+
+              <object class="sizeritem">
+                <flag>wxEXPAND | wxRIGHT</flag>
+                <border>8</border>
+                <object class="wxButton" name="wStop">
+                  <label>Stop</label>
+                </object>
+              </object>
+
+              <object class="sizeritem">
+                <flag>wxEXPAND</flag>
+								<object class="wxButton" name="wxID_OK">
+									<default>1</default>
+									<label>Close</label>
+								</object>
+							</object>
+							              
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

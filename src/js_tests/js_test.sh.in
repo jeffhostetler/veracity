@@ -1,0 +1,174 @@
+#!/bin/bash
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Copyright 2010-2013 SourceGear, LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+## usage: js_test.sh ${CMAKE_CURRENT_SOURCE_DIR} stTestName.js ${JS_DEFINES}
+set -o xtrace
+
+export SRCDIR="$1"
+##echo SRCDIR is $SRCDIR
+
+export TEST=$2
+##echo TEST is $TEST
+
+export JS_DEFINES=$3
+##echo JS_DEFINES is $JS_DEFINES
+
+export BINDIR=@PUBLIC_BINARY_TOP_DIR@/src/js_tests
+##echo BINDIR is $BINDIR
+
+export CTESTDIR=@PUBLIC_BINARY_TOP_DIR@/testsuite
+##echo CTESTDIR is $CTESTDIR
+
+export TEMPDIR="$BINDIR"/temp/$TEST
+##echo TEMPDIR is $TEMPDIR
+
+## We need vv and vscript to be in our path.
+export PATH="$BINDIR"/../cmd:"$BINDIR"/../script:$CTESTDIR:$PATH
+##echo PATH is $PATH
+
+## Start with a clean (nonexistent) TEMPDIR
+if [ -e "$TEMPDIR" ]; then
+    rm -rf "$TEMPDIR"
+    mkdir -p $TEMPDIR
+fi
+
+TIME=`date +%s`
+export SGCLOSET="$TEMPDIR/.sgcloset-test.$TIME"
+##echo SGCLOSET is $SGCLOSET
+
+## The "output" console log is always appended rather than starting
+## with a newly created/truncated file.  Get rid of the noise from
+## the previous run.
+
+if [ -e "$BINDIR/output.$TEST.log" ]; then
+    rm "$BINDIR/output.$TEST.log"
+fi
+
+## Ditto for the *.log file(s)
+
+rm "$TEMPDIR"/vv-????-??-??.log >/dev/null 2>&1
+rm "$TEMPDIR"/vv-serve-????-??-??.log >/dev/null 2>&1
+rm "$TEMPDIR"/veracity-????-??-??.log >/dev/null 2>&1
+rm "$TEMPDIR"/vscript-????-??-??.log >/dev/null 2>&1
+
+## Since vscript does not take pathnames, only a list of .js files in the current directory,
+## we have to do a little gymnastics to get the scripts to run using the source directory
+## as input and the build directory for all of the output and trash we generate.
+
+cd "$SRCDIR"
+
+## preset server/files to avoid a chicken/egg issue when initializing JS context
+vscript ../js_test_lib/setServerFiles.js
+
+echo server/files is...
+vv config | grep "server/files"
+
+## delete any existing stdout.$TEST.log
+[ -e "$BINDIR/stdout.$TEST.log" ] && rm "$BINDIR/stdout.$TEST.log"
+
+## Check server/files and fail if it looks like we're using the default setting
+if vv config show server/files | grep "/usr/" ; then
+    echo "## $TEST FAILED due to default server/files setting"
+    vv config show server/files
+    echo "## $TEST FAILED due to default server/files setting" >>"$BINDIR/stdout.$TEST.log"
+    vv config show server/files >>"$BINDIR/stdout.$TEST.log"
+    exit 1
+fi
+
+vv config set log/level verbose
+echo log/level is...
+vv config | grep "log/level"
+
+vv config set log/path $TEMPDIR
+ECHO log/level is...
+vv config | grep "log/path"
+
+echo "`date`: vscript ../js_test_lib/vscript_tests.js --load $TEST -v --temp \"$TEMPDIR\" -o \"$BINDIR/output.$TEST.log\" $JS_DEFINES" >> "$BINDIR/js_test.log"
+echo "////////////////////////////////////////////////////////////////"                              >> "$BINDIR/stdout.$TEST.log" 2>&1
+echo "Environment:"                                                                                  >> "$BINDIR/stdout.$TEST.log" 2>&1
+set                                                                                                  >> "$BINDIR/stdout.$TEST.log" 2>&1
+echo "////////////////////////////////////////////////////////////////"                              >> "$BINDIR/stdout.$TEST.log" 2>&1
+ulimit -c unlimited                                                                                  >> "$BINDIR/stdout.$TEST.log" 2>&1
+ulimit -a                                                                                            >> "$BINDIR/stdout.$TEST.log" 2>&1
+####echo "////////////////////////////////////////////////////////////////"                              >> "$BINDIR/stdout.$TEST.log" 2>&1
+####echo "vv config:"                                                                                    >> "$BINDIR/stdout.$TEST.log" 2>&1
+####vv config                                                                                            >> "$BINDIR/stdout.$TEST.log" 2>&1
+echo "////////////////////////////////////////////////////////////////"                              >> "$BINDIR/stdout.$TEST.log" 2>&1
+echo "Starting test in `pwd`:"                                                                       >> "$BINDIR/stdout.$TEST.log" 2>&1
+echo "////////////////////////////////////////////////////////////////"                              >> "$BINDIR/stdout.$TEST.log" 2>&1
+vscript ../js_test_lib/vscript_tests.js --load $TEST -v --temp "$TEMPDIR" -o "$BINDIR/output.$TEST.log" $JS_DEFINES >> "$BINDIR/stdout.$TEST.log" 2>&1
+RESULT_TEST=$?
+
+## If vscript crashed (SIGSEGV), try to get a stacktrace.
+if [ $RESULT_TEST -eq 139 ]; then
+    ## the most recent coredump should be ours
+    COREFILE=`ls -t /cores | head -1`
+    GDBINPUT="$BINDIR"/gdbinput.txt
+    echo "thread apply all bt full" >  $GDBINPUT
+    echo "quit"                     >> $GDBINPUT
+    /usr/bin/gdb -batch -x $GDBINPUT `which vscript` /cores/$COREFILE
+    rm $GDBINPUT
+fi
+
+if ls "$TEMPDIR"/vv-????-??-??.log >/dev/null 2>&1
+then
+    cat "$TEMPDIR"/vv-????-??-??.log > "$BINDIR/vv.$TEST.log"
+    rm "$TEMPDIR"/vv-????-??-??.log
+fi
+
+if ls "$TEMPDIR"/vv-serve-????-??-??.log >/dev/null 2>&1
+then
+    cat "$TEMPDIR"/vv-serve-????-??-??.log > "$BINDIR/vv-serve.$TEST.log"
+    rm "$TEMPDIR"/vv-serve-????-??-??.log
+fi
+
+if ls "$TEMPDIR"/veracity-????-??-??.log >/dev/null 2>&1
+then
+    cat "$TEMPDIR"/veracity-????-??-??.log > "$BINDIR/veracity.$TEST.log"
+    rm "$TEMPDIR"/veracity-????-??-??.log
+fi
+
+if ls "$TEMPDIR"/vscript-????-??-??.log >/dev/null 2>&1
+then
+    cat "$TEMPDIR"/vscript-????-??-??.log > "$BINDIR/vscript.$TEST.log"
+    rm "$TEMPDIR"/vscript-????-??-??.log
+fi
+
+cd "$BINDIR"
+#rm -rf "$TEMPDIR"
+
+## If the test failed (exit status > 0), just exit now.
+if [ $RESULT_TEST -ne 0 ]; then
+    exit $RESULT_TEST;
+fi
+
+## Check for memory leaks in the log file.  egrep reports an error (1) if our pattern WAS NOT found.
+## So we get a success (0) status if there were leaks.
+##
+## if this is stWeb.js, we have background server processes and sometimes they take a little
+## time to exit and flush their output to stdout/stderr.  if we do the grep too quickly (at least
+## on the Mac), we blow past it before the leaks get written to the file (or something like that).
+if [ $TEST == stWeb.js ]; then
+    sleep 60;
+fi
+grep "LEAK:" "$BINDIR/stdout.$TEST.log"
+RESULT_LEAK=$?
+if [ $RESULT_LEAK -eq 0 ]; then
+    exit 1;
+fi
+
+exit 0

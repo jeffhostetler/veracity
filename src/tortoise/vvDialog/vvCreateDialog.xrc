@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvCreateDialog">
+		<title>Create Working Copy</title>
+		<icon stock_id="ApplicationIcon"></icon>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<minsize>475,-1</minsize>
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+					<!-- Header -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxBOTTOM</flag>
+						<border>4</border>
+						<object class="unknown" name="wHeader">
+						</object>
+					</object>
+
+					<!-- New Repository -->
+					<object class="sizeritem" name="cNew">
+						<flag>wxEXPAND | wxTOP</flag>
+						<border>8</border>
+						<object class="wxStaticBoxSizer">
+							<label>New Repository</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+								<border>8</border>
+								<object class="wxFlexGridSizer">
+									<cols>2</cols>
+									<hgap>8</hgap>
+									<vgap>8</vgap>
+									<growablecols>1</growablecols>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<object class="wxStaticText">
+											<label>Name:</label>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+										<object class="wxTextCtrl" subclass="vvTextControl" name="wNew_Name">
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<object class="wxRadioButton" name="wNew_Remote_Select">
+											<label>Clone _Remote:</label>
+											<value>0</value>
+											<style>wxRB_GROUP</style>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+										<object class="unknown" name="wNew_Remote_Value">
+											<selection>-1</selection>
+										</object>
+									</object>
+									<object class="sizeritem" name="cNew_Local_Select">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<object class="wxRadioButton" name="wNew_Local_Select">
+											<label>Clone _Local:</label>
+											<value>0</value>
+										</object>
+									</object>
+									<object class="sizeritem" name="cNew_Local_Value">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<object class="wxChoice" name="wNew_Local_Value">
+											<style>wxCB_SORT</style>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<object class="wxRadioButton" name="wNew_Empty_Select">
+											<label>Create _Empty</label>
+											<value>1</value>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+										<object class="wxStaticText" name="wNew_Empty_Value">
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+
+          <!-- Shared Users -->
+          <object class="sizeritem" name="cSharedUsers">
+            <flag>wxEXPAND | wxTOP</flag>
+            <border>8</border>
+            <object class="wxStaticBoxSizer">
+              <label>Shared Users</label>
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <flag>wxEXPAND | wxALL</flag>
+                <border>8</border>
+                <object class="wxCheckBox" name="wShareUsers">
+                  <label>Share users with:</label>
+                  <checked>0</checked>
+                </object>
+              </object>
+
+              <object class="sizeritem">
+                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                <object class="wxChoice" name="wShareUsersChoice">
+                  <style>wxCB_SORT</style>
+                </object>
+              </object>
+              
+            </object>
+          </object>
+          
+					<!-- Checkout Revision -->
+					<object class="sizeritem" name="cRevision">
+						<flag>wxEXPAND | wxTOP</flag>
+						<border>8</border>
+						<object class="wxStaticBoxSizer">
+							<label>Checkout Revision</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<flag>wxEXPAND | wxALL</flag>
+								<border>8</border>
+								<object class="unknown" name="wRevision">
+								</object>
+							</object>
+						</object>
+					</object>
+
+					<!-- Buttons: OK and Cancel -->
+					<object class="sizeritem">
+						<flag>wxALIGN_RIGHT | wxTOP</flag>
+						<border>16</border>
+						<object class="wxStdDialogButtonSizer">
+							<object class="button">
+								<object class="wxButton" name="wxID_OK">
+									<default>1</default>
+									<label>Create</label>
+								</object>
+							</object>
+							<object class="button">
+								<object class="wxButton" name="wxID_CANCEL">
+									<label>Cancel</label>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

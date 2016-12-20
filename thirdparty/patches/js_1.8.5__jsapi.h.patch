@@ -1,0 +1,29 @@
+--- vv-thirdparty/builds/js185-1.0.0-i386/include/jsapi.h
++++ vv-thirdparty/universal/include/js/jsapi.h
+@@ -1909,7 +1909,7 @@
+ /*
+  * Classes, objects, and properties.
+  */
+-typedef void (*JSClassInternal)();
++typedef void (*JSClassInternal)(void);
+ 
+ /* For detailed comments on the function pointer types, see jspubtd.h. */
+ struct JSClass {
+@@ -3767,6 +3767,8 @@
+     } else {
+         JS_ASSERT(JS_GET_CLASS(cx, callee)->construct != NULL);
+     }
++#else
++    SG_UNUSED(cx);
+ #endif
+ 
+     l.asBits = JSVAL_BITS(vp[1]);
+@@ -3809,6 +3811,8 @@
+     } else {
+         JS_ASSERT(JS_GET_CLASS(cx, callee)->construct != NULL);
+     }
++#else
++    SG_UNUSED(cx);
+ #endif
+ 
+     l.asBits = JSVAL_BITS(vp[1]);

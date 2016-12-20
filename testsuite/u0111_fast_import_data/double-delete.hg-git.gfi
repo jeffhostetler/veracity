@@ -1,0 +1,100 @@
+blob
+mark :1
+data 0
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Andy Tidball <andy@sourcegear.com> 1344283041 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283041 -0500
+data 17
+Added test file.
+M 100644 :1 file.txt
+
+commit refs/heads/master
+mark :3
+author Andy Tidball <andy@sourcegear.com> 1344283376 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283376 -0500
+data 19
+Removed test file.
+from :2
+D file.txt
+
+commit refs/heads/master
+mark :4
+author Andy Tidball <andy@sourcegear.com> 1344283402 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283402 -0500
+data 18
+Added dummy file.
+from :3
+M 100644 :1 dummy.txt
+
+blob
+mark :5
+data 5
+text
+
+commit refs/heads/master
+mark :6
+author Andy Tidball <andy@sourcegear.com> 1344283655 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283655 -0500
+data 20
+Modified test file.
+from :2
+M 100644 :5 file.txt
+
+commit refs/heads/master
+mark :7
+author Andy Tidball <andy@sourcegear.com> 1344283949 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283949 -0500
+data 42
+Used changed version, then force deleted.
+from :4
+merge :6
+
+commit refs/heads/changed-delete
+mark :8
+author Andy Tidball <andy@sourcegear.com> 1344284507 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344284507 -0500
+data 21
+Changed branch name.
+from :7
+
+commit refs/heads/delete
+mark :9
+author Andy Tidball <andy@sourcegear.com> 1344283896 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283896 -0500
+data 22
+Used deleted version.
+from :4
+merge :6
+
+commit refs/heads/delete
+mark :10
+author Andy Tidball <andy@sourcegear.com> 1344284536 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344284536 -0500
+data 21
+Changed branch name.
+from :9
+
+commit refs/heads/changed
+mark :11
+author Andy Tidball <andy@sourcegear.com> 1344283807 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344283807 -0500
+data 22
+Used changed version.
+from :4
+merge :6
+M 100644 :5 file.txt
+
+commit refs/heads/changed
+mark :12
+author Andy Tidball <andy@sourcegear.com> 1344284568 -0500
+committer Andy Tidball <andy@sourcegear.com> 1344284568 -0500
+data 21
+Changed branch name.
+from :11
+
+reset refs/heads/master
+from :7
+

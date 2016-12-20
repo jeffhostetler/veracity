@@ -1,0 +1,86 @@
+@ECHO OFF
+REM js_test.bat
+REM usage: stTestName.js ${MY_RELEXE_DIR}
+REM
+
+REM %~1 is %1 with surrounding quotes removed
+REM With the conversion to copy the .js into the build directory
+REM we do not need to pass this in like cmake/ctest does.
+
+SET SRCDIR=.
+ECHO SRCDIR is %SRCDIR%
+
+SET TEST=%~1
+ECHO TEST is %TEST%
+
+SET RELEXEDIR=%~2
+ECHO RELEXEDIR is %RELEXEDIR%
+
+SET JS_DEFINES=%~3
+ECHO JS_DEFINES is %JS_DEFINES%
+
+SET SGCLOSET=
+SET SGCLOSET=@DOS_PUBLIC_BINARY_TOP_DIR@\src\js_tests\temp\.sgcloset-test
+IF "%SGCLOSET%"=="" GOTO :NO_SGCLOSET_LOCATION
+ECHO SGCLOSET is %SGCLOSET%
+
+REM %cd% is like `pwd`
+SET BINDIR=@DOS_PUBLIC_BINARY_TOP_DIR@\src\js_tests
+ECHO BINDIR is %BINDIR%
+
+SET TEMPDIR=%BINDIR%\TEMP\%TEST%
+ECHO TEMPDIR is %TEMPDIR%
+
+REM We need vv and vscript to be in our path.
+SET PATH=%BINDIR%\..\cmd\%RELEXEDIR%;%BINDIR%\..\script\%RELEXEDIR%;%PATH%
+ECHO Path is %PATH%
+
+ECHO 'vv version' says...
+vv version
+
+ECHO 'vscript --help' says...
+vscript  --help
+
+REM Start with a clean (nonexistent) TEMPDIR
+if exist "%TEMPDIR%" DEL /S /Q "%TEMPDIR%"
+mkdir "%TEMPDIR%"
+
+REM The "output" console log is always appended rather than starting
+REM with a newly created/truncated file.  Get rid of the noise from
+REM the previous run.
+
+if exist "%BINDIR%\output.%TEST%.log" del "%BINDIR%\output.%TEST%.log"
+
+REM Ditto for the sg.log file(s)
+
+if exist "%TEMPDIR%\sg.log" del "%TEMPDIR%\sg.log"
+if exist "%TEMPDIR%\sg-????-??-??.log" del "%TEMPDIR%\sg-????-??-??.log"
+if exist "%TEMPDIR%\vv-????-??-??.log" del "%TEMPDIR%\vv-????-??-??.log"
+if exist "%TEMPDIR%\VeracityServer.log" del "%TEMPDIR%\VeracityServer.log"
+if exist "%TEMPDIR%\vv-serve-????-??-??.log" del "%TEMPDIR%\vv-serve-????-??-??.log"
+if exist "%TEMPDIR%\veracity-????-??-??.log" del "%TEMPDIR%\veracity-????-??-??.log"
+if exist "%TEMPDIR%\vscript-????-??-??.log" del "%TEMPDIR%\vscript-????-??-??.log"
+
+REM Since vscript does not take parameters, only a list of .js files in the current directory,
+REM we have to do a little gymnastics to get the scripts to run using the source directory as
+REM input and the build directory for all of the output and trash we generate.
+
+REM cd /D changes both pathname and the disk in one step.
+cd /D "%SRCDIR%"
+ECHO Now at %cd%
+
+REM preset server/files to avoid a chicken/egg issue when initializing JS context
+vscript.exe ..\js_test_lib\setServerFiles.js
+
+ECHO server/files is...
+vv config | find "server/files"
+
+ECHO Running test %TEST%...
+echo %DATE% %TIME%:      vscript.exe ..\js_test_lib\vscript_tests.js --load "%TEST%" -v --temp "%TEMPDIR%" -o "%BINDIR%\output.%TEST%.log" %JS_DEFINES%
+devenv /useenv /debugexe vscript.exe ..\js_test_lib\vscript_tests.js --load "%TEST%" -v --temp "%TEMPDIR%" -o "%BINDIR%\output.%TEST%.log" %JS_DEFINES%
+
+REM Note that devenv doesn't wait. It immediately returns
+REM control to the script, so we can't do any of the post
+REM cleanup.
+
+

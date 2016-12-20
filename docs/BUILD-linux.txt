@@ -1,0 +1,122 @@
+# Building SourceGear Veracity under Linux
+
+## Introduction
+
+This document provides instructions to build Veracity on two of the most common
+Linux distributions (Ubuntu and Fedora).  Ubuntu is the distribution used by
+our Linux-oriented developers, and is the only Linux build we test as the moment.
+There's nothing specifically preventing you from building Veracity 
+elsewhere, we just don't yet have documentation to help.
+
+If you *are* running a recent version of Ubuntu or Fedora,
+and you are comfortable installing a few packages, this document should 
+get you on your way to a working Veracity build.
+
+## Getting/Unpacking the Source
+There are two options.
+
+ - Download the latest [Veracity tarball](http://veracity-scm.com/downloads.html).
+
+or
+
+ - Clone the public repository: [http://public.veracity-scm.com/repos/veracity](http://public.veracity-scm.com/repos/veracity). (Note that you won't be able to push to this repository.)
+
+Unpack or checkout in the directory of your choice - for brevity, we'll pretend you 
+unpacked it under `~/v`, and so your source tree begins at `~/v/veracity`
+
+## Prerequisites
+
+#### Ubuntu Packages
+
+Install packages using apt-get:
+
+    sudo apt-get install build-essential cmake curl zlib1g-dev libicu-dev uuid-dev libssl-dev libnspr4-dev libmozjs185-dev libcurl4-openssl-dev unzip
+
+Install the following packages:
+
+* build-essential
+* cmake
+* curl
+* zlib1g-dev
+* libicu-dev
+* uuid-dev
+* libssl-dev
+* libnspr4-dev 
+* libmozjs185-dev
+* libcurl4-openssl-dev
+* unzip (only needed if you want to run the test suite)
+
+You may optionally install libgnome-keyring-dev to enable support for remembering authentication credentials, if you will be connecting to the onVeracity.com service.
+
+	sudo apt-get install libgnome-keyring-dev
+
+#### Fedora Packages
+
+Install Fedora packages with yum:
+	
+    sudo yum install cmake gcc gcc-c++ nspr-devel js-devel zlib-devel libicu-devel libcurl-devel libuuid-devel patch openssl-devel
+
+Install the following packages:
+
+* cmake
+* gcc
+* gcc-c++
+* nspr-devel
+* js-devel
+* zlib-devel
+* libicu-devel
+* libcurl-devel
+* openssl-devel
+* libuuid-devel
+* patch
+
+
+You may optionally install libgnome-keyring-devel to enable support for remembering authentication credentials, if you will be connecting to the onVeracity.com service.
+
+	sudo yum install libgnome-keyring-devel
+
+## Creating the Build Directory
+
+`cmake` will handle the creation of Makefiles, etc. You just need to give it a
+place to work.
+
+For example, let's create a `~/v/debug`, a neighbor of our source directory.
+
+cd to this folder, then run:
+
+    cmake -G "Unix Makefiles" ../veracity
+    
+... or, if you'd also like an Eclipse project:
+
+    cmake -G "Eclipse CDT4 - Unix Makefiles" ../veracity
+
+(Installing Eclipse is left as an exercise to the reader.)
+
+## Building Veracity
+
+You now have a build tree, replete with Makefiles.  You'll only need to run the
+top-level one. So:
+
+    cd ~/v/debug
+    make
+    
+## Updating your PATH to find Veracity Command Line Tools
+
+To make your life easier at this point, you'll want to add the following to
+your PATH:
+
+    ~/v/debug/src/cmd
+    ~/v/debug/src/script
+    
+the homes of `vv` (the Veracity command-line app) and `vscript` (the scripting
+engine), respectively.
+
+## Running the Test Suite
+
+To run the test suite:
+
+    cd ~/v/debug
+    make test
+    
+All tests should pass. If there are failures, you can [consult the logs](http://veracity-scm.com/qa/questions/79/after-building-veracity-from-source-i-see-some-failures-in-the-test-suite-how-do-i-figure-out-what-failed).
+

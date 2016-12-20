@@ -1,0 +1,94 @@
+import double-delete.hg-git.gfi
+
+commit 2
+user andy@sourcegear.com
+time 1344283041
+comment Added test file.
+wc double-delete.hg-git/2
+
+commit 3
+user andy@sourcegear.com
+time 1344283376
+comment Removed test file.
+parent 2
+#wc double-delete.hg-git/3
+
+commit 4
+user andy@sourcegear.com
+time 1344283402
+comment Added dummy file.
+parent 3
+wc double-delete.hg-git/4
+
+commit 6
+user andy@sourcegear.com
+time 1344283655
+comment Modified test file.
+parent 2
+wc double-delete.hg-git/6
+
+commit 7
+user andy@sourcegear.com
+time 1344283949
+comment Used changed version, then force deleted.
+parent 4
+parent 6
+wc double-delete.hg-git/7
+
+commit 8
+user andy@sourcegear.com
+time 1344284507
+comment Changed branch name.
+parent 7
+
+commit 9
+user andy@sourcegear.com
+time 1344283896
+comment Used deleted version.
+parent 4
+parent 6
+wc double-delete.hg-git/9
+
+commit 10
+user andy@sourcegear.com
+time 1344284536
+comment Changed branch name.
+parent 9
+
+commit 11
+user andy@sourcegear.com
+time 1344283807
+comment Used changed version.
+parent 4
+parent 6
+wc double-delete.hg-git/11
+
+commit 12
+user andy@sourcegear.com
+time 1344284568
+comment Changed branch name.
+parent 11
+
+leaf 8
+leaf 10
+leaf 12
+
+branch master
+status open
+commit 7
+wc double-delete.hg-git/7
+
+branch changed-delete
+status open
+commit 8
+wc double-delete.hg-git/7
+
+branch delete
+status open
+commit 10
+wc double-delete.hg-git/9
+
+branch changed
+status open
+commit 12
+wc double-delete.hg-git/11

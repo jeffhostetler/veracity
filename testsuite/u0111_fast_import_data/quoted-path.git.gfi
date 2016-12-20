@@ -1,0 +1,40 @@
+blob
+mark :1
+data 0
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Masashi Fujita <objectxtreme@gmail.com> 1351756400 +0900
+committer Masashi Fujita <objectxtreme@gmail.com> 1351756400 +0900
+data 16
+Initial commit.
+M 100644 :1 "Test Directory/.gitkeep"
+
+commit refs/heads/master
+mark :3
+author Masashi Fujita <objectxtreme@gmail.com> 1351756784 +0900
+committer Masashi Fujita <objectxtreme@gmail.com> 1351756784 +0900
+data 17
+Add "Test File".
+from :2
+M 100644 :1 "Test File"
+
+commit refs/heads/master
+mark :4
+author Masashi Fujita <objectxtreme@gmail.com> 1351756785 +0900
+committer Masashi Fujita <objectxtreme@gmail.com> 1351756785 +0900
+data 20
+Rename "Test File".
+from :3
+R "Test File" "Test File Renamed"
+
+commit refs/heads/master
+mark :5
+author Masashi Fujita <objectxtreme@gmail.com> 1351756786 +0900
+committer Masashi Fujita <objectxtreme@gmail.com> 1351756786 +0900
+data 28
+Delete "Test File Renamed".
+from :4
+D "Test File Renamed"
+

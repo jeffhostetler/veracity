@@ -1,0 +1,216 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// JSON does not allow comments, but this file sort-of does.
+// Any line where the first two non-whitespace characters
+// are '//' will be discarded before it is passed to the
+// JSON parser.  Note that these are not end-of-line comments.
+// These are WHOLE LINE comments.
+
+{
+    "version" : 1,
+    "rectypes" :
+    {
+        "user" :
+        {
+            "merge" :
+            {
+                "merge_type" : "field",
+                "auto" : 
+                [
+                    {
+                        "op" : "most_recent"
+                    }
+                ]
+            },
+            "fields" : 
+            {
+                "name" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true,
+
+                        // maxlength: see RFC 3696 amended and RFC 5321
+                        "maxlength" : 256,
+                        "unique" : true,
+                        "index": true,
+                        "full_text_search": true
+                    },
+                    "merge" :
+                    {
+                        "uniqify" : 
+                        {
+                            "which" : "least_impact",
+                            "op" : "append_random_unique",
+                            "num_digits" : 2,
+                            "genchars" : "ABCDEFGHJKLMNPRSTUVWXYZ"
+                            // I, O, and Q are intentionally omitted
+                        }
+                    }
+                },
+                "key" :
+                {
+                    "datatype" : "attachment",
+                    "constraints" :
+                    {
+                        "required" : false
+                    }
+                },
+                "prefix" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "minlength" : 1,
+                        "maxlength" : 5,
+                        // 23^5 is over six million
+                        "defaultfunc" : "gen_random_unique",
+                        // I, O, and Q are intentionally omitted
+                        "genchars" : "ABCDEFGHJKLMNPRSTUVWXYZ",
+                        "unique" : true,
+                        "bad" :
+                        [
+                            // TODO put in a list of banned words here
+                            "BAD"
+                        ]
+                    },
+                    "merge" :
+                    {
+                        "uniqify" : 
+                        {
+                            "op" : "redo_defaultfunc",
+                            "which" : "least_impact"
+                        }
+                    }
+                },
+		"inactive" :
+		{
+		    "datatype" : "bool"
+		}
+            }
+        },
+
+        "group" : 
+        {
+            "merge" :
+            {
+                "merge_type" : "field",
+                "auto" : 
+                [
+                    {
+                        "op" : "most_recent"
+                    }
+                ]
+            },
+            "fields" :
+            {
+                "name" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "unique" : true,
+                        "required" : true,
+                        "maxlength" : 64
+                    },
+                    "merge" :
+                    {
+                        "uniqify" : 
+                        {
+                            "which" : "least_impact",
+                            "op" : "append_random_unique",
+                            "num_digits" : 2,
+                            "genchars" : "ABCDEFGHJKLMNPRSTUVWXYZ"
+                            // I, O, and Q are intentionally omitted
+                        }
+                    }
+                }
+            }
+        },
+
+        "member_user" :
+        {
+            "merge" :
+            {
+                "merge_type" : "field",
+                "auto" : 
+                [
+                    {
+                        "op" : "most_recent"
+                    }
+                ]
+            },
+            "fields" :
+            {
+                "parent" :
+                {
+                    "datatype" : "reference",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "rectype" : "group"
+                    }
+                },
+                "child" :
+                {
+                    "datatype" : "reference",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "rectype" : "user"
+                    }
+                }
+            }
+        },
+
+        "member_group" :
+        {
+            "merge" :
+            {
+                "merge_type" : "field",
+                "auto" : 
+                [
+                    {
+                        "op" : "most_recent"
+                    }
+                ]
+            },
+            "fields" :
+            {
+                "parent" :
+                {
+                    "datatype" : "reference",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "rectype" : "group"
+                    }
+                },
+                "child" :
+                {
+                    "datatype" : "reference",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "rectype" : "group"
+                    }
+                }
+            }
+        }
+    }
+}
+

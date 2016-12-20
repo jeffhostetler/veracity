@@ -1,0 +1,12 @@
+--- jsapi.h	2012-08-24 10:48:01.156329800 -0500
++++ jsapi2.h	2012-08-24 10:48:12.997007100 -0500
+@@ -49,6 +49,9 @@
+ #include "jspubtd.h"
+ #include "jsutil.h"
+ 
++#if defined(_MSC_VER)
++#pragma warning( disable: 4100 ) // unused variable
++#endif
+ JS_BEGIN_EXTERN_C
+ 
+ /*

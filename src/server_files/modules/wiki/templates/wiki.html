@@ -1,0 +1,29 @@
+{{{<header.html}}}
+<script>
+var vvredirectable = "wiki.html";
+setCurrentSection('wiki');
+</script>
+
+
+
+
+<div class="wmd-panel centercontent primary">
+
+<div class="outerheading" id="titlebar">
+  <h1 id="wikititle"></h1>
+  
+</div>
+  <div class="primarydetails" id="wikidetails"></div>
+
+<div class="outercontainer" id="wikicontainer">
+  
+<div id="wmd-button-bar"></div>
+
+<div class="innerheading"><span id="wikipreview">Preview</span></div>
+<div id="wmd-preview" class="wiki innercontainer empty"></div>
+
+</div>
+</div>
+
+{{{SCRIPTS modules/wiki/Markdown.Converter.js modules/wiki/Markdown.Sanitizer.js modules/wiki/Markdown.Editor.js lib/ajaxfileupload.js vvMarkdown.js modules/wiki/wiki.js }}}
+{{{<footer.html}}}

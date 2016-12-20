@@ -1,0 +1,477 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{
+	"version" : 1,
+	"rectypes" :
+	{
+		"buildname" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"series_ref" : 
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "series",
+						"index" : true
+					}
+				},
+				"name" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : true,
+						"unique" : true,
+						"defaultfunc" : "gen_userprefix_unique",
+						"index" : true,
+                        "full_text_search": true
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "redo_defaultfunc",
+							"which" : "least_impact"
+						}
+					}
+				},
+				"csid" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : true
+					}
+				},
+				"added" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : "now",
+						"index" : true
+					}	
+				},
+				"branchname" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : false,
+						"maxlength" : 256,
+						"index" : true
+					}
+				},
+				"priority" :
+				{
+					"datatype" : "int",
+					"constraints" :
+					{
+						"required" : false,
+						"defaultvalue" : 0,
+						"index" : true
+					}
+				}
+			}
+		},
+
+		"build" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"buildname_ref" : 
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "buildname",
+						"index" : true
+					}
+				},
+				"series_ref" : 
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "series",
+						"index" : true
+					}
+				},
+				"environment_ref" : 
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "environment",
+						"index" : true
+					}
+				},
+				"status_ref" : 
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "status",
+						"index" : true
+					}
+				},
+				"started" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : "now",
+						"index" : true
+					}
+				},
+				"updated" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : "now"
+					}
+				},
+				"eta_start" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : false
+					}
+				},
+				"eta_finish" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : false
+					}
+				},
+				"urls" :
+				{
+					"datatype" : "attachment"
+				},
+				"logs" :
+				{
+					"datatype" : "attachment"
+				},
+				// For whatever extra data is appropriate for a build. Veracity itself doesn't use this field.
+				"custom" :
+				{
+					"datatype" : "attachment"
+				}
+			}
+		},
+
+		// e.g. "Linux 32-bit"
+		"environment" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"name" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 1024
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"nickname" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 256,
+						"index" : true
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				}
+			}
+		},
+
+		// e.g. "Building", "Testing", "Build Failed", "Tests Failed", or "Successful"
+		"status" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"name" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 256
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"nickname" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 256,
+						"index" : true
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"color" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : false,
+						"maxlength" : 256
+					}
+				},
+				"icon" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : false,
+						"maxlength" : 1024
+					}
+				},
+				// Is this a temporary status, like building or testing, or is it final, like "Tests Failed"?
+				"temporary" :
+				{
+					"datatype" : "bool",
+					"constraints" :
+					{
+						"required" : true
+					}
+				},
+				// Does a build with this status represent a succesful build, or a failed one?
+				// This is used to determine the first build in which a bug could be considered fixed.
+				// Note that this is only relevant for non-temporary statuses.
+				"successful" :
+				{
+					"datatype" : "bool",
+					"constraints" :
+					{
+						"required" : true
+					}
+				},
+				// Should builds of this status be included in the ETA calculation?  
+				// For ETA purposes, the build will be considered "started" for the first
+				// temporary status with this field true.  It will be consided "complete"
+				// for the first non-temporary status with this field true, if any.
+				"use_for_eta" :
+				{
+					"datatype" : "bool",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : true
+					}
+				},
+				"show_in_activity" :
+				{
+					"datatype" : "bool",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : true
+					}
+				}
+			}
+		},
+
+		// e.g. "Nightly" or "Continuous"
+		"series" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"name" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 256
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"nickname" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"unique" : true,
+						"required" : true,
+						"maxlength" : 256,
+						"index" : true
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				}
+			}
+		},
+		// There's just one record of this type, and it holds build configuration data.
+		"config" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				// When a build is requested from the web app, what series should it go in?
+				"manual_build_series" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "series"
+					}
+				},
+				// When a build is requested from the web app, what status should it initially be given?
+				"manual_build_status" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "status"
+					}
+				}
+			}
+		}
+	}
+}

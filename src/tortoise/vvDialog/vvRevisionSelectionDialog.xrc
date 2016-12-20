@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvRevisionSelectionDialog">
+		<title>Select Revision</title>
+		<icon stock_id="ApplicationIcon"></icon>
+		<style>wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE</style>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<minsize>550,375</minsize>
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+					<!-- Message -->
+					<object class="sizeritem" name="cMessage">
+						<flag>wxEXPAND | wxBOTTOM</flag>
+						<border>16</border>
+						<object class="unknown" name="wMessage">
+						</object>
+					</object>
+
+					<!-- History Tabs -->
+					<object class="sizeritem">
+						<flag>wxEXPAND</flag>
+						<option>1</option>
+						<object class="unknown" name="wHistory">
+						</object>
+					</object>
+
+					<!-- Status / Buttons -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxTOP</flag>
+						<border>16</border>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+
+							<!-- Status -->
+							<object class="sizeritem">
+								<flag>wxALIGN_BOTTOM</flag>
+								<option>1</option>
+								<object class="wxStaticText" name="wStatus">
+								</object>
+							</object>
+
+							<!-- Buttons -->
+							<object class="sizeritem">
+								<flag>wxALIGN_CENTER</flag>
+								<object class="wxStdDialogButtonSizer">
+									<object class="button">
+										<object class="wxButton" name="wxID_OK">
+											<label>OK</label>
+										</object>
+									</object>
+									<object class="button">
+										<object class="wxButton" name="wxID_CANCEL">
+											<default>1</default>
+											<label>Cancel</label>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

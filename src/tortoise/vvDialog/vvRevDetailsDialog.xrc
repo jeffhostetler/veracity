@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Copyright 2010-2013 SourceGear, LLCLicensed under the Apache License, Version 2.0 (the "License");you may not use this file except in compliance with the License.You may obtain a copy of the License athttp://www.apache.org/licenses/LICENSE-2.0Unless required by applicable law or agreed to in writing, softwaredistributed under the License is distributed on an "AS IS" BASIS,WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.See the License for the specific language governing permissions andlimitations under the License.-->
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxDialog" name="vvRevDetailsDialog">
+    <title>Revision Details</title>
+    <icon stock_id="ApplicationIcon"></icon>
+    <style>wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE</style>
+    <!--This sizer is to establish the dialog's minimum sizeand provide a border around the whole thing.-->
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <flag>wxEXPAND | wxALL</flag>
+      <minsize>400,100</minsize>
+      <object class="sizeritem">
+        <flag>wxEXPAND | wxALL</flag>
+        <option>1</option>
+        <border>16</border>
+        <object class="wxBoxSizer">
+          <flag>wxEXPAND | wxALL</flag>
+          <orient>wxVERTICAL</orient>
+          <option>1</option>
+          <!-- Header -->
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxBOTTOM</flag>
+            <border>8</border>
+            <object class="unknown" name="wHeader">
+            </object>
+          </object>
+
+          <!--Navigation-->
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+            <object class="wxPanel" name="wNavigationMenu">
+              <object class="wxBoxSizer" >
+                <orient>wxHORIZONTAL</orient>
+                <flag>wxEXPAND | wxALL</flag>
+                <object class="sizeritem">
+                  <flag>wxEXPAND | wxRIGHT | </flag>
+                  <border>8</border>
+                  <object class="unknown" name="wBackLink">
+                  </object>
+                </object>
+
+                <object class="sizeritem">
+                  <flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                  <object class="unknown" name="wForwardLink">
+                  </object>
+                </object>
+              </object>
+            </object>
+          </object>
+
+          <!--<object class="sizeritem">
+            <flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+            <option>1</option>
+            <minsize>-1,60</minsize>
+            <object class="wxScrolledWindow" name="wAudits">
+            </object>
+          </object> -->
+          
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxTOP | wxBOTTOM</flag>
+            <option>1</option>
+            <border>8</border>
+            <object class="wxNotebook">
+
+              <!-- General Tab -->
+              <object class="notebookpage">
+                <label>General</label>
+                <object class="wxPanel" name="wTopRow">
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <flag>wxEXPAND | wxLEFT | wxRIGHT | wxTOP</flag>
+                      <border>8</border>
+                      <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxEXPAND</flag>
+                          <option>1</option>
+                          
+                          <object class="wxFlexGridSizer">
+                            <rows>3</rows>
+                            <cols>2</cols>
+                            <hgap>8</hgap>
+                            <vgap>8</vgap>
+                            <growablecols>1</growablecols>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT</flag>
+                              <object class="wxStaticText">
+                                <label>ID:</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+                              <object class="wxTextCtrl" subclass="vvTextControl" name="wIDControl">
+                                <style>wxTE_READONLY</style>
+                                <label></label>
+                              </object>
+                            </object>
+
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT</flag>
+                              <object class="wxStaticText">
+                                <label>User:</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+                              <object class="wxTextCtrl" subclass="vvTextControl" name="wUserControl">
+                                <style>wxTE_READONLY</style>
+                                <label>asdfsdf</label>
+                              </object>
+                            </object>
+
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxALIGN_RIGHT</flag>
+                              <object class="wxStaticText">
+                                <label>Date:</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+                              <object class="wxTextCtrl" subclass="vvTextControl" name="wDateControl">
+                                <style>wxTE_READONLY</style>
+                                <label>asdfsdf</label>
+                              </object>
+                            </object>
+
+
+                          </object>
+
+                        </object>
+
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT </flag>
+                          <border>8</border>
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxBOTTOM</flag>
+                              <border>8</border>
+                              <object class="wxStaticText"  name="wParentsLabel">
+                                <label>Parent:</label>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxPanel" name="wParents">
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT </flag>
+                          <border>8</border>
+                          <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxBOTTOM</flag>
+                              <border>8</border>
+                              <object class="wxStaticText" name="wChildrenLabel">
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxPanel" name="wChildren">
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+                      </object>
+                    </object>
+
+                    <object class="sizeritem">
+                      <flag>wxEXPAND | wxALL</flag>
+                      <border>8</border>
+                      <object class="wxStaticText">
+                        <label>Comment:</label>
+                      </object>
+                    </object>
+
+                    <object class="sizeritem">
+                      <minsize>-1,125</minsize>
+                      <flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                      <border>8</border>
+                      <option>1</option>
+                      <object class="wxTextCtrl" subclass="vvTextControl" name="wCommentControl">
+                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                      </object>
+                    </object>
+                    
+                  </object>
+                </object>
+              </object>
+
+              <!-- Comments Tab -->
+              <object class="notebookpage">
+                <label>Comments</label>
+                <object class="wxScrolledWindow" name="wAudits">
+                </object>
+              </object>
+
+              <!-- Stamps and Tags Tab -->
+              <object class="notebookpage">
+                <label>Stamps and Tags</label>
+                <object class="wxPanel">
+                  <object class="wxGridSizer">
+                    <flag>wxEXPAND</flag>
+                    
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT | wxTOP</flag>
+                          <border>8</border>
+                          <object class="wxStaticText">
+                            <label>Stamps:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <option>1</option>
+                          <minsize>-1,100</minsize>
+                          <flag>wxEXPAND | wxALL</flag>
+                          <border>8</border>
+                          <object class="wxListBox" name="wStamps">
+                            
+                          </object>
+                        </object>
+                        
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                          <border>8</border>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxEXPAND | wxRIGHT</flag>
+                              <border>8</border>
+                              <option>1</option>
+                              <object class="wxTextCtrl" subclass="vvTextControl" name="wAddStampText">
+                                <style>wxTE_PROCESS_ENTER</style>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="wAddStampButton">
+                                <label>Add</label>
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+
+                      </object>
+                    </object>
+                    
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <orient>wxVERTICAL</orient>
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT | wxTOP</flag>
+                          <border>8</border>
+                          <object class="wxStaticText">
+                            <label>Tags:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <option>1</option>
+                          <minsize>-1,100</minsize>
+                          <flag>wxEXPAND | wxALL</flag>
+                          <border>8</border>
+                          <object class="wxListBox" name="wTags">
+
+                          </object>
+                        </object>
+
+                        <object class="sizeritem">
+                          <flag>wxLEFT | wxRIGHT | wxBOTTOM</flag>
+                          <border>8</border>
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <flag>wxEXPAND | wxRIGHT</flag>
+                              <border>8</border>
+                              <option>1</option>
+                              <object class="wxTextCtrl" subclass="vvTextControl" name="wAddTagText">
+                                <style>wxTE_PROCESS_ENTER</style>
+                            </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="wAddTagButton">
+                                <label>Add</label>
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+
+                      </object>
+                    </object>
+
+                  </object>
+                </object>
+              </object>
+
+            </object>
+          </object>
+
+          <!-- Buttons -->
+          <object class="sizeritem">
+            <flag>wxEXPAND| wxALIGN_LEFT | wxALIGN_RIGHT | wxBOTTOM | wxTOP</flag>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <flag>wxALIGN_LEFT | wxBOTTOM | wxTOP</flag>
+                <option>1</option>
+                <object class="wxPanel">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <!--<object class="wxStdDialogButtonSizer">
+                  <object class="button"> -->
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT | wxRIGHT</flag>
+                      <object class="wxButton" name="wExport">
+                        <label>Export...</label>
+                      </object>
+                    </object>
+
+                    <object class="sizeritem">
+                      <flag>wxALIGN_LEFT | wxRIGHT</flag>
+                      <object class="wxButton" name="wBrowse">
+                        <label>Browse...</label>
+                      </object>
+                    </object>
+
+                  </object>
+                </object>
+              </object>
+              <!--</object> 
+              </object>-->
+              <object class="sizeritem">
+                <flag>wxALIGN_RIGHT | wxBOTTOM | wxTOP</flag>
+                <object class="wxStdDialogButtonSizer">
+                  <object class="button">
+                    <object class="wxButton" name="wxID_OK">
+                      <label>Close</label>
+                    </object>
+                  </object>
+                </object>
+              </object>
+            </object>
+          </object>
+
+        </object>
+      </object>
+    </object>
+  </object>
+</resource>

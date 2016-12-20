@@ -1,0 +1,35 @@
+import quoted-path.git.gfi
+
+commit 2002
+user objectxtreme@gmail.com
+time 1351756400
+comment Initial commit.
+wc quoted-path.git/2
+
+commit 2003
+user objectxtreme@gmail.com
+time 1351756784
+comment Add "Test File".
+parent 2002
+wc quoted-path.git/3
+
+commit 2004
+user objectxtreme@gmail.com
+time 1351756785
+comment Rename "Test File".
+parent 2003
+wc quoted-path.git/4
+
+commit 2005
+user objectxtreme@gmail.com
+time 1351756786
+comment Delete "Test File Renamed".
+parent 2004
+wc quoted-path.git/5
+
+leaf 2005
+
+branch master
+status open
+commit 2005
+wc quoted-path.git/5

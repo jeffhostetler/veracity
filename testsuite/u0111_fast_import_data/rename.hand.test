@@ -1,0 +1,21 @@
+import rename.hand.gfi
+
+commit 2001
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+wc rename.hand/2001
+
+commit 2002
+user andy@sourcegear.com
+time 1342103491
+comment This is commit 2.
+parent 2001
+wc rename.hand/2002
+
+leaf 2002
+
+branch master
+status open
+commit 2002
+wc rename.hand/2002

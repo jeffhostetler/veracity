@@ -1,0 +1,88 @@
+{{{<header.html}}}
+<style>
+#center
+{
+	top: 50%;
+	left: 50%;
+	position: absolute;
+}
+#centered 
+{
+	position: relative;
+	width: 300px;
+	margin-left: -150px;
+	height: 100px;
+	margin-top: -50px;
+}
+</style>
+<script>
+var vvredirectable = "builds.html";
+setCurrentSection('source');
+</script>
+
+<div id="center">
+  <div id="centered">
+	<table width="100%" height="100%">
+	  <tr>
+		<td align="center" valign="middle">
+		  <div id="noBuilds" style="display:none"><b>No Builds Found</b></div>
+		  <div id="buildSummaryLoading" style="display:none">
+			<table>
+			  <tr>
+				<td>
+				  <div class="smallProgress"></div>
+				  <div class="statusText">Loading Builds...</div>
+				</td>
+			  </tr>
+			</table>
+		  </div>
+		</td>
+	  </tr>
+	</table>
+  </div>
+</div>
+
+<div class="centercontent primary">
+
+  <h1 class="outerheading">Build Summary</h1>
+  <div class="primarydetails" id="buildFilters" style="display:none">
+<table cellpadding="0" cellspacing="0">
+  <tr>
+	<th scope="row">Series</th>
+	<td><ul id="seriesList" class="build-category"></ul></td>
+  </tr>
+  <tr>
+	<th scope="row">Branch</th>
+	<td>
+	  <ul id="branchList" class="build-category">
+		<li id="showAllBranches" title="Show All Branches"><a onclick="fetchAllBranches();">...</a></li>
+	  </ul>
+	</td>
+  </tr>
+</table>
+</div>
+
+<div class="outercontainer wide">
+<div class="innerheading"></div>
+<div id="buildSummary" class="innercontainer blank"></div>
+<table id="moreBuildsLoading" width="100%" style="display:none">
+  <tr>
+	<td align="center">
+	  <table>
+		<tr>
+		  <td>
+			<div class="smallProgress"></div>
+			<div class="statusText">Loading Builds...</div>
+		  </td>
+		</tr>
+	  </table>
+	</td>
+  </tr>
+</table>
+
+</div>
+</div>
+
+{{{SCRIPTS build-common.js builds.js }}}
+
+{{{<footer.html}}}

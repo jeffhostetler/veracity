@@ -1,0 +1,56 @@
+blob
+mark :1
+data 7
+1-old
+
+commit refs/heads/master
+mark :2
+committer <joe@sourcegear.com> 1344266607 +0000
+data 16
+adding 1-old.txt
+M 100644 :1 1-old.txt
+M 100644 :1 dir1-old/1-old.txt
+
+blob
+mark :3
+data 7
+2-old
+
+commit refs/heads/master
+mark :4
+committer <joe@sourcegear.com> 1344266615 +0000
+data 16
+adding 2-old.txt
+from :2
+M 100644 :3 2-old.txt
+M 100644 :3 dir2-old/2-old.txt
+
+blob
+mark :5
+data 7
+3-new
+
+commit refs/heads/master
+mark :6
+committer <joe@sourcegear.com> 1344266630 +0000
+data 16
+adding 3-new.txt
+from :4
+deleteall
+M 100644 :5 3-new.txt
+M 100644 :5 dir3-new/3-new.txt
+
+blob
+mark :7
+data 7
+4-new
+
+commit refs/heads/master
+mark :8
+committer <joe@sourcegear.com> 1344266639 +0000
+data 16
+adding 4-new.txt
+from :6
+M 100644 :7 4-new.txt
+M 100644 :7 dir4-new/4-new.txt
+

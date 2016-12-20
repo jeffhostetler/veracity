@@ -1,0 +1,29 @@
+{{{<header.html}}}
+<script>
+var vvredirectable = "burndown.html";
+setCurrentSection('workitems');
+</script>
+
+<div class="centercontent primary">
+  <h1 class="outerheading" id="sprinttitle"></h1>
+  <div class="outercontainer" id="burndownouter">
+	<div id="burndownWrapper"  class="clearfix innercontainer empty" >
+		<div id="burndown" style="max-width:100%"></div>
+	</div>
+	
+  </div>	
+</div>
+
+	<div id="summary" style="display:none">
+		<h1 class="outerheading second">Summary</h1>
+		<div id="summarylist" class="outercontainer"></div>
+	</div>
+
+
+<!--[if IE]>
+<script type="text/javascript" src="{{{STATICLINKROOT}}}/lib/excanvas.js"></script>
+<![endif]-->
+
+{{{SCRIPTS widgets/burndownChart.js burndown.js }}}
+
+{{{<footer.html}}}

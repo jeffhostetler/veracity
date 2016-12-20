@@ -1,0 +1,522 @@
+/*
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#include <sg.h>
+#include <sghash.h>
+
+#define MY_SLEEP_MS      100
+#define MY_TIMEOUT_MS  30000
+
+struct _SG_blobndx
+{
+	SG_repo* pRepo;
+    SG_uint32 iDagNum;
+
+	SG_pathname* pPath_db;
+
+    SG_hdb* pdb;
+
+    SG_uint8 key_length;
+
+    struct
+    {
+        SG_bool b_in_update;
+        SG_uint32 count_so_far;
+        SG_uint32 count_changesets;
+    } update;
+};
+
+static void x_get_hash_length_in_bytes(SG_context * pCtx,
+												 const char * pszHashMethod,
+												 SG_uint32 * pi_hash_length_in_bytes)
+{
+	SG_error err;
+	SG_uint32 len;
+
+	SG_NULLARGCHECK_RETURN(pszHashMethod);
+	SG_NULLARGCHECK_RETURN(pi_hash_length_in_bytes);
+
+	err = SGHASH_get_hash_length(pszHashMethod, &len);
+	if (SG_IS_ERROR(err))
+		SG_ERR_THROW_RETURN(err);
+
+	*pi_hash_length_in_bytes = len / 2;
+}
+
+void SG_blobndx__open(
+	SG_context* pCtx,
+	SG_repo* pRepo,
+	SG_uint32 iDagNum,
+	SG_pathname* pPath,
+	SG_bool bQueryOnly,
+	SG_blobndx** ppNew
+	)
+{
+	SG_blobndx* pBlobNdx = NULL;
+    SG_bool b_exists = SG_FALSE;
+    char* psz_hash_method = NULL;
+    SG_uint32 key_length;
+
+	SG_ERR_CHECK(  SG_alloc1(pCtx, pBlobNdx)  );
+
+    pBlobNdx->pRepo = pRepo;
+    pBlobNdx->pPath_db = pPath;
+    pPath = NULL;
+    pBlobNdx->iDagNum = iDagNum;
+
+    SG_ERR_CHECK(  SG_repo__get_hash_method(pCtx, pRepo, &psz_hash_method)  );
+    SG_ERR_CHECK(  x_get_hash_length_in_bytes(pCtx, psz_hash_method, &key_length)  );
+    SG_NULLFREE(pCtx, psz_hash_method);
+
+    pBlobNdx->key_length = (SG_uint8) key_length;
+
+    SG_ERR_CHECK(  SG_fsobj__exists__pathname(pCtx, pBlobNdx->pPath_db, &b_exists, NULL, NULL)  );
+
+    if (b_exists)
+    {
+    }
+    else
+    {
+        SG_uint32 data_length;
+
+        data_length = key_length + 4;
+        SG_ERR_CHECK(  SG_hdb__create(pCtx, pBlobNdx->pPath_db, key_length, 16, data_length)  );
+    }
+
+    if (bQueryOnly)
+    {
+        SG_ERR_CHECK(  SG_hdb__open(pCtx, pBlobNdx->pPath_db, 0, SG_FALSE, &pBlobNdx->pdb)  );
+    }
+
+	*ppNew = pBlobNdx;
+
+	return;
+fail:
+    SG_NULLFREE(pCtx, psz_hash_method);
+    SG_PATHNAME_NULLFREE(pCtx, pPath);
+    SG_BLOBNDX_NULLFREE(pCtx, pBlobNdx);
+}
+
+void SG_blobndx__begin_update_multiple(SG_context* pCtx, SG_blobndx* pdbc, SG_uint32 count_changesets)
+{
+    SG_ASSERT(!pdbc->update.b_in_update);
+
+    memset(&pdbc->update, 0, sizeof(pdbc->update));
+
+    SG_ERR_CHECK(  SG_hdb__open(pCtx, pdbc->pPath_db, count_changesets * 4, SG_TRUE, &pdbc->pdb)  );
+
+    pdbc->update.b_in_update = SG_TRUE;
+    pdbc->update.count_changesets = count_changesets;
+
+fail:
+    ;
+}
+
+void SG_blobndx__end_update_multiple(SG_context* pCtx, SG_blobndx* pdbc)
+{
+    SG_ASSERT(pdbc->update.b_in_update);
+
+    SG_ASSERT(pdbc->update.count_changesets == pdbc->update.count_so_far);
+
+	SG_ERR_CHECK(  SG_hdb__close_free(pCtx, pdbc->pdb)  );
+    pdbc->pdb = NULL;
+
+    pdbc->update.b_in_update = SG_FALSE;
+
+fail:
+    ;
+}
+
+void SG_blobndx__abort_update_multiple(SG_context* pCtx, SG_blobndx* pdbc)
+{
+    SG_ASSERT(pdbc->update.b_in_update);
+
+	SG_ERR_CHECK(  SG_hdb__rollback_close_free(pCtx, pdbc->pdb)  );
+    pdbc->pdb = NULL;
+
+
+    pdbc->update.b_in_update = SG_FALSE;
+
+fail:
+    ;
+}
+
+#define my_getbyte(i,s) ((SG_byte) ( ((i) >> s) & 0xff))
+#define my_PACK_32(ptr,i32) SG_STATEMENT(SG_byte*q=(SG_byte*)ptr;SG_uint32 i=(SG_uint32)i32;(q)[0]=(my_getbyte(i,24));(q)[1]=(my_getbyte(i,16));(q)[2]=(my_getbyte(i,8));(q)[3]=(my_getbyte(i,0));)
+
+void SG_blobndx__update_one_changeset(
+        SG_context* pCtx,
+        SG_blobndx* pBlobNdx,
+        const char* psz_csid,
+        SG_changeset* pcs
+        )
+{
+    SG_vhash* pvh_lbl = NULL;
+    SG_uint32 ibl = 0;
+    SG_uint32 count_bloblists = 0;
+    SG_int32 generation = -1;
+    SG_byte buf_data[128 + 8];
+    SG_uint32 len = 0;
+    SG_uint32 ugen = 0;
+    SG_uint32 count_all_blobs = 0;
+
+	SG_NULLARGCHECK_RETURN(pcs);
+	SG_NULLARGCHECK_RETURN(pBlobNdx);
+
+    SG_ERR_CHECK(  SG_changeset__get_generation(pCtx, pcs, &generation)  );
+    SG_ERR_CHECK(  SG_hex__parse_hex_string(pCtx, psz_csid, strlen(psz_csid), buf_data,sizeof(buf_data),&len)  );
+    ugen = (SG_uint32) generation;
+    my_PACK_32(buf_data + len, ugen);
+    SG_ERR_CHECK(  SG_changeset__get_list_of_bloblists(pCtx, pcs, &pvh_lbl)  );
+    SG_ERR_CHECK(  SG_vhash__count(pCtx, pvh_lbl, &count_bloblists)  );
+
+    for (ibl=0; ibl<count_bloblists; ibl++)
+    {
+        const SG_variant* pv = NULL;
+        SG_vhash* pvh_dbrecords = NULL;
+        SG_uint32 count_blobs = 0;
+
+        SG_ERR_CHECK(  SG_vhash__get_nth_pair(pCtx, pvh_lbl, ibl, NULL, &pv)  );
+        SG_ERR_CHECK(  SG_variant__get__vhash(pCtx, pv, &pvh_dbrecords)  );
+        SG_ERR_CHECK(  SG_vhash__count(pCtx, pvh_dbrecords, &count_blobs)  );
+        count_all_blobs += count_blobs;
+    }
+
+    for (ibl=0; ibl<count_bloblists; ibl++)
+    {
+        SG_uint32 i = 0;
+        const SG_variant* pv = NULL;
+        SG_vhash* pvh_dbrecords = NULL;
+        SG_uint32 count_blobs = 0;
+
+        SG_ERR_CHECK(  SG_vhash__get_nth_pair(pCtx, pvh_lbl, ibl, NULL, &pv)  );
+        SG_ERR_CHECK(  SG_variant__get__vhash(pCtx, pv, &pvh_dbrecords)  );
+        SG_ERR_CHECK(  SG_vhash__count(pCtx, pvh_dbrecords, &count_blobs)  );
+        for (i=0; i<count_blobs; i++)
+        {
+            const char* psz_blobid = NULL;
+            SG_byte k[1024/8];
+
+            SG_ERR_CHECK(  SG_vhash__get_nth_pair(pCtx, pvh_dbrecords, i, &psz_blobid, NULL)  );
+            SG_ERR_CHECK(  SG_hex__parse_hex_string(pCtx, psz_blobid, strlen(psz_blobid), k,sizeof(k),NULL)  );
+            SG_ERR_CHECK(  SG_hdb__put(pCtx, pBlobNdx->pdb, k, buf_data, SG_HDB__ON_COLLISION__MULTIPLE)  );
+        }
+    }
+
+    pBlobNdx->update.count_so_far++;
+
+fail:
+    ;
+}
+
+void SG_blobndx__free(SG_context* pCtx, SG_blobndx* pBlobNdx)
+{
+	if (!pBlobNdx)
+		return;
+
+	SG_ERR_IGNORE(  SG_hdb__close_free(pCtx, pBlobNdx->pdb)  );
+    pBlobNdx->pdb = NULL;
+
+	SG_PATHNAME_NULLFREE(pCtx, pBlobNdx->pPath_db);
+	SG_NULLFREE(pCtx, pBlobNdx);
+}
+
+void sg_blobndx__get_matches__where(
+	SG_context* pCtx,
+    SG_blobndx* pndx,
+    SG_rbtree* prb_blobs_given,
+    SG_vhash** ppvh_matches
+    )
+{
+    SG_vhash* pvh = NULL;
+    SG_uint32 count_matches = 0;
+    const char* psz_cur_blobid_from_given = NULL;
+    SG_bool b = SG_FALSE;
+    SG_rbtree_iterator* pit = NULL;
+
+    // init stuff
+    SG_ERR_CHECK(  SG_VHASH__ALLOC(pCtx, &pvh)  );
+
+    b = SG_FALSE;
+    SG_ERR_CHECK(  SG_rbtree__iterator__first(pCtx, &pit, prb_blobs_given, &b, &psz_cur_blobid_from_given, NULL)  );
+    while (b)
+    {
+        SG_byte k[1024/8];
+        SG_uint32 cur = 0;
+
+        SG_ERR_CHECK(  SG_hex__parse_hex_string(pCtx, psz_cur_blobid_from_given, strlen(psz_cur_blobid_from_given), k,sizeof(k),NULL)  );
+
+        cur = 0;
+        while (1)
+        {
+            SG_uint32 next = 0;
+            SG_byte* p = NULL;
+
+            SG_ERR_CHECK(  SG_hdb__find(pCtx, pndx->pdb, k, cur, &p, &next)  );
+            if (p)
+            {
+                char buf_csid[SG_HID_MAX_BUFFER_LENGTH];
+                SG_int32 cur_generation = -1;
+                SG_uint32 ugen = 0;
+                SG_vhash* pvh_one = NULL;
+                SG_byte* q = NULL;
+
+                SG_hex__format_buf(buf_csid, p, pndx->key_length);
+
+                q += pndx->key_length;
+
+                ugen = (q[0]<<24) | (q[1]<<16) | (q[2]<<8) | q[3]; 
+                cur_generation = (SG_int32) ugen;
+
+                SG_ERR_CHECK(  SG_vhash__addnew__vhash(pCtx, pvh, psz_cur_blobid_from_given, &pvh_one)  );
+                SG_ERR_CHECK(  SG_vhash__add__string__sz(pCtx, pvh_one, "csid", buf_csid)  );
+                SG_ERR_CHECK(  SG_vhash__add__int64(pCtx, pvh_one, "gen", (SG_int64) cur_generation)  );
+
+                if (next)
+                {
+                    cur = next;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        SG_ERR_CHECK(  SG_rbtree__iterator__next(pCtx, pit, &b, &psz_cur_blobid_from_given, NULL)  );
+    }
+
+    SG_ERR_CHECK(  SG_vhash__count(pCtx, pvh, &count_matches)  );
+    if (0 == count_matches)
+    {
+        SG_VHASH_NULLFREE(pCtx, pvh);
+    }
+
+    *ppvh_matches = pvh;
+    pvh = NULL;
+
+fail:
+    SG_RBTREE_ITERATOR_NULLFREE(pCtx, pit);
+    SG_VHASH_NULLFREE(pCtx, pvh);
+}
+
+void SG_blobndx__check_ancestors(
+	SG_context* pCtx,
+    SG_blobndx* pndx,
+    SG_rbtree* prb_parents,
+    SG_rbtree* prb_blobs,
+    SG_rbtree** pprb_result
+	)
+{
+    SG_bool b = SG_FALSE;
+    SG_rbtree_iterator* pit = NULL;
+    const char* psz_csid_parent = NULL;
+    SG_rbtree* prb_result = NULL;
+    SG_int32 boundary_generation = -1;
+    SG_uint32 count_parents = 0;
+    SG_uint32 count_blobs = 0;
+    const char** a_parents = NULL;
+    SG_int32* a_generations = NULL;
+    SG_dagnode* pdn = NULL;
+    SG_uint32 i_cur_parent = 0;
+    SG_rbtree* prb_already_yes = NULL;
+    SG_rbtree* prb_already_no = NULL;
+    SG_int32 max_generation_parent = -1;
+    SG_int32 min_generation_parent = SG_INT32_MAX;
+    SG_vhash* pvh_possible_matches = NULL;
+
+    SG_ERR_CHECK(  SG_rbtree__count(pCtx, prb_blobs, &count_blobs)  );
+
+    SG_ERR_CHECK(  sg_blobndx__get_matches__where(pCtx, pndx, prb_blobs, &pvh_possible_matches)  );
+
+    if (pvh_possible_matches)
+    {
+        SG_uint32 i_cur_blob = 0;
+        SG_uint32 count_possible_matches = 0;
+        SG_uint32 count_results = 0;
+
+        SG_ERR_CHECK(  SG_rbtree__alloc(pCtx, &prb_result)  );
+        SG_ERR_CHECK(  SG_rbtree__alloc(pCtx, &prb_already_yes)  );
+        SG_ERR_CHECK(  SG_rbtree__alloc(pCtx, &prb_already_no)  );
+
+        SG_ERR_CHECK(  SG_rbtree__count(pCtx, prb_parents, &count_parents)  );
+
+        SG_ERR_CHECK(  SG_allocN(pCtx, count_parents, a_parents)  );
+        SG_ERR_CHECK(  SG_allocN(pCtx, count_parents, a_generations)  );
+
+        b = SG_FALSE;
+        i_cur_parent = 0;
+        SG_ERR_CHECK(  SG_rbtree__iterator__first(pCtx, &pit, prb_parents, &b, &psz_csid_parent, NULL)  );
+        while (b)
+        {
+            a_parents[i_cur_parent] = psz_csid_parent;
+
+            SG_ERR_CHECK(  SG_repo__fetch_dagnode(pCtx, pndx->pRepo, pndx->iDagNum, psz_csid_parent, &pdn)  );
+            SG_ERR_CHECK(  SG_dagnode__get_generation(pCtx, pdn, &(a_generations[i_cur_parent]))  );
+            SG_DAGNODE_NULLFREE(pCtx, pdn);
+
+            if (a_generations[i_cur_parent] < min_generation_parent)
+            {
+                min_generation_parent = a_generations[i_cur_parent];
+            }
+            if (a_generations[i_cur_parent] > max_generation_parent)
+            {
+                max_generation_parent = a_generations[i_cur_parent];
+            }
+
+            i_cur_parent++;
+
+            SG_ERR_CHECK(  SG_rbtree__iterator__next(pCtx, pit, &b, &psz_csid_parent, NULL)  );
+        }
+        SG_RBTREE_ITERATOR_NULLFREE(pCtx, pit);
+
+        SG_ERR_CHECK(  SG_repo__dag__get_highest_partition_node(pCtx, pndx->pRepo, pndx->iDagNum, max_generation_parent, NULL, &boundary_generation)  );
+
+        SG_ERR_CHECK(  SG_vhash__count(pCtx, pvh_possible_matches, &count_possible_matches)  );
+        for (i_cur_blob=0; i_cur_blob<count_possible_matches; i_cur_blob++)
+        {
+            const char* psz_blobid = NULL;
+            const SG_variant* pv = NULL;
+            const char* psz_csid = NULL;
+            SG_int32 cur_generation = 0;
+            SG_vhash* pvh_one = NULL;
+            SG_bool b_existed_in_ancestor = SG_FALSE;
+            SG_uint32 i = 0;
+            SG_bool b_already = SG_FALSE;
+            SG_int64 i64 = 0;
+
+            SG_ERR_CHECK(  SG_vhash__get_nth_pair(pCtx, pvh_possible_matches, i_cur_blob, &psz_blobid, &pv)  );
+            SG_ERR_CHECK(  SG_variant__get__vhash(pCtx, pv, &pvh_one)  );
+            SG_ERR_CHECK(  SG_vhash__get__sz(pCtx, pvh_one, "csid", &psz_csid)  );
+            SG_ERR_CHECK(  SG_vhash__get__int64(pCtx, pvh_one, "gen", &i64)  );
+            cur_generation = (SG_int32) i64;
+
+            // first the boundary check
+            if (cur_generation <= boundary_generation)
+            {
+                b_existed_in_ancestor = SG_TRUE;
+                goto answer_known;
+            }
+
+            // now check to see if this changeset is one of the parents
+            SG_ERR_CHECK(  SG_rbtree__find(pCtx, prb_parents, psz_csid, &b_already, NULL)  );
+            if (b_already)
+            {
+                b_existed_in_ancestor = SG_TRUE;
+                goto answer_known;
+            }
+
+            // now see if we already queried this node and found it YES
+            SG_ERR_CHECK(  SG_rbtree__find(pCtx, prb_already_yes, psz_csid, &b_already, NULL)  );
+            if (b_already)
+            {
+                b_existed_in_ancestor = SG_TRUE;
+                goto answer_known;
+            }
+
+            // now see if we already queried this node and found it NO
+            SG_ERR_CHECK(  SG_rbtree__find(pCtx, prb_already_no, psz_csid, &b_already, NULL)  );
+            if (b_already)
+            {
+                b_existed_in_ancestor = SG_FALSE;
+                goto answer_known;
+            }
+
+            // ok, we've gotta check the parents
+            for (i=0; i<count_parents; i++)
+            {
+                if (cur_generation < a_generations[i])
+                {
+                    SG_dagquery_relationship dqRel = 0;
+#if 0
+                    SG_int64 t1 = 0;
+                    SG_int64 t2 = 0;
+
+                    printf("Calling QUERY\n");
+                    printf("    cur       %5d -- %s\n", cur_generation, psz_csid);
+                    printf("    parent    %5d -- %s\n", a_generations[i], a_parents[i]);
+                    printf("    partition %5d\n", boundary_generation);
+                    SG_time__get_milliseconds_since_1970_utc(pCtx, &t1);
+#endif
+					// TODO 2010/10/06 I put a bSkipAncestorChecks in SG_dagquery__how_are_dagnodes_related()
+					// TODO            to let us have a half-answer.  Here we only care about whether we have
+					// TODO            a descendant.  This lets dagquery avoid building the dagfrag in half of
+					// TODO            cases when we don't care about those answers (ancestor vs peer) and can
+					// TODO            just tell from the generation numbers.  The code in this function
+					// TODO            (and similar code in sg_treendx.c) pre-compute the generations to avoid
+					// TODO            those calls to dagquery.  We might be able to simplify the code in this
+					// TODO            function to take advantage of the new feature in dagquery.
+
+                    SG_ERR_CHECK(  SG_dagquery__how_are_dagnodes_related(pCtx, pndx->pRepo, a_parents[i], psz_csid,
+																		 SG_FALSE, // we care about descendants, so don't skip
+																		 SG_TRUE,  // we don't care about ancestors and have already guarded against, so we can skip them (not that we'll see any)
+																		 &dqRel)  );
+#if 0
+                    SG_time__get_milliseconds_since_1970_utc(pCtx, &t2);
+                    printf("    query took %d ms\n", (SG_uint32) (t2 - t1));
+#endif
+
+                    if (
+                            (dqRel == SG_DAGQUERY_RELATIONSHIP__DESCENDANT)
+                            || (dqRel == SG_DAGQUERY_RELATIONSHIP__SAME)		// TODO __SAME can't happen because we already know gen's are different
+                       )
+                    {
+                        b_existed_in_ancestor = SG_TRUE;
+                        break;
+                    }
+                }
+            }
+            if (b_existed_in_ancestor)
+            {
+                SG_ERR_CHECK(  SG_rbtree__add(pCtx, prb_already_yes, psz_csid)  );
+            }
+            else
+            {
+                SG_ERR_CHECK(  SG_rbtree__add(pCtx, prb_already_no, psz_csid)  );
+            }
+
+answer_known:
+            if (b_existed_in_ancestor)
+            {
+                SG_ERR_CHECK(  SG_rbtree__update(pCtx, prb_result, psz_blobid)  );
+            }
+        }
+
+        SG_ERR_CHECK(  SG_rbtree__count(pCtx, prb_result, &count_results)  );
+        if (0 == count_results)
+        {
+            SG_RBTREE_NULLFREE(pCtx, prb_result);
+        }
+    }
+
+    *pprb_result = prb_result;
+    prb_result = NULL;
+
+fail:
+    SG_VHASH_NULLFREE(pCtx, pvh_possible_matches);
+    SG_DAGNODE_NULLFREE(pCtx, pdn);
+    SG_NULLFREE(pCtx, a_parents);
+    SG_NULLFREE(pCtx, a_generations);
+    SG_RBTREE_NULLFREE(pCtx, prb_already_yes);
+    SG_RBTREE_NULLFREE(pCtx, prb_already_no);
+    SG_RBTREE_NULLFREE(pCtx, prb_result);
+}
+
+

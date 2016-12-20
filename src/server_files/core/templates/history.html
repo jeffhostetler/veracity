@@ -1,0 +1,86 @@
+{{{<header.html}}}
+	<script type="text/javascript">
+		var FLAG_NAME_FILTER = 1; 
+		var FLAG_STAMP_FILTER = 2; 
+		var FLAG_FROM_FILTER = 4;
+		var FLAG_TO_FILTER = 8;
+		var FLAG_BRANCH_FILTER = 16;
+		var FLAG_PATH_FILTER = 32; 
+		var filterflags = 0;
+		var vvredirectable = "history.html";
+setCurrentSection('source');
+	</script>
+
+        {{{SCRIPTS historygraph.js gethistory.js}}}
+
+<div class="centercontent primary">
+	
+	<h2 id="h2History" class="outerheading"><span>History</span><a id="toggle_filter" href="#"><img id="imgtoggle" class="headerimg" src="{{{STATICLINKROOT}}}/img/expand.png"/></a></h2>
+
+  <!-- start -->
+	<div id="tableHistoryFilter" style="display:none" class="primarydetails editable clearfix">
+	  <div class="floater outer">
+
+	    <div id="thFilterUser" class="floater">
+	      <label class="formlabel" for="user">User</label>
+	    	<div class="formel"><span class="inputwrapper"><select id="user"></select></span>
+	         <span class="together"><input type="checkbox" name="cbxShowAllUsers" title="show inactive users" id="cbxShowAllUsers"/><label id="label1" for="cbxShowAllUsers">Show Inactive</label></span>
+	        </div>
+		</div>
+
+	  <div id="thFilterBranch" class="floater" style="clear:left">
+	    <label class="formlabel" for="selectBranch">Branch</label>
+	    <div class="formel">
+	    <span class="inputwrapper"><select id="selectBranch" width="50"></select></span>
+	    <span class="together"><input type="checkbox" name="cbxShowAllBranches" title="show all branches in branch dropdown" id="cbxShowAllBranches"/><label id="labelshowall" for="cbxShowAllBranches">Show All</label></span>
+	    </div>
+	  </div>	
+
+	</div>
+
+	<div class="floater" id="thFilterStamp">
+	
+	   <label class="formlabel" for="stamp">Stamp</label><input id="stamp" class="searchinput formel" />
+	</div>
+
+	<div class="floater outer">
+            <div class="floater"><label class="formlabel" for="datefrom">Date From</label><input type="text" placeholder="YYYY/MM/DD" id="datefrom" class="formel" /></div>
+            <div class="floater"><label class="formlabel" for="dateto">Date To</label><input type="text" placeholder="YYYY/MM/DD" id="dateto" class="formel" /></div>
+	</div>
+	<div class="floater outer">
+	    <label class="formlabel" for="txtPath">Path</label>
+	    <div class="formel">
+	      <input id="txtPath" placeholder="file or folder repository path" title="enter file or folder repository path"  size="65" />	
+	      <span class="together"><input type="checkbox" name="cbxHideMerges" title="hide merges for file or folder history" value="hideMerges" id="cbxHideMerges" disabled="1" /><label id="labelHideMerges" for="hideMerges" class="disabled" style="white-space: nowrap">Hide Merges</label></span>
+	    </div>
+
+					
+</div>
+
+	  <div class="historyfilterbuttons">
+	    <input type="button" id="buttonFilter" onclick="javascript:filterHistory();" value="Apply" />
+	    <input type="button" id="buttonClear" onclick="javascript:clearFilter();" value="Clear" />
+<!--	    <span id="buttonFilter" class="button" onclick="javascript:filterHistory();" >Apply</span>
+	    <span id="buttonClear" class="button" onclick="javascript:clearFilter();">Clear</span> -->
+	  </div>
+      </div>
+
+      <!-- end -->
+	
+  <div class="outercontainer">
+	<table id="tablehistory" class="datatable history" cellspacing="0" cellpadding="0">
+	  <thead>
+		<tr class="dataheaderrow"><th style="width: 5em">Revision</th><th class="graphhead">Graph</th><th class="comment" style="width: 80em">Comment</th><th id="thHistoryTags">Tags/Stamps</th><th style="width: 9em">Date</th><th  style="width: 15em">Author</th>
+		  </tr>
+		</thead>
+	  <tbody></tbody>
+	</table>
+	
+	<div id="tbl_footer" class="tablefooter">
+		<div class="smallProgress"></div>
+		<div class="statusText"></div>
+	</div>
+	 </div>
+</div>	
+
+{{{<footer.html}}}

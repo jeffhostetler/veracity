@@ -1,0 +1,172 @@
+@ECHO OFF
+REM js_test.bat
+REM usage: ${CMAKE_CURRENT_SOURCE_DIR} stTestName.js ${MY_RELEXE_DIR}
+REM
+
+REM %~1 is %1 with surrounding quotes removed
+SET SRCDIR=%~1
+ECHO SRCDIR is %SRCDIR%
+
+SET TEST=%~2
+ECHO TEST is %TEST%
+
+SET RELEXEDIR=%~3
+ECHO RELEXEDIR is %RELEXEDIR%
+
+SET JS_DEFINES=%~4
+ECHO JS_DEFINES is %JS_DEFINES%
+
+REM %cd% is like `pwd`
+SET BINDIR=@DOS_PUBLIC_BINARY_TOP_DIR@\src\js_tests
+ECHO BINDIR is %BINDIR%
+
+SET CTESTDIR=@DOS_PUBLIC_BINARY_TOP_DIR@\testsuite;@DOS_PUBLIC_BINARY_TOP_DIR@\testsuite\%RELEXEDIR%
+ECHO CTESTDIR is %CTESTDIR%
+
+SET TEMPDIR=%BINDIR%\TEMP\%TEST%
+ECHO TEMPDIR is %TEMPDIR%
+
+REM For /f "tokens=2-4 delims=/ " %%a in ('date /t') do (set mydate=%%c-%%a-%%b)
+For /f "tokens=1-3 delims=: " %%a in ('time /t') do (set mytime=%%a%%b%%c)
+
+SET SGCLOSET=
+SET SGCLOSET=%TEMPDIR%\.%mytime%
+IF "%SGCLOSET%"=="" GOTO :NO_SGCLOSET_LOCATION
+ECHO SGCLOSET is %SGCLOSET%
+
+REM We need vv and vscript to be in our path.
+SET PATH=%BINDIR%\..\cmd\%RELEXEDIR%;%BINDIR%\..\script\%RELEXEDIR%;%CTESTDIR%;%PATH%
+ECHO Path is %PATH%
+
+echo %DATE% %TIME%:  printing versions
+ECHO 'vv version' says...
+vv version
+
+ECHO 'vscript --help' says...
+vscript  --help
+
+echo %DATE% %TIME%:  done printing versions
+REM Start with a clean (nonexistent) TEMPDIR
+if exist "%TEMPDIR%" RMDIR /S /Q "%TEMPDIR%"
+mkdir "%TEMPDIR%"
+echo Created fresh "%TEMPDIR%"
+
+REM The "output" console log is always appended rather than starting
+REM with a newly created/truncated file.  Get rid of the noise from
+REM the previous run.
+
+if exist "%BINDIR%\output.%TEST%.log" del "%BINDIR%\output.%TEST%.log"
+echo Cleaned up "%BINDIR%\output.%TEST%.log"
+
+REM Since vscript does not take parameters, only a list of .js files in the current directory,
+REM we have to do a little gymnastics to get the scripts to run using the source directory as
+REM input and the build directory for all of the output and trash we generate.
+
+echo cd-ing to "%SRCDIR%"
+REM cd /D changes both pathname and the disk in one step.
+cd /D "%SRCDIR%"
+ECHO Now at %cd%
+
+echo %DATE% %TIME%:  establishing settings
+REM preset server/files to avoid a chicken/egg issue when initializing JS context
+vscript.exe ..\js_test_lib\setServerFiles.js "%TEMPDIR%"
+SET RESULT_CONFIGURE=%ERRORLEVEL%
+REM echo vscript error level %RESULT_CONFIGURE%
+if NOT "%RESULT_CONFIGURE%"=="0" goto :SERVER_FILES_CANNOT_BE_DEFAULT
+
+vv.exe config
+
+echo %DATE% %TIME%:  done establishing settings
+
+REM delete any existing stdout.$TEST.log
+if exist "%BINDIR%\stdout.%TEST%.log" del "%BINDIR%\stdout.%TEST%.log"
+
+ECHO Running test %TEST%...
+echo %DATE% %TIME%: vscript.exe ..\js_test_lib\vscript_tests.js --load "%TEST%" -v --temp "%TEMPDIR%" -o "%BINDIR%\output.%TEST%.log" %JS_DEFINES% 
+vscript.exe ..\js_test_lib\vscript_tests.js --load "%TEST%" -v --temp "%TEMPDIR%" -o "%BINDIR%\output.%TEST%.log" %JS_DEFINES% >> "%BINDIR%\stdout.%TEST%.log" 2>&1
+SET RESULT_TEST=%ERRORLEVEL%
+
+if exist "%TEMPDIR%\sg-????-??-??.log" (
+    copy /B "%TEMPDIR%\sg-????-??-??.log" "%BINDIR%\sg.%TEST%.log"
+    del "%TEMPDIR%\sg-????-??-??.log"
+)
+
+if exist "%TEMPDIR%\vv-????-??-??.log" (
+    copy /B "%TEMPDIR%\vv-????-??-??.log" "%BINDIR%\vv.%TEST%.log"
+    del "%TEMPDIR%\vv-????-??-??.log"
+)
+
+if exist if exist "%TEMPDIR%\VeracityServer.log" (
+    copy "%TEMPDIR%\VeracityServer.log" "%BINDIR%\VeracityServer.%TEST%.log"
+    del "%TEMPDIR%\VeracityServer.log"
+)
+
+if exist if exist "%TEMPDIR%\vv-serve-????-??-??.log" (
+    copy /B "%TEMPDIR%\vv-serve-????-??-??.log" "%BINDIR%\vv-serve.%TEST%.log"
+    del "%TEMPDIR%\vv-serve-????-??-??.log"
+)
+
+if exist if exist "%TEMPDIR%\veracity-????-??-??.log" (
+    copy /B "%TEMPDIR%\veracity-????-??-??.log" "%BINDIR%\veracity.%TEST%.log"
+    del "%TEMPDIR%\veracity-????-??-??.log"
+)
+
+if exist if exist "%TEMPDIR%\vscript-????-??-??.log" (
+    copy /B "%TEMPDIR%\vscript-????-??-??.log" "%BINDIR%\vscript.%TEST%.log"
+    del "%TEMPDIR%\vscript-????-??-??.log"
+)
+
+REM cd back to bin directory and cleanup the trash
+cd /D "%BINDIR%"
+ECHO Now at %cd%
+
+REM DEL /S /Q "%TEMPDIR%"
+
+REM If the test failed (exit status > 0), just exit now (without looking for leaks).
+IF NOT "%RESULT_TEST%"=="0" EXIT %RESULT_TEST%
+
+REM Check for memory leaks in the log file.  FIND reports an error (1) if our pattern WAS NOT found.
+REM So we get a success (0) status if there were leaks.
+REM 
+REM if this is stWeb.js, we have background server processes and sometimes they take a little
+REM time to exit and flush their output to stdout/stderr.  if we do the grep too quickly (at least
+REM on the Mac), we blow past it before the leaks get written to the file (or something like that).
+if /i "%TEST%"=="stWeb.js" ping -n 1 -w 60000 224.0.0.0
+
+ECHO Looking for leaks...
+FIND "LEAK:" "%BINDIR%\stdout.%TEST%.log"
+SET RESULT_LEAK=%ERRORLEVEL%
+IF "%RESULT_LEAK%"=="0" EXIT 1
+
+ECHO Looking for leaks from Windows CRT Leak Checking...
+FIND "Detected memory leaks!" "%BINDIR%\stdout.%TEST%.log"
+IF NOT "%ERRORLEVEL%"=="0" GOTO :SKIP_CRT_LEAK_VERIFICATION
+    REM Now we have to make sure it's not just spidermonkey's false positive.
+    REM (Look for its signature size)
+    FOR /F "usebackq delims=" %%o IN (`FIND /C " block at 0x"         "%BINDIR%\stdout.%TEST%.log"`) DO SET CURRENT_LEAKS=%%o
+    FOR /F "usebackq delims=" %%o IN (`FIND /C ", 65636 bytes long."  "%BINDIR%\stdout.%TEST%.log"`) DO SET FALSE_LEAK_32=%%o
+    FOR /F "usebackq delims=" %%o IN (`FIND /C ", 131248 bytes long." "%BINDIR%\stdout.%TEST%.log"`) DO SET FALSE_LEAK_64=%%o
+
+    SET IS_LEAK_FOR_REAL=TRUE
+    IF "%CURRENT_LEAKS%"=="%FALSE_LEAK_32%" SET IS_LEAK_FOR_REAL=FALSE
+    IF "%CURRENT_LEAKS%"=="%FALSE_LEAK_64%" SET IS_LEAK_FOR_REAL=FALSE
+
+    IF "%IS_LEAK_FOR_REAL%"=="TRUE" EXIT 1
+:SKIP_CRT_LEAK_VERIFICATION
+
+ECHO Everything passed.
+EXIT 0
+
+:NO_SGCLOSET_LOCATION
+ECHO ## %TEST% FAILED to find a location for .sgcloset-test
+SET LOCALAPPDATA
+SET USERPROFILE
+EXIT 1
+
+:SERVER_FILES_CANNOT_BE_DEFAULT
+ECHO ## %TEST% FAILED due to default server/files setting
+vv config show server/files
+ECHO ## %TEST% FAILED due to default server/files setting>> "%BINDIR%\stdout.%TEST%.log"
+vv config show server/files >>"%BINDIR%\stdout.%TEST%.log"
+EXIT 1
+

@@ -1,0 +1,72 @@
+blob
+mark :1
+data 50
+This is the contents of file file_1
+1360156447133
+
+blob
+mark :2
+data 53
+This is the contents of file file_xoff
+1360156447133
+
+blob
+mark :3
+data 52
+This is the contents of file file_xon
+1360156447133
+
+commit refs/heads/master
+mark :4
+committer <testing@sourcegear.com> 1360156447 +0000
+data 17
+add initial files
+M 100644 :1 file_1
+M 100644 :2 file_xoff
+M 100755 :3 file_xon
+
+blob
+mark :5
+data 54
+This is the contents of file noise_L1_a
+1360156447851
+
+commit refs/heads/master
+mark :6
+committer <testing@sourcegear.com> 1360156447 +0000
+data 12
+L1_a changes
+from :4
+M 100644 :5 noise_L1_a
+M 100755 :2 file_xoff
+M 100644 :3 file_xon
+
+blob
+mark :7
+data 54
+This is the contents of file noise_L0_a
+1360156447492
+
+commit refs/heads/master
+mark :8
+committer <testing@sourcegear.com> 1360156447 +0000
+data 12
+L0_a changes
+from :4
+M 100644 :7 noise_L0_a
+
+tag cset_base
+from :4
+tagger <testing@sourcegear.com> 1360156447 +0000
+data 0
+
+tag cset_L0_a
+from :8
+tagger <testing@sourcegear.com> 1360156447 +0000
+data 0
+
+tag cset_L1_a
+from :6
+tagger <testing@sourcegear.com> 1360156448 +0000
+data 0
+

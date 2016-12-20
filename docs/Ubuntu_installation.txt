@@ -1,0 +1,55 @@
+# Using SourceGear's Apt Repository
+When installing on an Ubuntu system you can choose to install either the *stable*
+or *nightly* builds of Veracity.
+
+The *stable* build is the latest official release of Veracity.  This is the 
+version that is recommended for production use.
+
+The *nightly* build is the latest pre-release version of Veracity.  Builds from 
+this repository are generated from a snapshot of the code currently in 
+development, and thus may contain bugs.
+ 
+## Stable
+To add the SourceGear stable repository to your system add a file named 
+sourcegear.list to you systems /etc/apt/sources.list.d directory with the 
+following contents:
+
+    deb http://debian.sourcegear.com/ubuntu <ubuntu_release> main
+    deb-src http://debian.sourcegear.com/ubuntu <ubuntu_release>  main
+
+Replace <ubuntu_release> with the name of your installed ubuntu release\*.
+
+## Nightlies
+
+To add the SourceGear nightly repository to your system add a file named 
+sourcegear.list to you systems /etc/apt/sources.list.d directory with the 
+following contents:
+
+    deb http://debian.sourcegear.com/ubuntu <ubuntu_release> nightly
+    deb-src http://debian.sourcegear.com/ubuntu <ubuntu_release>  nightly
+
+Replace <ubuntu_release> with the name of your installed ubuntu release\*. 
+
+
+\* You can get this name from the output of this command `lsb_release -c`
+
+## Adding SourceGear's PGP key to APT
+
+Packages in the SourceGear APT repository are cryptographically signed using a 
+PGP key to ensure their integrity.  In order to verify the packages contents, 
+you will first need to add SourceGears public key to APT.  This can be done by 
+executing the following command at a command prompt:
+
+    sudo wget -O - http://debian.sourcegear.com/SOURCEGEAR-GPG-KEY | sudo apt-key add -
+
+## Installing Veracity
+
+After adding a new APT repository and installing the PGP key, you will need to 
+run the following command to update your APT sources:
+
+    sudo apt-get update
+
+Next you can install the veracity package:
+
+    sudo apt-get install veracity
+

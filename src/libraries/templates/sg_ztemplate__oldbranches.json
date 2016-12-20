@@ -1,0 +1,50 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// JSON does not allow comments, but this file sort-of does.
+// Any line where the first two non-whitespace characters
+// are '//' will be discarded before it is passed to the
+// JSON parser.  Note that these are not end-of-line comments.
+// These are WHOLE LINE comments.
+
+{
+    "version" : 1,
+    "rectypes" :
+    {
+        "branch" :
+        {
+            "fields" : 
+            {
+                "csid" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true
+                    }
+                },
+                "name" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true,
+                        "maxlength" : 256
+                    }
+                }
+            }
+        }
+    }
+}
+

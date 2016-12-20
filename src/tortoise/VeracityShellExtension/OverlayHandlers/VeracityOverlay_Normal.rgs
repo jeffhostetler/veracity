@@ -1,0 +1,16 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {9D6672A8-49BD-4E6A-A7D0-3AE45397B6F2} = s 'VeracityOverlay_Normal Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Both'
+			}
+			TypeLib = s '{5D5E835D-0469-4637-8EF7-84798F66996C}'
+			Version = s '1.0'
+		}
+	}
+}

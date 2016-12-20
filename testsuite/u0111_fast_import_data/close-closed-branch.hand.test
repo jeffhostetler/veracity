@@ -1,0 +1,14 @@
+import close-closed-branch.hand.gfi
+
+commit 2001
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+wc close-closed-branch.hand
+
+leaf 2001
+
+branch master
+status closed
+commit 2001
+wc close-closed-branch.hand

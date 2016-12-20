@@ -1,0 +1,14 @@
+import sha-support.hand.gfi
+
+commit 1
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+wc sha-support.hand
+
+leaf 1
+
+branch master
+status open
+commit 1
+wc sha-support.hand

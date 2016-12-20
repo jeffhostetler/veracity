@@ -1,0 +1,70 @@
+{{{<header.html}}}
+
+<script type="text/javascript">
+var CURRENT_PAGE_IS_HOME_PAGE = true;
+setCurrentSection('home');
+</script>
+
+{{{SCRIPTS home.js}}}
+
+<div id="divhomecontent" style="display:none;whitespace:nowrap" class="contentwrapper">
+
+
+<div class="left centercontent primary" id="divleft">
+
+    <div class="outerheading"></div>
+  <div class="outercontainer" id="homemain">
+	<div id="divRepoURL">
+      <h3 class="innerheading" style="height: 23px; ">Repository URL</h3>
+      <div class="innercontainer">
+	    <span class="currentrepourl"></span>
+      </div>
+    </div>
+		<div id="recent">
+		
+			<div id="recentLoading" class="clearfix">
+				<div class="smallProgress"></div>
+				<div class="statusText">Loading Recent...</div>
+			</div>
+			
+		</div>
+    		
+        <div id="showclosed" style="display:none" class="sectionheader">
+         <a id="toggle_closed" href="#"><img id="imgclosedtoggle" src="{{{STATICLINKROOT}}}/img/expand.png"/> <b>Closed Branches</b></a></div>
+		 <p></p>
+        <div id="closed_branches"  style="display:none"></div>
+
+        <div id="showunnamed" style="display:none" class="sectionheader">
+         <a id="toggle_unnamed" href="#"><img id="imgunnamedtoggle" src="{{{STATICLINKROOT}}}/img/expand.png"/> <b>Anonymous Leaves</b></a></div>
+        <div id="un_named"  style="display:none"></div>
+	
+  </div>	
+	
+</div>
+</div>
+
+<div class="right secondary" id="divright">
+  <div class="outerheading"></div>
+
+  <div class="outercontainer" id="sectionchooserepo">
+    <div id="pChooseRepo" class="editable">
+      <h3 class="innerheading">Choose Repository</h3>
+      <div class="innercontainer">
+	<select id="reposelection"></select>
+      </div>
+    </div>
+
+    <div id="pChooseUser" class="editable">
+      <h3 class="innerheading">Choose User</h3>
+      <div class="innercontainer">
+	<select id="userselection"></select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span id="browsercheck" style="display:none"></span>
+
+
+
+{{{<footer.html}}}

@@ -1,0 +1,50 @@
+import branch-roundtrip.veracity.gfi
+
+commit 2
+user test@sourcegear.com
+time 1342803195
+comment base
+wc branch-roundtrip.veracity/2_base
+
+commit 4
+user test@sourcegear.com
+time 1342803267
+comment master_A
+parent 2
+wc branch-roundtrip.veracity/4_master_A
+
+commit 6
+user test@sourcegear.com
+time 1342803284
+comment master_B
+parent 2
+wc branch-roundtrip.veracity/6_master_B
+
+commit 8
+user test@sourcegear.com
+time 1342803332
+comment anon_A
+parent 2
+wc branch-roundtrip.veracity/8_anon_A
+
+commit 10
+user test@sourcegear.com
+time 1342803357
+comment anon_B
+parent 2
+wc branch-roundtrip.veracity/10_anon_B
+
+leaf 4
+leaf 6
+leaf 8
+leaf 10
+
+branch master
+status open
+commit 4
+commit 6
+
+branch vvanonymous
+status open
+commit 8
+commit 10

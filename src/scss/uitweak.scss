@@ -1,0 +1,131 @@
+@import "defs";
+
+/* loaded after jQuery UI themes to tweak them as needed */
+.ui-autocomplete-category   
+{   
+    clear: both;
+    font-weight: bold;
+    padding: .2em .4em;
+    margin: .8em 0 .2em;
+    line-height: 1.5;		        
+    background-color: #e4f0ce;
+    width: 100%;
+}	
+
+#divSearchArea {
+	.ui-autocomplete-category {
+		text-transform: capitalize;
+	}
+}
+
+.ui-autocomplete {  overflow: auto; max-width: 80%; }
+.ui-menu-item {  white-space: nowrap; } 
+input.searchinput.ui-autocomplete-loading { background: white url('/ui/css/custom-theme/images/ui-anim_basic_16x16.gif') right center no-repeat; }
+
+.relations {
+	.ui-autocomplete {
+		max-width: 45%;
+		font-size: 11px;
+	}
+
+	.ui-menu-item {
+		white-space: normal;
+		
+		.ui-state-hover {
+			background-color: #303030;
+			color: #FFF;
+			border: none;
+			background-image: none;
+		}
+	}
+}
+
+.ui-dialog {
+	padding: 5px;
+}
+
+.ui-dialog-titlebar {
+	@include top-right-radius(12px);
+	background-image: none;
+	background-color: $primeinnerchrome;
+}
+
+.ui-dialog .ui-dialog-content {
+	border-left: 1px solid $primeinnerchrome;
+	border-right: 1px solid $primeinnerchrome;
+}
+
+.ui-dialog.hoverdialog {
+	padding: 0;
+	overflow: hidden;
+	@include popshadow;
+
+	.ui-dialog-content {
+		background-color: rgb(246,248,239);
+		border: none;
+		padding: 5px;
+		margin-bottom: -10px;
+	}
+
+	.innercontainer {
+		background-color: #FFF;
+	}
+
+	.commentlist {
+		padding: 0;
+		margin: 0 0 10px 0;
+		border: none;
+		width: auto;
+		text-overflow: ellipsis;
+		background-color: #FFF;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	.ui-dialog-titlebar {
+		display: none;
+	}
+}
+
+.ui-dialog {
+	.ui-dialog-titlebar {
+		.ui-dialog-titlebar-close.ui-state-hover {
+				background-color: transparent;
+				background-image: none;
+				border: none;
+
+				.ui-icon {
+					background-image: url(/ui/img/green-dialog-close.png);
+					background-position: 0 2px;
+				}
+		}
+	}
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	background-color: $primeinnerchrome;
+	margin-top: 0;
+	padding: 5px;
+	border: none;
+
+	button {
+		@include buttonshape();
+
+		@include greenbutton();
+
+		.ui-button-text {
+			line-height: 19px;
+			padding: 0 8px;
+		}
+
+		&.disabled {
+			cursor: default;
+		}
+	}
+}
+
+.primary .outercontainer .ui-state-hover:hover, .secondary .outercontainer .ui-state-hover:hover {
+	color: #FFF;
+}

@@ -1,0 +1,14 @@
+--- vv-thirdparty/builds/js185-1.0.0-i386/include/js-config.h
++++ vv-thirdparty/universal/include/js/js-config.h
+@@ -82,7 +82,11 @@
+ /* #undef JS_INT32_TYPE */
+ /* #undef JS_INT64_TYPE */
+ /* #undef JS_INTPTR_TYPE */
++#ifdef i386
+ #define JS_BYTES_PER_WORD 4
++#else
++#define JS_BYTES_PER_WORD 8
++#endif
+ 
+ /* Some mozilla code uses JS-friend APIs that depend on JS_TRACER and
+    JS_METHODJIT being correct. */

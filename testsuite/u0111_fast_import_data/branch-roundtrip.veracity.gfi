@@ -1,0 +1,68 @@
+blob
+mark :1
+data 6
+file
+
+commit refs/heads/master
+mark :2
+committer <test@sourcegear.com> 1342803195 +0000
+data 4
+base
+M 100644 :1 file1.txt
+
+blob
+mark :3
+data 16
+file
+master_A
+
+commit refs/heads/master
+mark :4
+committer <test@sourcegear.com> 1342803267 +0000
+data 8
+master_A
+from :2
+M 100644 :3 file1.txt
+
+blob
+mark :5
+data 16
+file
+master_B
+
+commit refs/heads/master
+mark :6
+committer <test@sourcegear.com> 1342803284 +0000
+data 8
+master_B
+from :2
+M 100644 :5 file1.txt
+
+blob
+mark :7
+data 14
+file
+anon_A
+
+commit refs/heads/vvanonymous
+mark :8
+committer <test@sourcegear.com> 1342803332 +0000
+data 6
+anon_A
+from :2
+M 100644 :7 file1.txt
+
+blob
+mark :9
+data 14
+file
+anon_B
+
+commit refs/heads/vvanonymous
+mark :10
+committer <test@sourcegear.com> 1342803357 +0000
+data 6
+anon_B
+from :2
+M 100644 :9 file1.txt
+

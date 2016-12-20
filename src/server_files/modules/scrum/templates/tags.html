@@ -1,0 +1,36 @@
+{{{<header.html}}}
+{{{SCRIPTS gettags.js}}}
+{{{EMITSCRIPTS}}}
+<script>var vvredirectable = "tags"; setCurrentSection('source');</script>
+
+<div class="centercontent primary">	
+	<h2 class="outerheading">Tags</h2>
+	<div id="filter" class="primarydetails">
+		<table id="tablefilter">
+			<tr>
+				<td><input id="tag" class="searchinput"></input></td>		
+				<td><input type="button" id="buttonClear" class="button" onclick="javascript:clearFilter();" value="Clear" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="outercontainer">
+	<table id="tabletags" class="datatable" cellspacing="0" cellpadding="0">
+		<thead>
+			<tr class="dataheaderrow">
+				<th>Tag</th><th>Revision</th>
+			</tr>
+		</thead>
+		<tbody>
+		
+		</tbody>
+	</table>
+	
+	<div id="tbl_footer" class="tablefooter">
+		<div class="smallProgress"></div>
+		<div class="statusText"></div>
+	</div>
+	</div>
+</div>
+	
+{{{<footer.html}}}

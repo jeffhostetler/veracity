@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxPanel" name="vvBranchControl">
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <object class="sizeritem">
+        <flag>wxEXPAND | wxALL</flag>
+        <border>8</border>
+        <object class="wxTextCtrl" name="wExplanationText">
+          <style>wxTE_MULTILINE | wxTE_READONLY | wxBORDER_NONE | wxTE_NO_VSCROLL</style>
+          <value>To create a new branch, enter the new branch name below.  Changing the branch attachment will not affect the contents of your working copy.</value>
+        </object>
+      </object>
+      <object class="sizeritem">
+        <flag>wxEXPAND | wxBOTTOM | wxLEFT | wxRIGHT</flag>
+        <border>16</border>
+        <object class="wxBoxSizer">
+          <orient>wxHORIZONTAL</orient>
+          <object class="sizeritem">
+            <flag>wxRIGHT | wxALIGN_CENTER_VERTICAL</flag>
+            <border>8</border>
+            <object class="wxCheckBox" name="wAttachCheckBox">
+              <label>Use Branch:</label>
+            </object>
+          </object>
+
+          <object class="sizeritem">
+            <flag>wxRIGHT | wxALIGN_CENTER_VERTICAL</flag>
+            <border>8</border>
+            <object class="wxTextCtrl" subclass="vvTextControl" name="wBranchText">
+            </object>
+          </object>
+
+          <object class="sizeritem" name="cBranch_Browse">
+            <flag>wxRIGHT | wxALIGN_CENTER_VERTICAL</flag>
+            <border>8</border>
+            <object class="wxButton" name="wBranch_Browse">
+              <size>24,-1</size>
+              <label>...</label>
+            </object>
+          </object>
+          
+          <object class="sizeritem">
+            <option>1</option>
+            <flag>wxEXPAND</flag>
+            <object class="wxTextCtrl" name="wHeadCountWarning">
+              <style>wxTE_MULTILINE | wxTE_READONLY | wxBORDER_NONE | wxTE_NO_VSCROLL</style>
+            </object>
+          </object>
+        </object>
+      </object>
+      
+    </object>
+  </object>
+</resource>

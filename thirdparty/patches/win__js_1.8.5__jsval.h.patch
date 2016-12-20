@@ -1,0 +1,10 @@
+--- jsval.h	2012-08-24 10:48:23.807625400 -0500
++++ jsval2.h	2012-08-24 10:48:35.482293100 -0500
+@@ -77,6 +77,7 @@
+ #if defined(__cplusplus) && !defined(__SUNPRO_CC)
+ 
+ #if defined(_MSC_VER)
++#pragma warning( disable: 4480 ) // allow enum id : type
+ # define JS_ENUM_HEADER(id, type)              enum id : type
+ # define JS_ENUM_MEMBER(id, type, value)       id = (type)value,
+ # define JS_LAST_ENUM_MEMBER(id, type, value)  id = (type)value

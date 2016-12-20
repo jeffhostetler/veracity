@@ -1,0 +1,12 @@
+import close-missing-branch.hand.gfi
+
+commit 2001
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+wc close-missing-branch.hand
+
+branch master
+status open
+commit 2001
+wc close-missing-branch.hand

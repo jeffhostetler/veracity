@@ -1,0 +1,768 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//JSON does not allow comments, but this file sort-of does.
+//Any line where the first two non-whitespace characters
+//are '//' will be discarded before it is passed to the
+//JSON parser.  Note that these are not end-of-line comments.
+//These are WHOLE LINE comments.
+
+{
+	"version" : 1,
+	"rectypes" :
+	{
+		"item" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				// TODO iterations
+
+				"id" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : true,
+						"unique" : true,
+						"defaultfunc" : "gen_userprefix_unique",
+						"index" : true,
+						"full_text_search": true
+					},
+					"merge" :
+					{
+						"uniqify" :
+						{
+							"op" : "redo_defaultfunc",
+							"which" : "least_impact"
+						}
+					},
+					"form" :
+					{
+						"label" : "Work Item ID",  
+						"in_filter": false
+
+					}
+				},
+				"assignee" :
+				{
+					"datatype" : "userid",
+					"form" :
+					{
+						"label": "Assignee",
+						"in_filter": true,
+						"filter_desc": "assigned to"
+					},
+					"constraints" :
+					{
+						"index" : true
+					}					
+				},
+				"reporter" :
+				{
+					"datatype" : "userid",
+					"form" :
+					{
+						"label": "Reporter",
+						"in_filter": true,
+						"filter_desc": "reported by"
+					},
+					"constraints" :
+					{
+						"index" : true
+					}
+				},
+				"verifier" :
+				{
+					"datatype" : "userid",
+					"form" :
+					{
+						"label": "Verifier",
+						"in_filter": true,
+						"filter_desc": "verified by"
+					},
+					"constraints" :
+					{
+						"index" : true
+					}
+				},
+				"title" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"maxlength" : 140,
+						"required" : true,
+						"full_text_search": true,
+						"index" : true
+					},
+					"form" :
+					{
+						"label" : "Summary",
+						"tooltip"  : "A brief summary of this work item",
+						"column" : "top",
+						"in_filter": false
+					}
+				},
+				"description" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : false,
+						"maxlength" : 16384,
+                        "full_text_search": true
+					},
+					"form" :
+					{
+						"label" : "Details",
+						"tooltip"  : "Optional, longer description of this work item.",
+						"help" : "This is the place to be as detailed as possible in describing requirements, symptoms, wanted and unwanted behaviors, etc.",
+						"column" : "bottom",
+						"multiline" : true,
+						"in_filter": false
+					}
+				},
+				"status" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"allowed" :
+						[
+							"open",
+							"fixed",
+							"verified",
+							"wontfix",
+							"invalid",
+							"duplicate"
+						],
+						"sort_by_allowed" : true,
+						"index" : true
+					},
+					"form" :
+					{
+						"column" : "right",
+						"label" : "Status",
+						"in_filter": true,
+						"filter_desc": "with status of"
+					}
+				},
+				"estimate" :
+				{
+					"datatype" : "int",
+					"constraints" :
+					{
+						"min" : 0,
+						"index" : true
+					}
+				},
+				"priority" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"allowed" :
+						[
+							"",							
+							"Low", 
+							"Medium",
+							"High"
+						], 
+                        "sort_by_allowed" : true,
+			"index" : true
+					},
+					"form" :
+					{
+						"column" : "right",
+						"label" : "Priority",
+						"in_filter": true,
+						"filter_desc": "with priority"
+					}
+				},
+				"listorder" :
+				{
+					"datatype" : "int",
+					"constraints" :
+					{
+						"required" : false
+					},
+					"form" :
+					{
+						"visible": false,
+						"in_filter": false
+					}
+				},
+				"milestone" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : false,
+						"rectype" : "sprint",
+						"index" : true
+					}
+				},
+				"created_date":
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"defaultvalue": "now",
+						"index" : true
+					},
+                    "form" :
+					{
+						"label" : "Created",
+						"in_filter": true					
+					}
+				}
+			}
+		},
+		
+		"stamp":
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields":
+			{
+				"name":
+				{
+					"datatype": "string",
+					"constraints":
+					{
+						"required": true,
+						"maxlength" : 256,
+						"index" : true,
+						"full_text_search": true
+					}
+				},
+
+				"item" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				}
+			}
+		},
+				
+		"work":
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields":
+			{
+				"amount":
+				{
+					"datatype": "int",
+					"constraints": 
+					{
+						"required": true,
+						"defaultvalue": 0
+					}
+				},
+				"when":
+				{
+					"datatype": "datetime",
+					"constraints":
+					{
+						"required": true,
+						"defaultvalue" : "now"
+					}
+				},
+				"item":
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype": "item",
+						"index" : true
+					}
+				}
+			}
+		},
+		
+		"vc_changeset" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"commit" :
+				{
+					"datatype" : "string",
+					"form" :
+					{
+						"label" : "Associated Changesets"
+
+					},
+					"constraints":
+					{
+						"index" : true
+					}
+				},
+				"item" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				}
+			}
+		},
+
+		"comment" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"text" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"maxlength" : 16384,
+                        "full_text_search": true
+					} ,
+					"form" :
+					{
+						"label" : "Comments",
+						"multiline" : true
+					}
+
+				},
+				"who" :
+				{
+					"datatype" : "userid",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : "whoami"
+					}
+				},
+				"when" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue" : "now",
+						"index" : true
+					}
+				},
+				"item" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				}
+			}
+		},
+
+		"config":
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields":
+			{
+				"key":
+				{
+					"datatype": "string",
+					"constraints":
+					{
+						"required": true,
+						"unique": true,
+						"index" : true
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"value":
+				{
+					"datatype": "string"
+				}
+			}
+		},
+
+		"filtercriteria":
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields":
+			{
+				"name": 
+				{
+					"datatype" :"string"
+				},
+
+				"fieldid": 
+				{
+					"datatype" :"string"
+				},
+				"value": 
+				{
+					"datatype" :"string"
+				},
+				"filter" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "filter",
+						"index" : true
+					}
+				}
+
+			}
+
+
+		},
+
+		"filter": 
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"name": 
+				{
+					"datatype": "string",
+					"constraints": 
+					{
+						"required": true,
+						"index" : true
+					}
+				},
+
+				"user": 
+				{
+					"datatype": "userid",   
+					"constraints": 
+					{
+						"required": true,
+						"defaultvalue" : "whoami",
+						"index" : true
+					}
+				},
+
+				"groupedby":
+				{
+					"datatype": "string",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue": "status"
+					},
+					"form":
+					{
+						"for_desc": "grouped by"
+					}
+				},
+				"sort":
+				{
+					"datatype": "string",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue": "priority #DESC"
+					},
+					"form":
+					{
+						"for_desc": "sorted by"
+					}  
+
+				}, 
+				"columns":
+				{
+					"datatype": "string",
+					"constraints" :
+					{
+						"required" : true,
+						"defaultvalue": "id,title,reporter,priority"
+						// calculated??
+					}
+
+				}
+
+			}
+		},
+
+		"relation" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"relationship" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"allowed":
+						[
+							"blocks", "duplicateof", "related"
+						],
+						"required": true,
+						"index" : true
+					}
+				},
+				"source" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				},
+				"target" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				}
+
+			}
+		},
+
+		"sprint" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"name" :
+				{
+					"datatype" : "string",
+					"constraints":
+					{
+						"required": true,
+						"index" : true
+					}
+				},
+				"description" :
+				{
+					"datatype" : "string"
+				},
+				"startdate" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : false
+					}
+				},
+				"enddate" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : false
+					}
+				},
+				"releasedate" :
+				{
+					"datatype" : "datetime",
+					"constraints" :
+					{
+						"required" : false
+					}
+				},
+				"parent" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : false,
+						"rectype" : "sprint",
+						"index" : true
+					}
+				}
+
+			}
+		},
+
+
+
+
+		"attachment" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				// TODO a description for the attachment?
+				"data" :
+				{
+					"datatype" : "attachment",
+					"form" :
+					{
+						"visible": true,
+						"label" : "Attachments"
+					},
+					"constraints" :
+					{
+						"required" : true
+					}
+				},
+				"filename" :
+				{
+					"datatype" : "string",
+					"form" :
+					{
+						"visible" : false
+					}
+				},			
+				"contenttype" :
+				{
+					"datatype" : "string",
+					"form" :
+					{
+						"visible" : false
+					}
+				},
+				"item" :
+				{
+					"datatype" : "reference",
+					"constraints" :
+					{
+						"required" : true,
+						"rectype" : "item",
+						"index" : true
+					}
+				}
+
+			}
+		}
+
+	}
+}
+
+

@@ -1,0 +1,116 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "winres.h"
+#include "verrsrc.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""winres.h""\r\n"
+    "#include ""verrsrc.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+///////////////////////   NOTE:  Only debug builds include registry information
+///////////////////////          All release builds should have the installer do the 
+///////////////////////          registry stuff.  I would love to put comments in the rgs
+///////////////////////			 files, but there doesn't seem to be support for comments
+///////////////////////          in those files.
+#ifdef _DEBUG
+IDR_VERACITYTORTOISE    REGISTRY                "VeracityTortoise.rgs"
+IDR_VERACITYCONTEXTMENU REGISTRY                "VeracityContextMenu.rgs"
+IDR_VERACITYOVERLAY_ADDED REGISTRY                "OverlayHandlers\\VeracityOverlay_Added.rgs"
+IDR_VERACITYOVERLAY_CONFLICT REGISTRY                "OverlayHandlers\\VeracityOverlay_Conflict.rgs"
+IDR_VERACITYOVERLAY_IGNORED REGISTRY                "OverlayHandlers\\VeracityOverlay_Ignored.rgs"
+IDR_VERACITYOVERLAY_MODIFIED REGISTRY                "OverlayHandlers\\VeracityOverlay_Modified.rgs"
+IDR_VERACITYOVERLAY_NORMAL REGISTRY                "OverlayHandlers\\VeracityOverlay_Normal.rgs"
+IDR_VERACITYOVERLAY_UNVERSIONED REGISTRY                "OverlayHandlers\\VeracityOverlay_Unversioned.rgs"
+#endif
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_ADD          ICON                  "icons\\add.ico"
+IDB_BITMAP_BRANCH       ICON                  "icons\\branch.ico"
+IDB_BITMAP_COMMIT       ICON                  "icons\\commit.ico"
+IDB_BITMAP_DAG          ICON                  "icons\\dagbrowser.ico"
+IDB_BITMAP_DELETE       ICON                  "icons\\delete.ico"
+IDB_BITMAP_DIFF         ICON                  "icons\\diff.ico"
+IDB_BITMAP_HELP         ICON                  "icons\\help.ico"
+IDB_BITMAP_HISTORY      ICON                  "icons\\history.ico"
+IDB_BITMAP_LOCK         ICON                  "icons\\lock.ico"
+IDB_BITMAP_MANAGE       ICON                  "icons\\managerepo.ico"
+IDB_BITMAP_MERGE        ICON                  "icons\\merge.ico"
+IDB_BITMAP_MOVE         ICON                  "icons\\move.ico"
+IDB_BITMAP_RENAME       ICON                  "icons\\rename.ico"
+IDB_BITMAP_RESOLVE      ICON                  "icons\\resolve.ico"
+IDB_BITMAP_REVERT       ICON                  "icons\\revert.ico"
+IDB_BITMAP_SERVE		ICON                  "icons\\serve.ico"
+IDB_BITMAP_SETTINGS     ICON                  "icons\\settings.ico"
+IDB_BITMAP_SG           ICON                  "icons\\sg.ico"
+IDB_BITMAP_STATUS       ICON                  "icons\\status.ico"
+IDB_BITMAP_SYNC         ICON                  "icons\\sync.ico"
+IDB_BITMAP_UPDATE       ICON                  "icons\\update.ico"
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

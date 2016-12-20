@@ -1,0 +1,216 @@
+{{{<header.html}}}
+
+<div class="centercontent primary">
+<h2 class="outerheading">Build Configuration</h2>
+
+<div id="flags" style="display:none" class="primarydetails">
+  <form id="configForm">
+	<table>
+	  <tr>
+		<td>Manual Build Series:</td>
+		<td>
+		  <select id="manualBuildSeries" onchange="ConfigChanged();"></select>
+		</td>
+	  </tr>
+	  <tr>
+		<td>Manual Build Status:</td>
+		<td>
+		  <select id="manualBuildStatus" onchange="ConfigChanged();"></select>
+		</td>
+	  </tr>
+	  <tr>
+		<td>&nbsp;</td>
+		<td>
+		  <input type="button" id="saveBtn" value="Save" disabled="1" onclick="SaveConfig();" class="disabled"></input>
+		  <input type="button" id="cancelBtn" value="Cancel" disabled="1" onclick="CancelConfig();" class="disabled"></input>
+		</td>
+	  </tr>
+	</table>
+  </form>
+</div>
+
+<div class="outercontainer buildsetup">
+
+<div id="series">
+  <h3 class="innerheading">Series</h3>
+  <table id="seriesTable" class="datatable innercontainer empty blank">
+	<tbody>
+	  <tr class="titles">
+		<th width="15">&nbsp;</th>
+		<th width="200">Alias</th>
+		<th width="200">Name</th>
+		<th></th>
+	  </tr>
+	  <tr id="seriesLoadingRow">
+		<td colspan="4">
+			<div class="clearfix">
+			  <div class="smallProgress"></div>
+			  <div class="statusText">Loading...</div>
+			  <input type="button" value="Cancel" onclick="seriesObj.cancel()" style="display:none" />
+			</div>
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+
+  <table class="containerfooter">
+	<tbody>
+	  <tr id="seriesAddButton" style="display:none" class="buildadder">
+		<td colspan="4"><a id="seriesAddLink" href="javascript:seriesObj.add()" class="newwi">New Series</a></td>
+	  </tr>
+	  <tr id="seriesAddControls" style="display:none">
+		  <td width="15">&nbsp;</td>
+		  <td width="200"><input id="seriesAlias" type="text" /></td>
+		  <td widht="200"><input id="seriesName" type="text" /></td>
+		  <td>			
+			<input type="button" id="seriesSaveButton" value="Save" onclick="seriesObj.save()" />
+			<input type="button" value="Cancel" onclick="seriesObj.cancel()" />
+		  </td>
+	  </tr>
+	</tbody>
+	  </table>
+</div>
+
+<div id="environments">
+<h3 class="innerheading">Environment</h3>
+
+  <table class="datatable innercontainer empty blank" id="envTable">
+	<tbody>
+	  <tr class="titles">
+		<th width="15">&nbsp;</th>
+		<th width="200">Alias</th>
+		<th width="200">Name</th>
+		<th></th>
+	  </tr>
+	  <tr id="envLoadingRow">
+		<td colspan="4">
+			<div class="clearfix">
+			  <div class="smallProgress"></div>
+			  <div class="statusText">Loading...</div>
+			</div>
+		</td>
+	  </tr>
+	</tbody>
+	</table>
+
+<table class="containerfooter">	
+	<tfoot>
+	  <tr id="envAddButton" style="display:none">
+		<td colspan="4"><a id="envAddLink" href="javascript:envObj.add()" class="newwi">New Environment</a></td>
+	  </tr>
+	  <tr id="envAddControls" style="display:none">
+		<td width="15">&nbsp;</td>
+		<td width="200"><input id="envAlias" type="text" /></td>
+		<td width="200"><input id="envName" type="text" /></td>
+		<td>
+		  <input type="button" id="envSaveButton" value="Save" onclick="envObj.save()" />
+		  <input type="button" value="Cancel" onclick="envObj.cancel()" />
+		</td>
+	  </tr>
+	</tfoot>
+  </table>
+
+</div>
+
+<div id="statuses">
+  <h4 class="innerheading">Status</h4>
+
+  <table class="datatable innercontainer empty blank" id="statusTable">
+	<tbody>
+	  <tr class="titles">
+		<th width="15">&nbsp;</th>
+		<th width="200">Alias</th>
+		<th width="200">Name</th>
+		<th class="statuscol"><div align="center">Temporary</div></th>
+		<th class="statuscol"><div align="center">Successful</div></th>
+		<th class="statuscol"><div align="center">ETA</div></th>
+		<th class="statuscol"><div align="center">Activity Stream</div></th>
+		<th class="statuscol"><div align="center">Color</div></th>
+		<th class="statuscol"><div align="center">Icon</div></th>
+		<th width="150">&nbsp;</th>
+	  </tr>
+	  <tr id="statusLoadingRow">
+		<td colspan="10">
+			<div class="clearfix">
+			  <div class="smallProgress"></div>
+			  <div class="statusText">Loading...</div>
+			</div>
+		</td>
+	  </tr>
+	</tbody>
+	  </table>
+	  <table class="containerfooter">
+	<tfoot>
+	  <tr id="statusAddButton" style="display:none">
+		<td colspan="10"><a id="statusAddLink" href="javascript:statusObj.add()" class="newwi">New Status</a></td>
+	  </tr>
+	  <tr id="statusAddControls" style="display:none">
+
+		<td width="15">&nbsp;</td>
+
+		<td width="200"><input id="statusAlias" type="text" /></td>
+		<td width="200"><input id="statusName" type="text" /></td>
+
+		<td align="center"><input id="statusTemporary" type="checkbox" /></td>
+		<td align="center"><input id="statusSuccessful" type="checkbox" /></td>
+		<td align="center"><input id="statusETA" type="checkbox" /></td>
+		<td align="center"><input id="statusActivity" type="checkbox" /></td>
+
+		<td align="center">
+		  <input id="statusColor" type="hidden" />
+		  <div id="colorContainer" style="width:100px"></div>
+		</td>
+
+		<td align="center">
+		  <input id="statusIcon" type="hidden" />
+		  <div id="iconContainer" style="float:none; margin:0 auto; text-align:center">
+			<img id="iconbuild" src="{{{STATICLINKROOT}}}/img/builds/build16.png" />
+			<img id="iconbuildfailed" src="{{{STATICLINKROOT}}}/img/builds/buildfailed16.png" />
+			<img id="iconcoverage" src="{{{STATICLINKROOT}}}/img/builds/coverage16.png" />
+			<img id="iconqueued" src="{{{STATICLINKROOT}}}/img/builds/queued16.png" />
+			<img id="iconskip" src="{{{STATICLINKROOT}}}/img/builds/skip16.png" />
+			<img id="iconsuccess" src="{{{STATICLINKROOT}}}/img/builds/success16.png" />
+			<img id="icontestfailed" src="{{{STATICLINKROOT}}}/img/builds/testfailed16.png" />
+			<img id="icontesting" src="{{{STATICLINKROOT}}}/img/builds/testing16.png" />
+			<img id="iconnone" src="{{{STATICLINKROOT}}}/img/builds/none16.png" />
+		  </div>
+		</td>
+		
+		<td>
+		  <input type="button" id="statusSaveButton" value="Save" onclick="statusObj.save()" />
+		  <input type="button" value="Cancel" onclick="statusObj.cancel()" />
+		</td>
+	  </tr>
+
+	</tfoot>
+  </table>
+
+</div>
+
+</div>
+</div>
+
+<div id="editMenu" style="display:none">
+<div class="contextMenu shadow">
+<ul>
+  <li action="edit" class="ctxMenuItem">Edit</li>
+  <li id="confirm_delete" action="confirm_delete" class="ctxMenuItem">
+	Delete
+	<img class="ctxMenuItemImg" src="{{{STATICLINKROOT}}}/img/right_triangle_black.png"/>
+  </li>
+</ul>
+</div>
+</div>
+
+<div id="colorSquare" class="buildColorSquare" style="display:none"></div>
+
+<div id="delConfMenu" style="display:none">
+<div class="contextMenu shadow">
+  <ul><li action="delete" class="ctxMenuItem">Confirm Delete</li></ul>
+</div>
+</div>
+
+
+{{{SCRIPTS build-common.js build-setup.js }}}
+
+{{{<footer.html}}}

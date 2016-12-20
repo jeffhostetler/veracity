@@ -1,0 +1,22 @@
+{{{<header.html}}}
+<script type="text/javascript">
+	setCurrentSection('source');
+</script>
+
+{{{<csdetails.html}}}
+
+<script type="text/javascript">
+
+var pageCurrentCsid = window.location.pathname.match( /.*\/changesets\/([a-f0-9]+)/ );
+if (pageCurrentCsid)
+	pageCurrentCsid = pageCurrentCsid[1];
+
+$(document).ready(
+	function () {
+		var csid = getQueryStringVal("recid");
+		loadChangeSet(csid);
+});
+
+</script>
+
+{{{<footer.html}}}

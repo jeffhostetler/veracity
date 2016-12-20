@@ -1,0 +1,102 @@
+$headerHeight: 62px;
+$footerHeight: 38px;
+
+$ohHeight: 28px;
+$ihHeight: 23px;
+$ohPadding: 6px;
+$ihPadding: 5px;
+
+$sidebarWidth: 214px;
+$sidebarRight: 8px;
+
+$rightPaneWidth: 325px;
+$leftPaneMargin: $rightPaneWidth + 9;
+$rightPaneMargin: -$leftPaneMargin;
+
+$bodybg: #444;
+$link: rgb(102,102,102);
+$linkactive: rgb(32,98,104);
+$chromelink: rgb(36,121,143);
+$chromelinkactive: rgb(14,77,93);
+$topmenubg: rgb(231,242,243);
+$topdropbg: rgb(242,248,249);
+$actborder: rgb(101,182,199);
+$actchrome: rgb(202,228,231);
+$primeinnerchrome:  rgb(216,226,187);
+$primeouterchrome: $primeinnerchrome;
+$primefocuschrome: rgb(99, 132, 0);
+$primeouterbg: rgb(246,248,239);
+
+$secondarybg: rgb(237,242,243);
+$secondarychrome: rgb(192,212,215);
+$secondaryfocuschrome: rgb(17, 117, 130);
+
+$bodyfonts: helvetica, verdana, Arial, FreeSans, Sans-Serif;
+$monofonts: Monaco, Consolas, 'Lucida Console', 'Courier New', Courier, monospace;
+
+$topheight: 62px;
+
+@mixin popshadow {
+	-moz-box-shadow: 2px 2px 1px 1px rgba(144,144,144,0.3);
+	-webkit-box-shadow: 2px 2px 1px 1px rgba(144,144,144,0.3);
+	box-shadow: 2px 2px 1px 1px rgba(144,144,144,0.3);
+}
+
+@mixin border-radius( $radius: 4px ) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	border-radius: $radius;
+}
+
+@mixin top-right-radius( $radius: 4px ) {
+  -webkit-border-top-right-radius: $radius;
+  -moz-border-radius-topright: $radius;
+  border-top-right-radius: $radius;
+}
+
+@mixin top-left-radius( $radius: 4px ) {
+	-webkit-border-top-left-radius: $radius;
+	-moz-border-radius-topleft: $radius;
+	border-top-left-radius: $radius;
+}
+
+@mixin bottom-right-radius( $radius: 4px ) {
+	-webkit-border-bottom-right-radius: $radius;
+	-moz-border-radius-bottomright: $radius;
+	border-bottom-right-radius: $radius;
+}
+
+@mixin buttonshape {
+	@include border-radius(4px);
+	display: inline-block;
+	background-position: 0px 0px;
+	border: 1px solid #2E3E00;
+	color: #FFF;
+	cursor: pointer;
+	margin-right: 5px;
+	background-repeat: repeat-x;
+	padding: 0 8px;
+	font-weight: bold;
+	height: 21px;
+	vertical-align: baseline;
+	font-size: 12px;
+	line-height: 19px;
+}
+
+@mixin greenbutton {
+	background-image: url(/ui/img/green_button_grad.png);
+	border: 1px solid #2E3E00;
+
+	&:hover {
+		background-image: url(/ui/img/green_button_grad2.png);
+	}
+
+	&.disabled {
+		background-image: url(/ui/img/grey_button_grad.png);
+	}
+}
+
+@mixin border-box {
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}

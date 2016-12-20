@@ -1,0 +1,116 @@
+{{{SCRIPTS historygraph.js mergereview.js getchangeset.js}}}
+{{{EMITSCRIPTS}}}
+
+<div class="contentwrapper">
+	<div class="left primary" style="padding-top:0px !important">
+
+		<h2 class="outerheading multirev" style="display:none">The &quot;{{{VVBRANCHNAME}}}&quot; Branch Has Multiple Heads</h2>
+		<div class="outercontainer multirev" style="display:none" id="branchlist"></div>
+	
+		<h2 class="outerheading onerev">
+			<span>Revision:</span> <span id="revid_short"></span>&nbsp;
+			<a href="#" id="zip_repo"><img id="downloadimg" src="{{{STATICLINKROOT}}}/img/green_download.png"/></a>
+			<a href="#" id="browse2" title="browse this changeset"><img id="browse" src="{{{STATICLINKROOT}}}/img/green_goto_browse.png"/></a>
+		</h2>
+
+		<div class="outercontainer onerev">
+			<div id="csLoading">
+				<div class="smallProgress"></div>
+				<div class="statusText"></div>
+			</div>
+			<div id="csContent" style="display:none">
+				<table id="csSummary">
+					<tr id="trBranches" style="display:none"><th class="comment">In Branches:</th><td id="tdBranches"></td></tr>
+					<tr id="trComment" style="display:none"><th class="comment">Comment:</th><td id="tdComment"></td></tr>
+				</table>
+				<p />
+				<div id="divMultipleComments" style="display:none">
+					<h2 class="innerheading">Comments</h2>
+					<div id="comment" class="innercontainer"></div>
+				</div>
+				<span id="parentselectionloading" class="smallProgress" style="visibility: hidden"></span><select id="parentselection" style="margin-bottom: 1ex; display: none;"></select>
+				<div class="csfiles">
+					<div id="mergereviewsection" style="display: none">
+						<div class="innerheading">New Changesets</div>
+						<div id="div_that_ie_screws_up" style="max-height: 25em; overflow-y: scroll;">
+							<table id="tablemergereview" class="datatable history" cellspacing="0" cellpadding="0">
+								<thead>
+									<tr class="dataheaderrow">
+										<th style="width: 5em">Revision</th>
+										<th class="comment graphhead" style="width: 80em">Details</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							<input id="mergereviewmorebutton" type="button" value="Load More"></input><span id="mergereviewmoreloading" class="smallProgress" style="visibility: hidden"></span>
+						</div>
+					</div>
+					<p><div class="innerheading" id="genericfilechangesheader" style="display: none">File Changes</div><span id="changes"></span></p>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="right secondary",  style="padding-top:0px !important">
+
+	<h2 class="outerheading">
+		<span id="current_nav"></span>
+		<a href="#" id="browse3" title="browse this changeset"><img id="browse" src="{{{STATICLINKROOT}}}/img/blue_goto_browse.png"/></a>
+	</h2>
+
+	<div class="secondarynav" id="nav">
+		<div id="parent_nav"><h4>Parents</h4></div>
+		<div id="child_nav"><h4>Children</h4></div>
+	</div>
+
+	<div class="outercontainer editable">
+		<form id="commentform" class="clearfix needmargin-below">
+			<h3 class="innerheading">Comments</h3>
+			<textarea class="innercontainer" id="inputcomment" rows="3"></textarea>
+			<div class="buttoncontainer"><input type="button" class="button disabled" onclick="javascript:postComment()" id="submit" value="Add" /></div>
+		</form>
+		<h3 class="innerheading">Tags</h3>
+		<input type="text" class="innercontainer" maxlength="255" id="inputtag" />
+		<div class="containerdetails">
+			<div class="buttoncontainer"><input type="button" class="button disabled" onclick="javascript:postTag()" id="addtag" value="Add" /></div>
+			<div id="tags"></div>
+		</div>
+		<h3 class="innerheading">Stamps</h3>
+		<input type="text" class="innercontainer" maxlength="255" id="inputstamp" />
+		<div class="containerdetails">
+			<div class="buttoncontainer"><input type="button" class="button disabled" onclick="javascript:postStamp()" id="addstamp" value="Add" /></div>
+			<div id="stamps"></div>
+		</div>
+
+		<div id="buildSection" style="display:none">
+			<h3 class="innerheading">Builds</h3>
+			<div class="innercontainer" id="builds"></div>
+			<div id="buildReq" style="display:none">
+				<h3 class="innerheading">New Build</h3>
+				<form id="newBuildForm">
+					<div class="innercontainer">
+						<table>
+							<tr><td>Priority:</td><td><select id="buildPriority" name="buildPriority">
+								<option value="10">High</option>
+								<option value="0" selected="1">Normal</option>
+								<option value="-10">Low</option>
+								</select>
+							</td></tr>
+							<tr><td valign="top">Environments:</td><td><div class="checklist"><table id="buildEnvs"></table></div></td></tr>
+							<tr><td></td><td>
+								<input id="buildBtn" type="button" value="Build" onclick="QBuild();"></input>
+								<div id="newBuildSpinner" style="display:none">
+									<div class="smallProgress"></div>
+									<div class="statusText">Requesting Build...</div>
+								</div>
+							</td></tr>
+						</table>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

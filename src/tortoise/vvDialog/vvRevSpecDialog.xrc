@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvRevSpecDialog">
+		<title>Select Revision</title>
+		<icon stock_id="ApplicationIcon"></icon>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<minsize>475,-1</minsize>
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+					<!-- Header -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxBOTTOM</flag>
+						<border>4</border>
+						<object class="unknown" name="wHeader">
+						</object>
+					</object>
+
+					<!-- Repo
+					<object class="sizeritem">
+						<flag>wxEXPAND</flag>
+						<option>0</option>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<object class="sizeritem">
+								<flag>wxALIGN_CENTER_VERTICAL | wxRIGHT</flag>
+								<border>8</border>
+								<option>0</option>
+								<object class="wxStaticText">
+									<label>Repository:</label>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+								<option>1</option>
+								<object class="wxTextCtrl" name="wRepo">
+									<size>-1,0</size>
+									<style>wxBORDER_NONE | wxTE_READONLY</style>
+								</object>
+							</object>
+						</object>
+					</object>
+					-->
+
+					<!-- RevSpec -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxTOP</flag>
+						<border>8</border>
+						<option>1</option>
+						<object class="wxStaticBoxSizer" name="wBox">
+							<label>Select Revision</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<flag>wxEXPAND | wxALL</flag>
+								<border>8</border>
+								<option>1</option>
+								<object class="unknown" name="wSpec">
+								</object>
+							</object>
+						</object>
+					</object>
+
+					<!-- Buttons: OK and Cancel -->
+					<object class="sizeritem">
+						<flag>wxALIGN_RIGHT | wxTOP</flag>
+						<border>16</border>
+						<object class="wxStdDialogButtonSizer">
+							<object class="button">
+								<object class="wxButton" name="wxID_OK">
+									<default>1</default>
+									<label>OK</label>
+								</object>
+							</object>
+							<object class="button">
+								<object class="wxButton" name="wxID_CANCEL">
+									<label>Cancel</label>
+								</object>
+							</object>
+						</object>
+					</object>
+
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

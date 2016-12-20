@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxDialog" name="vvAboutDialog">
+    <style>wxDEFAULT_DIALOG_STYLE</style>
+    <title>About Veracity</title>
+    <icon stock_id="ApplicationIcon"></icon>
+
+    <!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+    <object class="wxBoxSizer">
+      <orient>wxVERTICAL</orient>
+      <!--<minsize>450,-1</minsize>-->
+      <object class="sizeritem">
+        <flag>wxEXPAND | wxALL</flag>
+        <option>1</option>
+        <border>16</border>
+        <object class="wxBoxSizer">
+          <orient>wxVERTICAL</orient>
+
+          <!-- Header -->
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxBOTTOM</flag>
+            <option>1</option>
+            <border>8</border>
+            <object class="unknown" name="wHeader">
+            </object>
+          </object>
+
+          <!--<object class="sizeritem">
+            <flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+            <border>8</border>
+            <object class="wxStaticText">
+              <label>The Veracity Tortoise client uses the TortoiseOverlays library from TortoiseSVN.</label>
+            </object>
+          </object>-->
+          
+          <!-- Buttons -->
+          <object class="sizeritem">
+            <flag>wxALIGN_RIGHT | wxTOP</flag>
+            <!--<border>16</border> -->
+            <object class="wxStdDialogButtonSizer">
+              <object class="button">
+                <object class="wxButton" name="wxID_OK">
+                  <default>1</default>
+                  <label>Close</label>
+                </object>
+              </object>
+            </object>
+          </object>
+
+        </object>
+      </object>
+    </object>
+  </object>
+</resource>

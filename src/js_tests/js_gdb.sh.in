@@ -1,0 +1,98 @@
+#!/bin/bash
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Copyright 2010-2013 SourceGear, LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+## usage: js_gdb.sh stTestName.js ${JS_DEFINES}
+##
+## I cloned js_test.sh so that I could run a single test in GDB with
+## a properly initialized environment.
+##
+## I changed the calling sequence to take SRCDIR/TEST in one arg as a
+## full path rather than as 2 args; this helps shell completion when
+## interactive.
+##
+##    cd /build/v/src/js_tests
+##    ./js_gdb.sh st_submodule_1.js
+##
+## This would be roughly equivalent to:
+##    cd /build/v/src/js_tests
+##    ctest -R st_submodule_1
+##
+##################################################################
+
+####set -o xtrace
+
+export SGCLOSET="@PUBLIC_BINARY_TOP_DIR@/src/js_tests/temp/.sgcloset-test"
+##echo SGCLOSET is $SGCLOSET
+
+export SRCDIR=$(dirname $1)
+##echo SRCDIR is $SRCDIR
+
+export TEST=$(basename $1)
+##echo TEST is $TEST
+
+export JS_DEFINES=$2
+##echo JS_DEFINES is $JS_DEFINES
+
+export BINDIR=@PUBLIC_BINARY_TOP_DIR@/src/js_tests
+##echo BINDIR is $BINDIR
+
+## We need vv and vscript to be in our path.
+export PATH=$BINDIR/../cmd:$BINDIR/../script:$PATH
+##echo PATH is $PATH
+
+## preset server/files to avoid a chicken/egg issue when initializing JS context
+vscript ../js_test_lib/setServerFiles.js
+
+## The "output" console log is always appended rather than starting
+## with a newly created/truncated file.  Get rid of the noise from
+## the previous run.
+
+if [ -e "$BINDIR/output.$TEST.log" ]; then
+    rm "$BINDIR/output.$TEST.log"
+fi
+
+if [ -e "$BINDIR/stdout.$TEST.log" ]; then
+    rm "$BINDIR/stdout.$TEST.log"
+fi
+
+## Ditto for the sg.log file(s)
+
+[ -e "$BINDIR/temp/sg.log" ] && rm "$BINDIR/temp/sg.log"
+[ -e "$BINDIR/temp/sg-????-??-??.log" ] && rm "$BINDIR/temp/sg-????-??-??.log"
+
+## Since vscript does not take pathnames, only a list of .js files in the current directory,
+## we have to do a little gymnastics to get the scripts to run using the source directory
+## as input and the build directory for all of the output and trash we generate.
+
+(   echo b main;
+    echo r @PUBLIC_BINARY_TOP_DIR@/src/js_test_lib/vscript_tests.js --load $TEST -v --temp "$BINDIR/temp" -o "$BINDIR/output.$TEST.log" $JS_DEFINES;
+)   > $BINDIR/temp/gdb.$TEST.input
+
+cd $SRCDIR
+####gdb -q -cd=$SRCDIR -x $BINDIR/temp/gdb.$TEST.input   $BINDIR/../script/vscript
+gdb -q  -x $BINDIR/temp/gdb.$TEST.input   $BINDIR/../script/vscript
+
+
+if [ -e "$BINDIR/temp/sg-????-??-??.log" ]; then
+    cat $BINDIR/temp/sg-????-??-??.log > "$BINDIR/sgLog.$TEST.log"
+    rm $BINDIR/temp/sg-????-??-??.log
+fi
+
+cd $BINDIR
+#rm -rf "$BINDIR/temp"
+
+exit 0

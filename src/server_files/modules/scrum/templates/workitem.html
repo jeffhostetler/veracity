@@ -1,0 +1,17 @@
+{{{<header.html}}}
+<script>
+var vvredirectable = "workitems.html?filter=default";
+</script>
+
+<div class="centercontent primary wit">
+  <div id="wititlebar" class="outerheading titlebar"></div>
+<div id="wiheader" class="primarydetails"></div>
+<div id="zingform" class="zingform outercontainer"></div>
+</div>
+
+<!--[if IE]>
+<script type="text/javascript" src="{{{STATICLINKROOT}}}/lib/excanvas.js"></script>
+<![endif]-->
+{{{SCRIPTS modules/wiki/Markdown.Converter.js modules/wiki/Markdown.Sanitizer.js modules/wiki/Markdown.Editor.js lib/ajaxfileupload.js vvMarkdown.js }}}
+{{{SCRIPTS lib/ajaxfileupload.js workitem.js wiWorkFormController.js wiStampsController.js wihistory.js vTimeInterval.js widgets/burndownChart.js }}}
+{{{<footer.html}}}

@@ -1,0 +1,35 @@
+import deleteall.hand.gfi
+
+commit 2
+user joe@sourcegear.com
+time 1344266607
+comment adding 1-old.txt
+wc deleteall.hand/2_1-old
+
+commit 4
+user joe@sourcegear.com
+time 1344266615
+comment adding 2-old.txt
+parent 2
+wc deleteall.hand/4_2-old
+
+commit 6
+user joe@sourcegear.com
+time 1344266630
+comment adding 3-new.txt
+parent 4
+wc deleteall.hand/6_3-new
+
+commit 8
+user joe@sourcegear.com
+time 1344266639
+comment adding 4-new.txt
+parent 6
+wc deleteall.hand/8_4-new
+
+leaf 8
+
+branch master
+status open
+commit 8
+wc deleteall.hand/8_4-new

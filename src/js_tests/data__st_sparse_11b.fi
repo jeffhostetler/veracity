@@ -1,0 +1,87 @@
+blob
+mark :1
+data 50
+This is the contents of file file_1
+1355835557136
+
+blob
+mark :2
+data 50
+This is the contents of file file_2
+1355835557136
+
+blob
+mark :3
+data 50
+This is the contents of file file_3
+1355835557137
+
+blob
+mark :4
+data 6
+file_1
+commit refs/heads/master
+mark :5
+committer <testing@sourcegear.com> 1355835557 +0000
+data 17
+add initial files
+M 100644 :1 file_1
+M 100644 :2 file_2
+M 100644 :3 file_3
+M 120000 :4 sparse_link_1
+
+blob
+mark :6
+data 50
+This is the contents of file file_6
+1355835557728
+
+commit refs/heads/master
+mark :7
+committer <testing@sourcegear.com> 1355835557 +0000
+data 10
+L1 changes
+from :5
+M 100644 :6 file_6
+
+blob
+mark :8
+data 50
+This is the contents of file file_4
+1355835557433
+
+blob
+mark :9
+data 50
+This is the contents of file file_5
+1355835557434
+
+blob
+mark :10
+data 6
+file_2
+commit refs/heads/master
+mark :11
+committer <testing@sourcegear.com> 1355835557 +0000
+data 10
+L0 changes
+from :5
+M 100644 :8 file_4
+M 100644 :9 file_5
+M 120000 :10 sparse_link_1
+
+tag cset_base
+from :5
+tagger <testing@sourcegear.com> 1355835557 +0000
+data 0
+
+tag cset_L0
+from :11
+tagger <testing@sourcegear.com> 1355835557 +0000
+data 0
+
+tag cset_L1
+from :7
+tagger <testing@sourcegear.com> 1355835557 +0000
+data 0
+

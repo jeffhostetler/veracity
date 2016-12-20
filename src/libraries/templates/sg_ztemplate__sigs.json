@@ -1,0 +1,80 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// JSON does not allow comments, but this file sort-of does.
+// Any line where the first two non-whitespace characters
+// are '//' will be discarded before it is passed to the
+// JSON parser.  Note that these are not end-of-line comments.
+// These are WHOLE LINE comments.
+
+{
+    "version" : 1,
+    "rectypes" :
+    {
+        "signature" :
+        {
+            "fields" : 
+            {
+                // the cert record blobid
+                "cert" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true
+                    }
+                },
+                // the type of signature stored here.  regular
+                // veracity sigs are "v1"
+                "type" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true
+                    }
+                },
+                // for a v1 sig, userid of the person providing the signature
+                // TODO should we keep this for ANY sig, not just our v1 kind?
+                "userid" :
+                {
+                    "datatype" : "userid",
+                    "constraints" :
+                    {
+                        "required" : false
+                    }
+                },
+                // for a v1 sig, hid of the public key which was current when the sig was done
+                "hidkey" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : false
+                    }
+                },
+                // the signature itself
+                "signature" :
+                {
+                    "datatype" : "string",
+                    "constraints" :
+                    {
+                        "required" : true
+                    }
+                }
+            }
+        }
+    }
+}
+

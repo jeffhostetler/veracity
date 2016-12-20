@@ -1,0 +1,14 @@
+blob
+data 15
+This is file 1.
+#
+blob
+data 15
+This is file 2.
+#
+commit refs/heads/master
+committer Andy Tidball <andy@sourcegear.com> 1342103391 +0000
+data 17
+This is commit 1.
+M 644 0581c753aad5e2359963aa46ac0095b2bb121032 File1.txt
+M 644 041d661b50b48f607f6a64ea72fe456b2e857e3e File2.txt

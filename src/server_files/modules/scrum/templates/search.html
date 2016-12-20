@@ -1,0 +1,82 @@
+{{{<header.html}}}
+
+<div class="centercontent primary">
+    	
+	<h2 class="outerheading">Search</h2>    	
+    <div id="searchtop" class="primarydetails">
+    <input type="text" id="searchSearchText" class="searchinput"></input>
+    <input type="button" value="Search" id="advancedButtonSearch" class="button" />
+    <a href="#" id="clearSearch" title="clear search" ><img src="{{{STATICLINKROOT}}}/img/cancel18.png" /></a>
+    <div id="searchhint" style="display:none">(click the search button to update search)</div>		
+    
+    <div id="searchlist" class="searchcheckboxes">
+	<input type="checkbox" class="searcharea"  name="searcharea" id="cbxWitSearch" value="wit" />
+      <label for="cbxWitSearch">Work Items</label>
+    <input type="checkbox" class="searcharea"  name="searcharea" id="cbxVCSearch" value="vc" />
+      <label for="cbxVCSearch">Changesets</label>
+	<input type="checkbox" class="searcharea" name="searcharea" id="cbxBuildSearch" value="builds"/>
+      <label for="cbxBuildSearch">Builds</label>
+     <input type="checkbox" class="searcharea" name="searcharea" id="cbxWikiSearch" value="wiki"/>
+      <label for="cbxWikiSearch">Wiki</label>
+    </div>		
+    </div>
+
+   
+   
+
+    <div id="loading" class="savingpopup loading info" style="position: relative; margin-left:auto !important;
+	margin-right: auto !important;
+	width: 20em;">
+    <div id="popupContent" class="innercontainer"><div class="spinning">
+    <p class="saving">Searching...</p>
+    </div>
+    </div>
+    </div>
+    
+        <div id="ignoredchars" style="display:none" class="primarydetails"></div>
+       <div id="divnoresults"  class="highlight"  style="display:none">the search returned no results</div>
+
+        <div id="divSearchResults"  style="display:none" class="outercontainer">
+     
+      
+        <div id="divwitResults" style="display:none" class="clearfix searchcontainer">
+            <h3 class="innerheading" id="headerwit">Work Items</h3>
+         <div id="witLoading" class="innercontainer loading" style="display:none">
+	        <div class="smallProgress"></div>
+		<div class="statusText">Loading Work Item Results...</div>
+     </div>
+            <div class="buttoncontainer searchnav" id="divwitResults_nav"><a href="#" id="awit_prev" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowL.png" alt="previous" /></a>
+	      <a href="#" id="awit_next" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowR.png" alt="next" /></a></div>
+        </div> 
+        <div id="divvcResults"  style="display:none" class="clearfix searchcontainer">
+            <h3 class="innerheading" id="headervc">Changesets</h3>
+             <div id="vcLoading" class="loading" style="display:none">
+	            <div class="smallProgress"></div>
+		        <div class="statusText">Loading Changeset Results...</div>
+             </div>
+            <div class="buttoncontainer searchnav" id="divvcResults_nav"><a href="#" id="avc_prev" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowL.png" alt="previous" /></a>
+	      <a href="#" id="avc_next" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowR.png" alt="next" /></a></div>
+        </div>
+        <div id="divbuildsResults" style="display:none" class="clearfix searchcontainer">
+            <h3 class="innerheading" id="headerbuilds">Builds</h3>
+             <div id="buildsLoading"  class="loading" style="display:none">
+	    <div class="smallProgress"></div>
+		<div class="statusText">Loading Build Results...</div>
+     </div>
+           <div class="buttoncontainer searchnav" id="divbuildsResults_nav"><a href="#" id="abuilds_prev" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowL.png" alt="previous" /></a>
+	     <a href="#" id="abuilds_next" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowR.png" alt="next" /></a></div>
+        </div>
+              
+        <div id="divwikiResults" style="display:none" class="clearfix searchcontainer">
+            <h3 class="innerheading" id="h1">Wiki</h3>
+         <div id="wikiLoading" class="innercontainer loading" style="display:none">
+	        <div class="smallProgress"></div>
+		<div class="statusText">Loading Wiki Results...</div>
+     </div>
+            <div class="buttoncontainer searchnav" id="div3"><a href="#" id="awiki_prev" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowL.png" alt="previous" /></a>
+	      <a href="#" id="awiki_next" style="display:none"><img src="{{{STATICLINKROOT}}}/img/greenarrowR.png" alt="next" /></a></div>
+        </div> 
+     </div>
+</div>
+	{{{SCRIPTS modules/wiki/Markdown.Converter.js modules/wiki/Markdown.Sanitizer.js vvMarkdown.js searchresults.js}}}
+{{{<footer.html}}}

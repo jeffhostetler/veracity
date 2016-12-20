@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="vvRevSpecControl">
+		<object class="wxFlexGridSizer">
+			<cols>2</cols>
+			<hgap>8</hgap>
+			<vgap>8</vgap>
+			<growablecols>1</growablecols>
+
+			<!-- Branch -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<object class="wxRadioButton" name="wBranch_Select">
+					<label>_Branch:</label>
+					<value>1</value>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<option>1</option>
+						<object class="wxTextCtrl" subclass="vvTextControl" name="wBranch_Value">
+						</object>
+					</object>
+					<object class="sizeritem" name="cBranch_Browse">
+						<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+						<object class="wxButton" name="wBranch_Browse">
+							<size>24,0</size>
+							<label>...</label>
+						</object>
+					</object>
+				</object>
+			</object>
+
+			<!-- Tag -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<object class="wxRadioButton" name="wTag_Select">
+					<label>_Tag:</label>
+					<value>0</value>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<option>1</option>
+						<object class="wxTextCtrl" subclass="vvTextControl" name="wTag_Value">
+						</object>
+					</object>
+					<object class="sizeritem" name="cTag_Browse">
+						<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+						<object class="wxButton" name="wTag_Browse">
+							<size>24,0</size>
+							<label>...</label>
+						</object>
+					</object>
+				</object>
+			</object>
+
+			<!-- Revision -->
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL</flag>
+				<object class="wxRadioButton" name="wRevision_Select">
+					<label>_Revision:</label>
+					<value>0</value>
+				</object>
+			</object>
+			<object class="sizeritem">
+				<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+				<object class="wxBoxSizer">
+					<orient>wxHORIZONTAL</orient>
+					<object class="sizeritem">
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<option>1</option>
+						<object class="wxTextCtrl" subclass="vvTextControl" name="wRevision_Value">
+							<maxlength>64</maxlength>
+						</object>
+					</object>
+					<object class="sizeritem" name="cRevision_Browse">
+						<flag>wxALIGN_CENTER_VERTICAL | wxEXPAND</flag>
+						<object class="wxButton" name="wRevision_Browse">
+							<size>24,0</size>
+							<label>...</label>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

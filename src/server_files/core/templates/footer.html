@@ -1,0 +1,77 @@
+			<!-- footer -->
+
+			</div> <!-- maincontent -->
+			<div id="rightSidebar" style="display: none" class="secondary"></div>
+			<div id="activity" class="vvactivity" style="display:none">
+				<div id="activitylist"></div>
+				<div id="activitynav" style="display: none"
+				class="clearfix">
+				  <a href="#" title="see newer activity" id="prevActivity" class="prevactivity actnavbutton"><img
+			src="{{{STATICLINKROOT}}}/img/stream_previous.png"
+			alt="prev" /></a>
+
+
+						<a id="linkactfeed"
+							title="Activity ATOM Feed" href="{{{UNIVERSALLINKROOT}}}/repos/{{{u:REPONAME}}}/activity.xml" class="actnavbutton">
+							<img id="imgact" src="{{{STATICLINKROOT}}}/img/stream_rss.png"/>
+						</a>
+
+				  						<a id="linkrefreshact" title="refresh Activity" href="#" class="actnavbutton">
+							<img id="imgrefreshact" src="{{{STATICLINKROOT}}}/img/stream_refresh.png"/>
+						</a>
+
+				  <a href="#" title="see older activity" id="nextActivity" class="nextactivity actnavbutton"><img
+			src="{{{STATICLINKROOT}}}/img/stream_next.png"
+			alt="next" /></a>
+				</div>
+	
+			</div>
+		</div> <!-- contentWrapper -->
+
+		{{{EMITSCRIPTS}}}
+		{{{MODULEMENUS}}}
+		{{{EMITSCRIPTS}}}
+
+		<script type="text/javascript">
+		/* <![CDATA[ */
+			_findSgUser();
+			sgCurrentSprint = "{{{CURRENTSPRINT}}}";
+           
+			if (_showActivity)
+				sgShowActivity = _showActivity();
+           
+            
+		/* ]]> */
+		</script>
+		
+		<script type="text/javascript">
+			if (window.sgKickoff)
+			{
+			    $(document).ready(
+				function()
+				{
+					sgKickoff();
+					vCore.trigger('postkickoff');
+				}
+			    );
+			
+			}
+
+			    var button = $('span.button')
+			    button.hover(
+					function ()
+					{
+					    $(this).addClass("button_hover");
+					},
+					function ()
+					{
+					    $(this).removeClass("button_hover");
+					});			
+			
+		</script>
+
+<div id="backgroundPopup" style="display:none"></div>
+
+	</body>
+</html>
+

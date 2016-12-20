@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvCommitDialog">
+		<title>Commit Working Copy</title>
+		<style>wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER</style>
+		<icon stock_id="ApplicationIcon"></icon>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<minsize>600,600</minsize>
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+					<!-- Header -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+						<border>16</border>
+						<object class="unknown" name="wHeader">
+						</object>
+					</object>
+
+					<!-- Splitter -->
+					<object class="sizeritem">
+						<flag>wxEXPAND</flag>
+						<option>1</option>
+						<object class="wxSplitterWindow" name="wSplitter">
+							<orientation>horizontal</orientation>
+							<sashpos>200</sashpos>
+							<minsize>75</minsize>
+							<gravity>0.5</gravity>
+
+							<!-- Comment -->
+							<object class="wxPanel">
+								<object class="wxStaticBoxSizer">
+									<label>Comment</label>
+									<object class="sizeritem">
+										<flag>wxEXPAND</flag>
+										<option>1</option>
+										<object class="wxTextCtrl" subclass="vvTextControl" name="wComment">
+											<style>wxTE_MULTILINE</style>
+										</object>
+									</object>
+								</object>
+							</object>
+
+							<!-- Notebook -->
+							<object class="wxNotebook" name="wNotebook">
+								<!-- Files Tab -->
+								<object class="notebookpage">
+									<label>Files</label>
+									<object class="unknown" name="wFiles">
+									</object>
+								</object>
+
+								<!-- Stamps Tab -->
+								<object class="notebookpage">
+									<label>Stamps</label>
+									<object class="wxPanel">
+										<object class="wxBoxSizer">
+											<orient>wxHORIZONTAL</orient>
+											<object class="sizeritem">
+												<flag>wxEXPAND | wxALL</flag>
+												<option>1</option>
+												<border>8</border>
+												<object class="unknown" name="wStamps">
+												</object>
+											</object>
+											<object class="sizeritem">
+												<flag>wxEXPAND | wxTOP | wxBOTTOM | wxRIGHT</flag>
+												<option>1</option>
+												<border>8</border>
+												<object class="wxStaticBoxSizer">
+													<orient>wxVERTICAL</orient>
+													<label>Add New Stamp</label>
+													<object class="sizeritem">
+														<flag>wxEXPAND | wxALL</flag>
+														<option>1</option>
+														<border>8</border>
+                            <object class="unknown" name="wStamps_Explanation">
+                            </object>
+													</object>
+													<object class="sizeritem">
+														<flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+														<option>0</option>
+														<border>8</border>
+														<object class="wxBoxSizer">
+															<orient>wxHORIZONTAL</orient>
+															<object class="sizeritem">
+																<flag>wxALIGN_CENTER</flag>
+																<option>1</option>
+																<object class="wxTextCtrl" subclass="vvTextControl" name="wStamps_New">
+																	<style>wxTE_PROCESS_ENTER</style>
+																</object>
+															</object>
+															<object class="sizeritem">
+																<flag>wxLEFT</flag>
+																<option>0</option>
+																<border>8</border>
+																<object class="wxButton" name="wStamps_Add">
+																	<style>wxBU_EXACTFIT</style>
+																	<label>Add</label>
+																</object>
+															</object>
+														</object>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+
+								<!-- Branch Tab -->
+								<object class="notebookpage">
+									<label>Branch</label>
+									<object class="unknown" name="wBranchControl">
+									</object>
+								</object>
+
+                <!-- Work Items Tab -->
+                <object class="notebookpage">
+                  <label>Work Items</label>
+                  <object class="wxPanel">
+
+                    <!--This one is just to put a border around the whole works -->
+                    <object class="wxBoxSizer">
+                      <orient>wxVERTICAL</orient>
+                      <object class="sizeritem">
+                        <flag>wxEXPAND | wxALL</flag>
+                        <border>8</border>
+                        <option>1</option>
+
+                        <object class="wxBoxSizer">
+                          <orient>wxVERTICAL</orient>
+
+                          <object class="sizeritem">
+                            <object class="wxStaticText">
+                              <label>Selected work items below will be associated with this changeset.</label>
+                            </object>
+                          </object>
+
+                          <object class="sizeritem">
+                            <flag>wxEXPAND | wxTOP</flag>
+                            <border>8</border>
+                            <object class="wxBoxSizer">
+                              <orient>wxHORIZONTAL</orient>
+                              <object class="sizeritem">
+                                <flag>wxLEFT | wxALIGN_CENTER_VERTICAL</flag>
+                                <object class="wxStaticText">
+                                  <label>Repository:</label>
+                                </object>
+                              </object>
+
+                              <object class="sizeritem">
+                                <flag>wxLEFT</flag>
+                                <border>8</border>
+                                <object class="wxComboBox" name="wWI_Repos">
+                                  <style>wxCB_READONLY | wxCB_SORT</style>
+                                </object>
+                              </object>
+
+                              <object class="sizeritem">
+                                <flag>wxLEFT | wxALIGN_CENTER_VERTICAL</flag>
+                                <border>8</border>
+                                <object class="wxStaticText">
+                                  <label>Search:</label>
+                                </object>
+                              </object>
+
+                              <object class="sizeritem">
+                                <flag>wxLEFT</flag>
+                                <border>8</border>
+                                <option>1</option>
+                                <object class="wxTextCtrl" subclass="vvTextControl" name="wWorkItemSearch">
+                                  <style>wxTE_PROCESS_ENTER</style>
+                                </object>
+                              </object>
+
+                              <object class="sizeritem">
+                                <flag>wxLEFT </flag>
+                                <border>8</border>
+                                <object class="wxBitmapButton" name="wWorkItemSearchButton">
+                                </object>
+                              </object>
+                              
+                            </object>
+                          </object>
+
+                          <object class="sizeritem">
+                            <option>1</option>
+                            <flag>wxEXPAND | wxTOP</flag>
+                            <border>8</border>
+                            <object class="unknown" name="vvWorkItemsControl">
+                            </object>
+                          </object>
+                        </object>
+                      </object>
+                    </object>
+                  </object>
+                </object>
+							</object>
+						</object>
+					</object>
+
+					<!-- Buttons -->
+					<object class="sizeritem">
+						<flag>wxALIGN_RIGHT | wxTOP</flag>
+						<border>16</border>
+						<object class="wxStdDialogButtonSizer">
+							<object class="button">
+								<object class="wxButton" name="wxID_OK">
+									<default>1</default>
+									<label>Commit</label>
+								</object>
+							</object>
+							<object class="button">
+								<object class="wxButton" name="wxID_CANCEL">
+									<label>Cancel</label>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

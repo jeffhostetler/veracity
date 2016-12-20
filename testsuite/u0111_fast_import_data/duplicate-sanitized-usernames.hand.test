@@ -1,0 +1,28 @@
+import duplicate-sanitized-usernames.hand.gfi
+
+commit 2001
+user andy_
+time 1342103391
+comment This is commit 1.
+wc duplicate-sanitized-usernames.hand/1
+
+commit 2002
+user andy_1
+time 1342103392
+comment This is commit 2.
+parent 2001
+wc duplicate-sanitized-usernames.hand/2
+
+commit 2003
+user andy_2
+time 1342103393
+comment This is commit 3.
+parent 2002
+wc duplicate-sanitized-usernames.hand/3
+
+leaf 2003
+
+branch master
+status open
+commit 2003
+wc duplicate-sanitized-usernames.hand/3

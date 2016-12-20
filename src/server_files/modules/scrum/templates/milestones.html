@@ -1,0 +1,54 @@
+{{{<header.html}}}
+
+{{{SCRIPTS sprints.js }}}
+{{{EMITSCRIPTS}}}
+<div class="centercontent primary">
+<div class="outerheading">Milestones<input type="image" id="imgToggleReleasedMiles" src="{{{STATICLINKROOT}}}/img/showmilestone.png" title="show released milestones" style="float: right; margin-right: 5px; "></div>
+<div class="outercontainer">
+<table id="tableMilestones" class="datatable sprintTableControl">
+    <thead>
+        <tr class="dataheaderrow">
+            <th width="56px"></th>
+            <th>Name</th>
+            <th width="40%">Description</th>     
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Working Days</th>
+            <th width="20px"></th>
+        </tr>
+        
+    </thead>
+    <tbody id="tbodyMilestones">
+   
+ 
+    </tbody>
+   
+</table>
+
+        <div class="newmilestone">
+        <a href="#" id="linkNewMilestone">New Milestone</a>
+        </div>
+</div>
+</div>
+
+ <div  id="milestonecontextmenu" style="display:none">
+ 	<div class="contextMenu shadow" >
+	  <ul>	   
+	    <li action="setcurrent" class="ctxMenuItem nobl norel">Set Current</li>
+	    <li action="release" class="ctxMenuItem nobl norel">Release</li>
+        <li action="addchild" class="ctxMenuItem norel">Add Child</li>
+	    <li action="changeparent" id="liChangeParent" class="ctxMenuItem nobl  norel">Change Parent<img class="ctxMenuItemImg" src="{{{STATICLINKROOT}}}/img/right_triangle_black.png" /></li>
+	   
+      </ul>
+	</div>
+  </div>
+  <div id="colorSquare" class="buildColorSquare" style="display:none"></div>
+  <div id="divParentSubmenu" class="filterContextSubmenu" style="display:none">
+
+    <div class="contextMenu shadow">
+      <ul id="ulContextParents"></ul>
+    </div>
+  </div>
+
+  
+{{{<footer.html}}}

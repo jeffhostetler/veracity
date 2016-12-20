@@ -1,0 +1,12 @@
+## A list of patterns to ignore.
+## The builtin list is '/default/ignores' == [ "*~sg*~" ]
+##
+## See 'vv config list-ignores' to see the net set of ignores.
+
+Debug
+debug
+Release
+release
+temp
+
+*.suo

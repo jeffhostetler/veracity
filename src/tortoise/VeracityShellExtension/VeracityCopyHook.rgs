@@ -1,0 +1,26 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {9D6672AB-49BD-4E66-A7D0-3AE45397B6F2} = s 'VeracityCopyHook Class'
+		{
+			ForceRemove Programmable
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Both'
+			}
+			TypeLib = s '{5D5E835D-0469-4637-8EF7-84798F66996C}'
+			Version = s '1.0'
+		}
+		NoRemove Directory
+		{
+			NoRemove ShellEx
+			{
+				NoRemove CopyHookHandlers
+				{
+					ForceRemove VeracityCopyHook = s '{9D6672AB-49BD-4E66-A7D0-3AE45397B6F2}'
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,17 @@
+import tag-rev1.veracity.gfi
+
+commit 2
+user test@sourcegear.com
+time 1344365138
+comment Added file.
+
+leaf 2
+
+branch master
+status open
+commit 2
+wc tag-rev1.veracity
+
+tag rev2
+commit 2
+wc tag-rev1.veracity

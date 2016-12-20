@@ -1,0 +1,13 @@
+blob
+mark :1001
+data 15
+This is file 1.
+#
+commit refs/heads/master
+mark :2001
+committer Andy Tidball <andy@sourcegear.com> 1342103391 +0000
+data 17
+This is commit 1.
+M 644 :1001 File1.txt
+#
+reset refs/heads/feature

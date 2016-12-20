@@ -1,0 +1,121 @@
+// Copyright 2010-2013 SourceGear, LLC
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+{
+	"version" : 1,
+	"rectypes" :
+	{
+		"page" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"title" : 
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : true,
+						"index" : true,
+						"unique": true,
+						"maxlength": 256,
+						"full_text_search": true
+
+					},
+					"merge" :
+					{
+						"uniqify" : 
+						{
+							"op" : "append_userprefix_unique",
+							"num_digits" : 2,
+							"which" : "least_impact"
+						}
+					}
+				},
+				"text" :
+				{
+					"datatype" : "string",
+					"constraints" :
+					{
+						"required" : false,
+						"full_text_search": true
+					},
+					"merge":
+					{
+						"auto" :
+						[
+							{ "op" : "concat" }
+						]
+					}
+				},
+			}
+		},
+
+		"image" :
+		{
+			"merge" :
+			{
+				"merge_type" : "field",
+				"auto" : 
+				[
+					{
+						"op" : "most_recent"
+					}
+				]
+			},
+			"fields" :
+			{
+				"data" :
+				{
+					"datatype" : "attachment",
+					"form" :
+					{
+						"visible": true,
+						"label" : "Attachments"
+					},
+					"constraints" :
+					{
+						"required" : true
+					}
+				},
+				"filename" :
+				{
+					"datatype" : "string",
+					"form" :
+					{
+						"visible" : false
+					}
+				},			
+				"contenttype" :
+				{
+					"datatype" : "string",
+					"form" :
+					{
+						"visible" : false
+					}
+				}
+			}
+		}
+
+	}
+}

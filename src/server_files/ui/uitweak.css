@@ -1,0 +1,145 @@
+/* loaded after jQuery UI themes to tweak them as needed */
+.ui-autocomplete-category {
+	clear: both;
+	font-weight: bold;
+	padding: .2em .4em;
+	margin: .8em 0 .2em;
+	line-height: 1.5;
+	background-color: #e4f0ce;
+	width: 100%;
+}
+
+#divSearchArea .ui-autocomplete-category {
+	text-transform: capitalize;
+}
+
+.ui-autocomplete {
+	overflow: auto;
+	max-width: 80%;
+}
+
+.ui-menu-item {
+	white-space: nowrap;
+}
+
+input.searchinput.ui-autocomplete-loading {
+	background: white url("/ui/css/custom-theme/images/ui-anim_basic_16x16.gif") right center no-repeat;
+}
+
+.relations .ui-autocomplete {
+	max-width: 45%;
+	font-size: 11px;
+}
+.relations .ui-menu-item {
+	white-space: normal;
+}
+.relations .ui-menu-item .ui-state-hover {
+	background-color: #303030;
+	color: #FFF;
+	border: none;
+	background-image: none;
+}
+
+.ui-dialog {
+	padding: 5px;
+}
+
+.ui-dialog-titlebar {
+	-webkit-border-top-right-radius: 12px;
+	-moz-border-radius-topright: 12px;
+	border-top-right-radius: 12px;
+	background-image: none;
+	background-color: #d8e2bb;
+}
+
+.ui-dialog .ui-dialog-content {
+	border-left: 1px solid #d8e2bb;
+	border-right: 1px solid #d8e2bb;
+}
+.ui-dialog-nobuttons {
+    border-bottom: 1px solid #d8e2bb !important;
+}
+.ui-dialog.hoverdialog {
+	padding: 0;
+	overflow: hidden;
+	-moz-box-shadow: 2px 2px 1px 1px rgba(144, 144, 144, 0.3);
+	-webkit-box-shadow: 2px 2px 1px 1px rgba(144, 144, 144, 0.3);
+	box-shadow: 2px 2px 1px 1px rgba(144, 144, 144, 0.3);
+}
+.ui-dialog.hoverdialog .ui-dialog-content {
+	background-color: #f6f8ef;
+	border: none;
+	padding: 5px;
+	margin-bottom: -10px;
+}
+.ui-dialog.hoverdialog .innercontainer {
+	background-color: #FFF;
+}
+.ui-dialog.hoverdialog .commentlist {
+	padding: 0;
+	margin: 0 0 10px 0;
+	border: none;
+	width: auto;
+	text-overflow: ellipsis;
+	background-color: #FFF;
+}
+.ui-dialog.hoverdialog .commentlist:last-child {
+	margin-bottom: 0;
+}
+.ui-dialog.hoverdialog .ui-dialog-titlebar {
+	display: none;
+}
+
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close.ui-state-hover {
+	background-color: transparent;
+	background-image: none;
+	border: none;
+}
+.ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close.ui-state-hover .ui-icon {
+	background-image: url(/ui/img/green-dialog-close.png);
+	background-position: 0 2px;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	background-color: #d8e2bb;
+	margin-top: 0;
+	padding: 5px;
+	border: none;
+}
+.ui-dialog .ui-dialog-buttonpane button {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	display: inline-block;
+	background-position: 0px 0px;
+	border: 1px solid #2E3E00;
+	color: #FFF;
+	cursor: pointer;
+	margin-right: 5px;
+	background-repeat: repeat-x;
+	padding: 0 8px;
+	font-weight: bold;
+	height: 21px;
+	vertical-align: baseline;
+	font-size: 12px;
+	line-height: 19px;
+	background-image: url(/ui/img/green_button_grad.png);
+	border: 1px solid #2E3E00;
+}
+.ui-dialog .ui-dialog-buttonpane button:hover {
+	background-image: url(/ui/img/green_button_grad2.png);
+}
+.ui-dialog .ui-dialog-buttonpane button.disabled {
+	background-image: url(/ui/img/grey_button_grad.png);
+}
+.ui-dialog .ui-dialog-buttonpane button .ui-button-text {
+	line-height: 19px;
+	padding: 0 8px;
+}
+.ui-dialog .ui-dialog-buttonpane button.disabled {
+	cursor: default;
+}
+
+.primary .outercontainer .ui-state-hover:hover, .secondary .outercontainer .ui-state-hover:hover {
+	color: #FFF;
+}

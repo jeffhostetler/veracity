@@ -1,0 +1,22 @@
+import sanitize-tags.hand.gfi
+
+commit 2001
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+
+commit 2002
+user andy@sourcegear.com
+time 1342103491
+comment This is commit 2.
+parent 2001
+
+leaf 2002
+
+branch master
+status open
+commit 2001
+
+tag code-review_2009-07-22
+commit 2002
+wc sanitize-tags.hand/code-review_2009-07-22

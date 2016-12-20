@@ -1,0 +1,321 @@
+@import "defs";
+
+.wmd-panel
+{
+	min-width: 500px;
+}
+
+.wmd-button-bar
+{
+	width: 100%;
+	background-color: Silver;
+}
+
+textarea.wmd-input
+{
+	height: 300px;
+	
+}
+
+#wmd-preview
+{
+	overflow: auto;
+
+}
+
+.wmd-button-row
+{
+	position: relative;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-top: 10px;
+	padding: 0px;
+	height: 20px;
+}
+
+.wmd-spacer
+{
+	width: 1px;
+	height: 20px;
+	margin-left: 14px;
+
+	position: absolute;
+	background-color: Silver;
+	display: inline-block;
+	list-style: none;
+}
+
+.wmd-button {
+	width: 20px;
+	height: 20px;
+	padding-left: 2px;
+	padding-right: 3px;
+	position: absolute;
+	display: inline-block;
+	list-style: none;
+	cursor: pointer;
+}
+
+.wmd-button > span {
+	background-image: url(/ui/modules/wiki/wmd-buttons.png);
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+}
+
+.wmd-spacer1
+{
+	left: 50px;
+}
+.wmd-spacer2
+{
+	left: 175px;
+}
+.wmd-spacer3
+{
+	left: 300px;
+}
+
+.wmd-spacer4
+{
+	left: 370px;
+}
+
+
+.wmd-prompt-background
+{
+	background-color: Black;
+}
+
+.wmd-prompt-dialog
+{
+	border: 1px solid #999999;
+	background-color: #F5F5F5;
+}
+
+.wmd-prompt-dialog > div {
+	font-size: 0.8em;
+	font-family: arial, helvetica, sans-serif;
+}
+
+
+.wmd-prompt-dialog > form > input[type="text"] {
+	border: 1px solid #999999;
+	color: black;
+}
+
+.wmd-prompt-dialog > form > input[type="button"]{
+	border: 1px solid #888888;
+	font-family: trebuchet MS, helvetica, sans-serif;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+#page_title {
+	width: 100%;
+	font-size: 120%;
+
+	@include border-box;
+}
+
+
+a.validWikiUrl {
+	font-weight: bold;
+}
+
+a.invalidWikiUrl {
+	font-style: italic;
+	font-weight: normal;
+}
+
+a.invalidWikiUrl:link, a.invalidWikiUrl:visited {
+	color: #F00;
+}
+
+ul#wikilist {
+	padding-left: 2px;
+
+	li {
+		margin-bottom: 5px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-align: left;
+	}
+
+	li img {
+		background-image: url(/ui/modules/wiki/wikidot.png);
+		background-repeat: no-repeat;
+	}
+
+	li.active img {
+		background-image: url(/ui/modules/wiki/wikilink.png);
+		background-repeat: no-repeat;
+	}
+}
+
+#wmd-input.relactive {
+	border: 5px dashed #666;
+	cursor: crosshair;
+}
+
+#wmd-input.relhover {
+	border: 5px solid #000;
+	cursor: crosshair;
+}
+
+
+//#wmd-preview {
+//	p>img:only-child {
+//		border: solid 1px #FFF;
+//		-moz-box-shadow: 5px 5px 5px #999;
+//		-webkit-box-shadow: 5px 5px 5px #999;
+//		box-shadow: 5px 5px 5px #999;
+//	}
+//}
+
+
+.wiki {
+	padding: 10px 10px;
+	
+	ol li {
+		list-style: decimal outside;
+	}
+
+	ul li {
+		list-style: circle outside;
+	}
+
+	h1,  h2,  h3 {
+		margin-top: 1em;
+		margin-bottom: 1em;
+		color: rgb(125, 125, 125);
+		font-weight: bold;
+		border-bottom: 1px solid rgb(220,220,220);
+	}
+
+	h1 {
+		font-size: 125%;
+		border-bottom-width: 2px;
+	}
+
+	h2 {
+		background-color: inherit;
+		font-size: 110%;
+	}
+
+	h3 {
+		font-size: 100%;
+	}
+
+	blockquote {
+		color: #000;
+		background-color: #f0f0f0;
+		padding: 2px;
+	}
+
+	table {
+		border-collapse: collapse;
+		margin-bottom: 1em;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	td, th {
+		padding: 2px 5px;
+		color: #000;
+	}
+
+	td {
+		border: 1px solid #F0F0F0;
+		background-color: #FFF;
+	}
+	th {
+		border: 1px solid #CCC;
+		background-color: #F0F0F0;
+	}
+}
+
+
+a.fixedbug {
+	text-decoration: line-through;
+	font-style: italic;
+}
+
+a.verifiedbug, a.verifiedbug:visited, a.verifiedbug:active {
+	color: rgba(81,109,00,0.75);
+	font-weight: normal;
+}
+
+#wikititle {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: bold;
+}
+
+.wikiadder {
+    float: left;
+    display: block;
+    width: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+.wikilink {
+    float: left;
+    overflow: hidden;
+    display: block;
+    width: 165px;
+    margin-left: 5px;
+    text-overflow: ellipsis;
+}
+
+.histcontrols {
+	margin-bottom: 10px;
+}
+
+input.searchinput#wikisearch {
+	min-width: 170px;
+}
+
+
+#wikibyline {
+    float: left;
+	margin-bottom: 0;
+}
+
+.titlebuttons {
+	input:last-child {
+		margin-right: 0;
+	}
+}
+
+.sorter {
+	padding-left: 8px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+
+	background-color: $secondarychrome;
+}
+
+.sorttoggle {
+	padding-right: 20px;
+	padding-left: 20px;
+
+	&.sortby {
+		font-weight: bold;
+		background-repeat: no-repeat;
+		background-position: right;
+
+		&.desc {
+			background-image: url('/ui/img/sort_down_green.png');
+		}
+		&.asc {
+			background-image: url('/ui/img/sort_up_green.png');
+		}
+	}
+}

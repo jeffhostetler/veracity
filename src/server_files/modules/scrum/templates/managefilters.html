@@ -1,0 +1,54 @@
+{{{<header.html}}}
+<script>
+var vvredirectable = "burndown.html";
+setCurrentSection('workitems');
+</script>
+
+    {{{SCRIPTS filtercommon.js managefilters.js }}}
+<div class="centercontent primary">
+
+  	<h2 class="outerheading">Filters</h2>
+
+    	<div id="managefilterlinks" class="primarydetails nav">
+     <a id="link_refreshMenu" title="refresh saved filters"><img src="{{{STATICLINKROOT}}}/img/refreshmenu.png"/></a>
+        </div>
+  <div class="outercontainer">
+
+	<table id="tablefilters" class="datatable bottom" cellspacing="0" cellpadding="0">
+	  <thead>
+
+	    <tr class="dataheaderrow">
+		<th width="40px">&nbsp;</th><th width="275px">Name</th><th>Description</th>
+		</tr>
+	  </thead>
+	</table>
+
+
+
+</div>
+<div id="editMenu" style="display:none">
+<div class="contextMenu shadow">
+<ul>
+  <li action="rename"  class="ctxMenuItem">Rename</li>
+  <li id="confirm_delete"  class="ctxMenuItem" action="confirm_delete">
+	Delete
+	<img src="{{{STATICLINKROOT}}}/img/right_triangle_black.png"/>
+  </li>
+</ul>
+
+</div>
+
+<div id="colorSquare" class="buildColorSquare" style="display:none"></div>
+
+</div>
+<div id="delConfMenu" style="display:none">
+
+<div class="contextMenu shadow">
+  <ul><li action="delete" class="ctxMenuItem">Confirm Delete</li></ul>
+</div>
+</div>
+
+</div>
+
+
+{{{<footer.html}}}

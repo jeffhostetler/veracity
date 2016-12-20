@@ -1,0 +1,56 @@
+blob
+mark :1
+data 50
+This is the contents of file file_1
+1359992824928
+
+commit refs/heads/master
+mark :2
+committer <testing@sourcegear.com> 1359992824 +0000
+data 17
+add initial files
+M 100644 :1 file_1
+
+blob
+mark :3
+data 52
+This is the contents of file exe_L1_a
+1359992825671
+
+commit refs/heads/master
+mark :4
+committer <testing@sourcegear.com> 1359992825 +0000
+data 12
+L1_a changes
+from :2
+M 100755 :3 exe_L1_a
+
+blob
+mark :5
+data 52
+This is the contents of file exe_L0_a
+1359992825274
+
+commit refs/heads/master
+mark :6
+committer <testing@sourcegear.com> 1359992825 +0000
+data 12
+L0_a changes
+from :2
+M 100755 :5 exe_L0_a
+
+tag cset_base
+from :2
+tagger <testing@sourcegear.com> 1359992825 +0000
+data 0
+
+tag cset_L0_a
+from :6
+tagger <testing@sourcegear.com> 1359992825 +0000
+data 0
+
+tag cset_L1_a
+from :4
+tagger <testing@sourcegear.com> 1359992825 +0000
+data 0
+

@@ -1,0 +1,32 @@
+blob
+mark :1
+data 6
+t.txt
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Paul Roub <paul@roub.net> 1342399656 -0400
+committer Paul Roub <paul@roub.net> 1342399656 -0400
+data 4
+one
+M 100644 :1 t.txt
+
+blob
+mark :3
+data 12
+t.txt
+t.txt
+
+commit refs/heads/master
+mark :4
+author Paul Roub <paul@roub.net> 1342399661 -0400
+committer Paul Roub <paul@roub.net> 1342399661 -0400
+data 4
+two
+from :2
+M 100644 :3 t.txt
+
+reset refs/heads/master
+from :4
+

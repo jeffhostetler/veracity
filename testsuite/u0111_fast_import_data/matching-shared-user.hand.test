@@ -1,0 +1,15 @@
+import matching-shared-user.hand.gfi
+shared-user andy@sourcegear.com
+
+commit 2001
+user andy@sourcegear.com
+time 1342103391
+comment This is commit 1.
+wc matching-shared-user.hand
+
+leaf 2001
+
+branch master
+status open
+commit 2001
+wc matching-shared-user.hand

@@ -1,0 +1,37 @@
+blob
+mark :1001
+data 15
+This is file 1.
+#
+commit refs/heads/master
+mark :2001
+committer Nobody <nobody> 1342103391 +0000
+data 17
+This is commit 1.
+M 644 :1001 File1.txt
+#
+blob
+mark :1002
+data 15
+This is file 2.
+#
+commit refs/heads/master
+mark :2002
+committer Nobody <nobody#> 1342103392 +0000
+data 17
+This is commit 2.
+from :2001
+M 644 :1002 File2.txt
+#
+blob
+mark :1003
+data 15
+This is file 3.
+#
+commit refs/heads/master
+mark :2003
+committer Nobody <nobody$> 1342103393 +0000
+data 17
+This is commit 3.
+from :2002
+M 644 :1003 File3.txt

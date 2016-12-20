@@ -1,0 +1,509 @@
+#!bash
+#
+# Copyright 2010-2013 SourceGear, LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# Veracity vv completion
+
+if [[ -n ${ZSH_VERSION-} ]]; then
+	autoload -U +X bashcompinit && bashcompinit
+fi
+
+HASHES="SHA1/160 SHA2/256 SHA2/384 SHA2/512 SKEIN/256 SKEIN/512"
+
+_vv()
+{
+	local cur words prev opts
+	
+	if [[ -n ${ZSH_VERSION-} ]]; then
+		emulate -L bash
+		setopt KSH_TYPESET
+
+		# workaround zsh's bug that leaves 'words' as a special
+		# variable in versions < 4.3.12
+		typeset -h words
+	fi
+	
+	COMPREPLY=()
+	if [[ -n ${ZSH_VERSION-} ]]; then
+		len=${#COMP_WORDS}
+		cur=${COMP_WORDS[COMP_CWORD]}
+		prev=${COMP_WORDS[$COMP_CWORD-1]}
+		if [ ${#COMP_WORDS} -gt 0 ]; then
+			BASE=${COMP_WORDS[1]}
+		else
+			BASE=""
+		fi
+	else
+		len=${#COMP_WORDS[@]}
+		cur=`_get_cword`
+		prev="${COMP_WORDS[COMP_CWORD-1]}"
+		if [ ${#COMP_WORDS[@]} -gt 0 ] ; then
+			BASE="${COMP_WORDS[1]}"
+		else
+			BASE=""
+		fi
+	fi
+		
+	# Jump out early if we find one of our common flags
+	case "$prev" in
+		-I|--include|-X|--exclude|--include-from|--exclude-from)
+			_filedir
+			return 0
+			;;
+		--repo|--shared-users|--src|--dest)
+			COMPREPLY=( $(compgen -W '`_vv_get_repos`' -- ${cur}) )
+			return 0
+			;;
+		--attach)
+			COMPREPLY=( $(compgen -W '`_vv_get_branches`' -- ${cur}) )
+			return 0
+			;;
+		-t|--tag)
+			COMPREPLY=( $(compgen -W '`_vv_get_tags`' -- ${cur}) )
+			return 0
+			;;
+		-b|--branch)
+			COMPREPLY=( $(compgen -W '`_vv_get_branches`' -- ${cur}) )
+			return 0
+			;;
+		-r|--rev)
+			COMPREPLY=( $(compgen -W '`_vv_get_revisions`' -- ${cur}) )
+			return 0
+			;;
+		--hash)
+			COMPREPLY=( $(compgen -W '$HASHES' -- ${cur}) )
+			return 0
+			;;
+	esac
+	
+	if [ -n "$BASE" ]; then
+		case "$BASE" in
+			add)
+				case "$prev" in
+					add)
+						opts="-N --nonrecursive -T --test --no-ignores `_vv_include_exclude` `_vv_found_files`"
+						;;
+					*)
+						opts="add addremove"
+						;;
+				esac
+				;;
+			addremove)
+				opts="-N --nonrecursive -T --test --no-ignores `_vv_include_exclude` `_vv_found_files`"
+				;;
+			branch)
+				case "$prev" in
+					branch)
+						opts="attach add-head remove-head move-head close reopen list"
+						;;
+					attach)
+						opts=`_vv_get_branches`
+						;;
+					add-head)
+						if [ len -eq 2 ] ; then
+							opts=`_vv_get_branches`
+						else
+							opts="--rev `_vv_repos`"
+						fi
+						;;
+					remove-head)
+						if [ len -eq 2 ] ; then
+							opts=`_vv_get_branches`
+						else
+							opts="--rev `_vv_repos` --all"
+						fi
+						;;
+					move-head)
+						if [ len -eq 2 ] ; then
+							opts=`_vv_get_branches`
+						else
+							opts="--rev `_vv_repos` --all"
+						fi
+						;;
+					close)
+						if [ len -eq 2 ] ; then
+							opts=`_vv_get_branches`
+						else
+							opts=`_vv_repos`
+						fi
+						;;
+					reopen)
+						if [ $COMP_WORDS[@] -eq 2 ] ; then
+							opts=`_vv_get_branches`
+						else
+							opts=`_vv_repos`
+						fi
+						;;
+					list)
+						opts="--all `_vv_repos`"
+						;;
+					*)
+						opts=""
+						;;
+				esac
+				;;
+			cat)
+				opts="`_vv_repos_and_rev`"
+				;;
+			checkout)
+				opts=`_vv_rev_spec`
+				;;
+			clone)
+				opts="--all-full --all-zlib --override-always-full --min-zlib-savings \
+					--min-vcdiff-savings-over-full --min-vcdiff-savings-over-zlib \
+					--pack --full-revisions --min-revisions --keyframe-density"
+				;;
+			comment)
+				opts="`_vv_rev_spec` -m --message"
+				;;
+			commit)
+				opts="`_vv_include_exclude` -N --nonrecursive -m --message --detatched \
+					--stamp -a --assoc"
+				;;
+			config)
+				case "$prev" in
+					import)
+						_filedir
+						;;
+					export|set|reset|empty|add-to|remove-from|defaults)
+						opts="${opts} -F --force --verbose"
+						;;
+					*)
+						opts="export import set reset empty add-to remove-from defaults"
+						;;
+				esac
+				;;
+			diff)
+				case "$prev" in
+					diff)
+						opts="`_vv_rev_spec` `_vv_include_exclude` --tool --unfied --no-ignores"
+						;;
+					*)
+						opts="diff diffmerge"
+						;;
+				esac
+				;;
+			diffmerge)
+				opts=`_vv_rev_spec`
+				;;
+			export)
+				opts=`_vv_rev_spec`
+				;;
+			fast-export)
+				opts=`_vv_get_repos`
+				;;
+			fast-import)
+				opts="--shared-users --hash"
+				;;
+				
+			heads)
+				# TODO expand branch names
+				opts="`_vv_repos` --all -b --branch --verbose"
+				;;
+			help)
+				opts="--all-commands --quiet"
+				;;
+			history)
+				opts="`_vv_repos_and_rev` --max -U --user --from --to --leaves \
+					--reverse --hide-merges `_vv_stamps` --verbose"
+				;;
+			incoming)
+				opts="--dest --trace --verbose"
+				;;
+			init)
+				opts="--shared-users --hash" 
+				;;
+			leaves)
+				opts="`_vv_repos` --dagnum --verbose"
+				;;
+			lock)
+				opts="--server"
+				;;
+			locks)
+				opts="${opts} --pull"
+				;;
+			merge)
+				opts="`_vv_rev_spec` -T --test --verbose --tool --no-auto-merge"
+				;;
+			merge-preview)
+				opts=`_vv_rev_spec`
+				;;
+			move)
+				opts="-F --force --no-allow-after -T --test"
+				COMPREPLY=( $(compgen -W '${opts}' -- ${cur}))
+				_filedir
+				return 0
+				;;
+			mstatus)
+				opts="`_vv_rev_spec` `_vv_repos` --verbose --no-ignores --no-fallback"	
+				;;
+			outgoing)
+				opts="--src --trace --verbose"
+				;;
+			parents)
+				opts="`_vv_rev_spec` --verbose"
+				;;
+			pull)
+				opts="`_vv_rev_spec` -u --update --dest --area --trace"
+				;;
+			push)
+				opts="`_vv_rev_spec` -F --force --src --area --trace"
+				;;
+			remove)
+				opts="`_vv_include_exclude` -T --test -F --force --no-backups"
+				COMPREPLY=( $(compgen -W '${opts}' -- ${cur}))
+				_filedir
+				return 0
+				;;
+			repo)
+				case "$prev" in
+					repo)
+						opts="new delete list rename info"
+						;;
+					delete)
+						opts="`_vv_get_repos` --all-but --no-prompt"
+						;;
+					new)
+						opts="--shared-users --hash"
+						;;
+					info)
+						opts="`_vv_get_repos` `_filedir`"
+						;;
+					--all-but)
+						opts=`_vv_get_repos`
+						;;
+					list)
+						opts="--verbose"
+						;;
+					*)
+						opts="-F --force"
+						;;
+				esac
+				;;
+			resolve)
+				# TODO finish implementing resolve2 changes
+				case "$prev" in
+					list|next|accept|diff|merge)
+						_filedir
+						;;
+					-i|--interactive|--all|--overwrite|--tool|--label)
+						opts=""
+						;;
+					*)
+						opts="list next accept diff merge -i --interactive --all --overwrite --tool --label"
+						;;
+				esac
+				;;
+			revert)
+				opts="-N --nonrecursive --all --verbose --no-backups --revert-files --revert-symlinks --revert-directories --revert-lost --revert-added --revert-removed --revert-renamed --revert-moved --revert-merge-added --revert-update-added --revert-attributes --revert-content"
+				;;
+			serve|server)
+				opts="-P --public --port"
+				;;
+			stamp)
+				case "$prev" in
+					stamp)
+						opts="add remove list"
+						;;
+					add|remove|list)
+						opts=`_vv_get_stamps`
+						;;
+					*)
+						opts="--all `_vv_repos` `_vv_rev_spec`"
+						;;
+				esac
+				;;
+			status)
+				opts="`_vv_rev_spec` -N --non-recursive --verbose --no-ignores"
+				;;
+			svn-load)
+				opts="`_vv_repos` `_vv_rev_spec` --attach --detatched --path --stamp --src-comment --confirm"
+				;;
+			tag)
+				case "$prev" in 
+					tag)
+						opts="add move remove list"
+						;;
+					add)
+						opts=""
+						;;
+					move|remove)
+						opts="`_vv_get_tags`"
+						;;
+					list)
+						opts="--repo"
+						;;
+					*)
+						opts="`_vv_repos_and_rev`"
+						;;
+				esac
+				;;
+			unlock)
+				opts="-F --force"
+				COMPREPLY=( $(compgen -W '${opts}' -- ${cur}))
+				_filedir
+				return 0
+				;;
+			update)
+				opts="`_vv_rev_spec` --attach --attach-new --detached -c --attach-current -T --test --status --verbose"
+				;;
+			user)
+				case "$prev" in
+					user)
+						opts="create set rename list set-active set-inactive"
+						;;
+					create|rename|set|set-active|set-inactive)
+						opts="`_vv_repos`"
+						;;
+					list)
+						opts="`_vv_repos` --list-all"
+						;;
+					*)
+						opts="--repo"
+						;;
+				esac
+				;;
+			whoami)
+				case "$prev" in
+					whoami)
+						opts="--repo --create"
+						;;
+					*)
+						opts=""
+						;;
+				esac
+				;;
+				
+			*)
+				COMPREPLY=( $(compgen -W '`_vv_words`' -- ${cur}) )
+				return 0
+				;;
+		esac
+		
+		COMPREPLY=( $(compgen -W '${opts}' -- ${cur}))
+	else
+	 	COMPREPLY=( $(compgen -W '`_vv_words`' -- ${cur}) )
+	fi
+	return 0
+}
+
+_vv_words()
+{
+	vv help --quiet | cut -d" " -f1 | sed -e '/^$/d' | sed -e 's/\n/ /g' | tr "\n" " "
+	
+}
+_vv_get_branches()
+{
+	vv branches | tr "\n" " "
+}
+
+_vv_get_tags()
+{
+	# Get tags for current wd unless --repo is specified
+	vv tags | cut -d: -f1 | sed -e 's/^[ \t]*//' | tr "\n" " "
+}
+
+_vv_get_stamps()
+{
+	# Get tags for current wd unless --repo is specified
+	vv stamps | cut -d: -f1  | tr "\n" " "
+}
+
+_vv_get_revisions()
+{
+	REV=`vv history --max 10 | grep "revision" | cut -d\: -f2 | tr "\n" " "`
+	HID=`vv history --max 10 | grep "revision" | cut -d\: -f3 | tr "\n" " "`
+	echo "$REV $HID"
+}
+
+_vv_get_repos()
+{
+	vv repos | tr "\n" " "
+}
+
+_vv_include_exclude()
+{
+	echo "-I --include -X --exclude --include-from --exclude-from"
+}
+
+_vv_rev_spec()
+{
+	echo "-t --tag -b --branch -r --rev"
+}
+
+_vv_repos()
+{
+	echo "--repo"
+}
+
+_vv_repos_and_rev()
+{
+	echo "`_vv_rev_spec` `_vv_repos`"
+}
+
+_vv_stamps()
+{
+	local prev
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	
+	if [ $prev = "--stamp" ] ; then
+		echo "`_vv_get_stamps`"
+	else
+		echo "--stamp"
+	fi
+}
+
+_vv_found_files()
+{
+	local prev paths
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	root=`_vv_wd_root`
+	
+	if [ "$root" != "" ]; then
+		vv status | grep Found | cut -d\: -f2 | sed -e 's/^[ \t]*//' | sed -e "s/^@\///" | grep "$root" | sed -e "s/$root//" | tr "\n" " "
+	else
+		vv status | grep Found | cut -d\: -f2 | sed -e 's/^[ \t]*//' | sed -e "s/^@\///" | tr "\n" " "
+	fi
+}
+
+_vv_wd_root()
+{
+	wd=`pwd`
+	parent=`dirname $wd`
+	base=`basename $wd`
+	
+	if [ -d "./.sgdrawer" ]; then
+		echo ""
+		return 0
+	fi
+	
+	while [ parent != "/" ]
+	do
+		path="$base\/$path"
+		if [ -d "$parent/.sgdrawer" ]; then
+			echo $path
+			return 0
+		fi
+		
+		base=`basename $parent`
+		parent=`dirname $parent`
+	done
+	
+	echo ""
+}
+
+complete -o bashdefault -o default -o nospace -F _vv vv 2> /dev/null \
+	|| complete -o default -o nospace -F _vv vv

@@ -1,0 +1,167 @@
+blob
+mark :1
+data 50
+This is the contents of file file_1
+1355948209368
+
+blob
+mark :2
+data 50
+This is the contents of file file_2
+1355948209368
+
+blob
+mark :3
+data 50
+This is the contents of file file_3
+1355948209368
+
+blob
+mark :4
+data 52
+This is the contents of file sparse_1
+1355948209369
+
+blob
+mark :5
+data 58
+This is the contents of file sparse_chmod_1
+1355948209369
+
+blob
+mark :6
+data 17
+/target/is/file_1
+commit refs/heads/master
+mark :7
+committer <testing@sourcegear.com> 1355948209 +0000
+data 17
+add initial files
+M 100644 :1 file_1
+M 100644 :2 file_2
+M 100644 :3 file_3
+M 100644 :4 sparse_1
+M 100644 :5 sparse_chmod_1
+M 120000 :6 sparse_link_1
+
+blob
+mark :8
+data 59
+This is the contents of file sparse_1
+1355948209369
+There!
+
+commit refs/heads/master
+mark :9
+committer <testing@sourcegear.com> 1355948210 +0000
+data 12
+L1_b changes
+from :7
+M 100644 :8 sparse_1
+
+blob
+mark :10
+data 59
+This is the contents of file sparse_1
+1355948209369
+Hello!
+
+commit refs/heads/master
+mark :11
+committer <testing@sourcegear.com> 1355948210 +0000
+data 12
+L0_b changes
+from :7
+M 100644 :10 sparse_1
+
+blob
+mark :12
+data 17
+/target/is/file_3
+commit refs/heads/master
+mark :13
+committer <testing@sourcegear.com> 1355948211 +0000
+data 12
+L1_c changes
+from :7
+M 120000 :12 sparse_link_1
+
+blob
+mark :14
+data 54
+This is the contents of file noise_L0_a
+1355948209754
+
+commit refs/heads/master
+mark :15
+committer <testing@sourcegear.com> 1355948209 +0000
+data 12
+L0_a changes
+from :7
+M 100644 :14 noise_L0_a
+M 100644 :10 sparse_1
+M 120000 :12 sparse_link_1
+
+blob
+mark :16
+data 54
+This is the contents of file noise_L1_a
+1355948210046
+
+commit refs/heads/master
+mark :17
+committer <testing@sourcegear.com> 1355948210 +0000
+data 12
+L1_a changes
+from :7
+M 100644 :16 noise_L1_a
+M 100644 :10 sparse_1
+M 120000 :12 sparse_link_1
+
+blob
+mark :18
+data 17
+/target/is/file_2
+commit refs/heads/master
+mark :19
+committer <testing@sourcegear.com> 1355948210 +0000
+data 12
+L0_c changes
+from :7
+M 120000 :18 sparse_link_1
+
+tag cset_base
+from :7
+tagger <testing@sourcegear.com> 1355948209 +0000
+data 0
+
+tag cset_L0_a
+from :15
+tagger <testing@sourcegear.com> 1355948209 +0000
+data 0
+
+tag cset_L1_a
+from :17
+tagger <testing@sourcegear.com> 1355948210 +0000
+data 0
+
+tag cset_L0_b
+from :11
+tagger <testing@sourcegear.com> 1355948210 +0000
+data 0
+
+tag cset_L1_b
+from :9
+tagger <testing@sourcegear.com> 1355948210 +0000
+data 0
+
+tag cset_L0_c
+from :19
+tagger <testing@sourcegear.com> 1355948211 +0000
+data 0
+
+tag cset_L1_c
+from :13
+tagger <testing@sourcegear.com> 1355948211 +0000
+data 0
+

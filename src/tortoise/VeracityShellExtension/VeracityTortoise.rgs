@@ -1,0 +1,15 @@
+HKCR
+{
+	NoRemove CLSID
+	{
+		ForceRemove {7C3A6019-F169-4FA4-8F6B-5BFEBD92866E} = s 'VeracityCompReg Class'
+		{
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			TypeLib = s '{5D5E835D-0469-4637-8EF7-84798F66996C}'
+			Version = s '1.0'
+		}
+	}
+}

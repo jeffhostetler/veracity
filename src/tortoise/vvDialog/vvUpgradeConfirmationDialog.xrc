@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvUpgradeConfirmationDialog">
+		<title>Upgrade Confirmation</title>
+		<style>wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER</style>
+		<icon stock_id="ApplicationIcon"></icon>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<!--<minsize>400,150</minsize>-->
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+          <object class="sizeritem">
+            <flag>wxEXPAND</flag>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              
+					    <object class="sizeritem">
+						    <flag>wxALIGN_CENTER_VERTICAL</flag>
+						    <object class="wxStaticBitmap" name="wBitmap">
+							    <bitmap stock_id="wxART_WARNING"></bitmap>
+						    </object>
+					    </object>
+
+					    <!-- Message -->
+					    <object class="sizeritem">
+						    <flag>wxEXPAND | wxTOP | wxLEFT</flag>
+						    <border>8</border>
+						    <object class="wxStaticText">
+                  <label>The following repositories are in an old format, and \nwill be unuseable until they are upgraded.</label>
+						    </object>
+					    </object>
+            </object>
+          </object>
+
+          <object class="sizeritem">
+            <flag>wxEXPAND | wxTOP</flag>
+            <border>8</border>
+            <option>1</option>
+            <object class="wxListBox" name="wListBox">
+              <style>wxLB_SINGLE | wxLB_NEEDED_SB | wxLB_SORT</style>
+            </object>
+          </object>
+          
+					<!-- Buttons: Upgrade All, Cancel -->
+					<object class="sizeritem">
+						<flag>wxALIGN_RIGHT | wxEXPAND| wxTOP</flag>
+						<border>16</border>
+            
+            <object class="wxStdDialogButtonSizer">
+						  <object class="button">
+                <object class="wxButton" name="wxID_OK">
+                  <label>Upgrade _All Repositories</label>
+                </object>
+              </object>
+
+              <object class="button">
+                <object class="wxButton" name="wxID_CANCEL">
+                  <default>1</default>
+                  <label>_Cancel</label>
+                </object>
+              </object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

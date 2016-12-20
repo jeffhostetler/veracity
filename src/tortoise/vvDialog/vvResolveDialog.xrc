@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+Copyright 2010-2013 SourceGear, LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="vvResolveDialog">
+		<title>Resolve Conflict</title>
+		<style>wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER</style>
+		<icon stock_id="ApplicationIcon"></icon>
+
+		<!--
+			This sizer is to establish the dialog's minimum size
+			and provide a border around the whole thing.
+		-->
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<minsize>600,455</minsize>
+			<object class="sizeritem">
+				<flag>wxEXPAND | wxALL</flag>
+				<option>1</option>
+				<border>16</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+
+					<!-- Header -->
+					<object class="sizeritem">
+						<flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+						<border>16</border>
+						<object class="unknown" name="wHeader">
+						</object>
+					</object>
+
+					<!-- Values -->
+					<object class="sizeritem">
+						<flag>wxEXPAND</flag>
+						<option>1</option>
+						<object class="wxStaticBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<label>Possible Values</label>
+
+							<!-- List -->
+							<object class="sizeritem">
+								<flag>wxEXPAND | wxALL</flag>
+								<border>8</border>
+								<option>1</option>
+								<object class="wxListCtrl" name="wValues">
+									<style>wxLC_REPORT | wxLC_HRULES</style>
+								</object>
+							</object>
+
+							<!-- Mergeable Tools -->
+							<object class="sizeritem" name="wMergeable">
+								<flag>wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM</flag>
+								<border>8</border>
+								<object class="wxBoxSizer">
+									<orient>wxHORIZONTAL</orient>
+
+									<!-- Diff -->
+									<object class="sizeritem">
+										<flag>wxRIGHT</flag>
+										<border>8</border>
+										<object class="wxButton" name="wDiff">
+											<label>Diff</label>
+										</object>
+									</object>
+
+									<object class="spacer">
+										<option>1</option>
+									</object>
+
+									<!-- Merge -->
+									<object class="sizeritem">
+										<object class="wxButton" name="wMerge">
+											<label>New Merge</label>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+
+					<!-- Buttons -->
+					<object class="sizeritem">
+						<flag>wxALIGN_RIGHT | wxTOP</flag>
+						<border>16</border>
+						<object class="wxStdDialogButtonSizer">
+							<object class="button">
+								<object class="wxButton" name="wxID_OK">
+									<label>Accept</label>
+								</object>
+							</object>
+							<object class="button">
+								<object class="wxButton" name="wxID_CANCEL">
+									<default>1</default>
+									<label>Cancel</label>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>

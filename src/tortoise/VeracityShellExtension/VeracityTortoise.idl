@@ -1,0 +1,235 @@
+// VeracityTortoise.idl : IDL source for VeracityTortoise
+//
+
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+///////////////   NOTE!!!!!   ///////////////////////////////
+// The declarations in this file are also used to configure 
+// the windows registry for COM objects.  That is only done
+// when the regsvr32.exe is called on our dll.  The installer
+// now handles all registry configuration, so any changes
+// to this file will necessitate a change to the installer.
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+// This file will be processed by the MIDL tool to
+// produce the type library (VeracityTortoise.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(a817e7a2-43fa-11d0-9e44-00aa00b6770a),
+	dual,	
+	pointer_default(unique)
+]
+interface IComponentRegistrar : IDispatch
+{
+	[id(1)]	HRESULT Attach([in] BSTR bstrPath);
+	[id(2)]	HRESULT RegisterAll();
+	[id(3)]	HRESULT UnregisterAll();
+	[id(4)]	HRESULT GetComponents([out] SAFEARRAY(BSTR)* pbstrCLSIDs, [out] SAFEARRAY(BSTR)* pbstrDescriptions);
+	[id(5)]	HRESULT RegisterComponent([in] BSTR bstrCLSID);
+	[id(6)] HRESULT UnregisterComponent([in] BSTR bstrCLSID);
+};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(80B1AC35-905F-4BB7-9F8F-1841FD2EF03B),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityContextMenu : IDispatch{
+};
+////////////////////////////////////////////////////////////
+//COPYHOOK//[
+//COPYHOOK//	object,
+//COPYHOOK//	uuid(80B1AC36-905F-4BB7-9F8F-1841FD2EF03B),
+//COPYHOOK//	dual,
+//COPYHOOK//	nonextensible,
+//COPYHOOK//	pointer_default(unique)
+//COPYHOOK//]
+//COPYHOOK//interface IVeracityCopyHook : IDispatch{
+//COPYHOOK//};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(874B2376-15D3-466A-A7CE-C5FC5A20B49A),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Added : IDispatch{
+};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(874B2376-15D3-466B-A7CE-C5FC5A20B49A),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Conflict : IDispatch{
+};
+///////////////////////////////////////////////////////////
+[
+	object,
+	uuid(874B2376-15D3-466C-A7CE-C5FC5A20B49A),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Ignored : IDispatch{
+};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(8F1C8ABE-A0C6-496D-B2E2-5B9905FAA169),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Modified : IDispatch{
+};
+/////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(8F1C8ABE-A0C6-496E-B2E2-5B9905FAA169),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Normal : IDispatch{
+};
+/////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(ACAC7F8A-7412-47CD-89EF-B5718FE4D266),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Unversioned : IDispatch{
+};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(8F1C8ABE-A0C6-496F-B2E2-5B9905FAA169),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_Locked : IDispatch{
+};
+////////////////////////////////////////////////////////////
+[
+	object,
+	uuid(8F1C8ABE-A0C6-496C-B2E2-5B9905FAA169),
+	dual,
+	nonextensible,
+	pointer_default(unique)
+]
+interface IVeracityOverlay_ReadOnly : IDispatch{
+};
+
+[
+	uuid(5D5E835D-0469-4637-8EF7-84798F66996C),
+	version(1.0),
+	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{7C3A6019-F169-4FA4-8F6B-5BFEBD92866E}")
+]
+library VeracityTortoiseLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(7C3A6019-F169-4FA4-8F6B-5BFEBD92866E)		
+	]
+	coclass VeracityCompReg
+	{
+		[default] interface IComponentRegistrar;
+	};
+	[		
+		uuid(FA2FE306-E2C2-11DF-BEA7-DCBADFD72085)		
+	]
+	coclass VeracityContextMenu
+	{
+		[default] interface IVeracityContextMenu;
+	};
+//COPYHOOK//	[		
+//COPYHOOK//		uuid(FA2FE307-E2C2-11DF-BEA7-DCBADFD72085)		
+//COPYHOOK//	]
+//COPYHOOK//	coclass VeracityCopyHook
+//COPYHOOK//	{
+//COPYHOOK//		[default] interface IVeracityCopyHook;
+//COPYHOOK//	};
+	[		
+		uuid(9D6672A8-49BD-4E66-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Added
+	{
+		[default] interface IVeracityOverlay_Added;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E67-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Conflict
+	{
+		[default] interface IVeracityOverlay_Conflict;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E68-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Ignored
+	{
+		[default] interface IVeracityOverlay_Ignored;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E69-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Modified
+	{
+		[default] interface IVeracityOverlay_Modified;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E6A-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Normal
+	{
+		[default] interface IVeracityOverlay_Normal;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E6B-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Unversioned
+	{
+		[default] interface IVeracityOverlay_Unversioned;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E6C-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_Locked
+	{
+		[default] interface IVeracityOverlay_Locked;
+	};
+	[		
+		uuid(9D6672A8-49BD-4E6D-A7D0-3AE45397B6F2)		
+	]
+	coclass VeracityOverlay_ReadOnly
+	{
+		[default] interface IVeracityOverlay_ReadOnly;
+	};
+};
+

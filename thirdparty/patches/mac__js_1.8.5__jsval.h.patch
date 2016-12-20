@@ -1,0 +1,93 @@
+--- vv-thirdparty/builds/js185-1.0.0-i386/include/jsval.h
++++ vv-thirdparty/universal/include/js/jsval.h
+@@ -49,6 +49,10 @@
+ 
+ JS_BEGIN_EXTERN_C
+ 
++#define SG_PTR_TO_UINT32(x) ((uint32)((char*)(x)-(char*)NULL))
++#define SG_PTR_TO_UINT64(x) ((uint64)((char*)(x)-(char*)NULL))
++#define SG_UINT_TO_PTR(x) ((void*)((char*)NULL+(x)))
++
+ /*
+  * Try to get jsvals 64-bit aligned. We could almost assert that all values are
+  * aligned, but MSVC and GCC occasionally break alignment.
+@@ -517,7 +521,7 @@
+ PRIVATE_PTR_TO_JSVAL_IMPL(void *ptr)
+ {
+     jsval_layout l;
+-    JS_ASSERT(((uint32)ptr & 1) == 0);
++    JS_ASSERT((SG_PTR_TO_UINT32(ptr) & 1) == 0);
+     l.s.tag = (JSValueTag)0;
+     l.s.payload.ptr = ptr;
+     JS_ASSERT(JSVAL_IS_DOUBLE_IMPL(l));
+@@ -617,7 +621,7 @@
+ STRING_TO_JSVAL_IMPL(JSString *str)
+ {
+     jsval_layout l;
+-    uint64 strBits = (uint64)str;
++    uint64 strBits = SG_PTR_TO_UINT64(str);
+     JS_ASSERT(str);
+     JS_ASSERT((strBits >> JSVAL_TAG_SHIFT) == 0);
+     l.asBits = strBits | JSVAL_SHIFTED_TAG_STRING;
+@@ -627,7 +631,7 @@
+ static JS_ALWAYS_INLINE JSString *
+ JSVAL_TO_STRING_IMPL(jsval_layout l)
+ {
+-    return (JSString *)(l.asBits & JSVAL_PAYLOAD_MASK);
++    return (JSString *)SG_UINT_TO_PTR(l.asBits & JSVAL_PAYLOAD_MASK);
+ }
+ 
+ static JS_ALWAYS_INLINE JSBool
+@@ -662,7 +666,7 @@
+     uint64 ptrBits = l.asBits & JSVAL_PAYLOAD_MASK;
+     JS_ASSERT(JSVAL_IS_MAGIC_IMPL(l));
+     JS_ASSERT((ptrBits >> JSVAL_TAG_SHIFT) == 0);
+-    return (JSObject *)ptrBits;
++    return (JSObject *)SG_UINT_TO_PTR(ptrBits);
+ }
+ 
+ static JS_ALWAYS_INLINE JSBool
+@@ -690,14 +694,14 @@
+ {
+     uint64 ptrBits = l.asBits & JSVAL_PAYLOAD_MASK;
+     JS_ASSERT((ptrBits & 0x7) == 0);
+-    return (JSObject *)ptrBits;
++    return (JSObject *)SG_UINT_TO_PTR(ptrBits);
+ }
+ 
+ static JS_ALWAYS_INLINE jsval_layout
+ OBJECT_TO_JSVAL_IMPL(JSObject *obj)
+ {
+     jsval_layout l;
+-    uint64 objBits = (uint64)obj;
++    uint64 objBits = SG_PTR_TO_UINT64(obj);
+     JS_ASSERT(obj);
+     JS_ASSERT((objBits >> JSVAL_TAG_SHIFT) == 0);
+     l.asBits = objBits | JSVAL_SHIFTED_TAG_OBJECT;
+@@ -721,7 +725,7 @@
+ {
+     uint64 ptrBits = l.asBits & JSVAL_PAYLOAD_MASK;
+     JS_ASSERT((ptrBits & 0x7) == 0);
+-    return (void *)ptrBits;
++    return (void *)SG_UINT_TO_PTR(ptrBits);
+ }
+ 
+ static JS_ALWAYS_INLINE JSBool
+@@ -740,7 +744,7 @@
+ PRIVATE_PTR_TO_JSVAL_IMPL(void *ptr)
+ {
+     jsval_layout l;
+-    uint64 ptrBits = (uint64)ptr;
++    uint64 ptrBits = SG_PTR_TO_UINT64(ptr);
+     JS_ASSERT((ptrBits & 1) == 0);
+     l.asBits = ptrBits >> 1;
+     JS_ASSERT(JSVAL_IS_DOUBLE_IMPL(l));
+@@ -751,7 +755,7 @@
+ JSVAL_TO_PRIVATE_PTR_IMPL(jsval_layout l)
+ {
+     JS_ASSERT((l.asBits & 0x8000000000000000LL) == 0);
+-    return (void *)(l.asBits << 1);
++    return (void *)SG_UINT_TO_PTR(l.asBits << 1);
+ }
+ 
+ #endif

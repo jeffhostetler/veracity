@@ -1,0 +1,58 @@
+{{{<header.html}}}
+
+<script>
+var vvredirectable = "builds.html";
+setCurrentSection('source');
+</script>
+
+<div class="contentwrapper">
+
+<div class="left centercontent primary">
+  <div class="outerheading"></div>
+  <div class="outercontainer" id="main_content">
+  	<div id="buildDetailLoading" class="clearfix"><div class="smallProgress"></div><div class="statusText">Loading Build Details...</div></div>
+  </div>
+</div>
+
+</div>
+
+<div class="right secondary">
+  <div class="outerheading">
+    <a id="prevBuildArrow"><img src="{{{STATICLINKROOT}}}/img/blue_previous.png" /></a>
+    <a id="backtoListLink" href="builds.html" title="Back to Builds List"><img src="{{{STATICLINKROOT}}}/img/blue_goto_grid.png" /></a>
+    <a id="nextBuildArrow"><img src="{{{STATICLINKROOT}}}/img/blue_next.png" /></a>
+  </div>
+  <div class="secondarynav">
+    <div class="buildStatus buildStatusHeader" id="buildStatus"></div>
+    <div class="buildStatusHeader">
+    	<div id="branchName" class="bsleader" style="display:none"></div>
+	<div id="buildSeries" class="bsfollow"></div>
+	<div class="bsheader" id="buildEnv"></div>
+	<div class="bsheader" id="buildName"></div>
+    </div>
+  </div>
+  <div class="outercontainer">
+    <div class="innerheading"></div>
+    <div id="buildSidebar" class="innercontainer empty details"></div>
+  </div>
+</div>
+
+<!--	
+<table id="buildDetailContent" width="100%" style="display:none">
+  <tr>
+	<td width="250" valign="top" class="leftContent">
+	  
+<br/>
+	</td>
+
+	<td id="main_content" valign="top">
+	</td>
+
+  </tr>
+</table>
+ -->
+
+
+{{{SCRIPTS build-common.js build.js }}}
+
+{{{<footer.html}}}

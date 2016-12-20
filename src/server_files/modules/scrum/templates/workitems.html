@@ -1,0 +1,100 @@
+{{{<header.html}}}
+
+{{{SCRIPTS vTimeInterval.js filtercommon.js filtercontrol.js wiWorkFormController.js workitems.js }}}
+<script>
+var vvredirectable = "workitems.html?filter=default";
+setCurrentSection('workitems');
+</script>
+
+<div class="centercontent primary">
+<h2 class="outerheading" id="filtername">&nbsp;</h2>
+<div style='display:none' id="filterpagecontent">
+
+<div id="filterdesc" class="primarydetails clearfix">
+	<div id="filterlinks" width="30%">
+		<a id="link_criteria" class="disabled" title="filter criteria"><img src="{{{STATICLINKROOT}}}/img/filter16.png"/></a>
+		<a id="link_groupby" class="disabled" title="group by"><img src="{{{STATICLINKROOT}}}/img/groupby.png"/></a>
+		<a id="link_columns" class="disabled" title="table columns"><img src="{{{STATICLINKROOT}}}/img/columns16.png"/></a>
+		<a id="link_savefilter" class="disabled" title="save current filter"><img src="{{{STATICLINKROOT}}}/img/save16.png" /></a>
+		<a id="link_deletefilter" class="disabled" title="delete current filter"><img src="{{{STATICLINKROOT}}}/img/red_delete.png"
+	  		style="margin-left:-2px;margin-top:-2px;" /></a>
+
+	</div>
+	<span id="filterdesctext" width="70%"></span>
+</div>
+
+<div id="wicontainer"  class="outercontainer">
+
+  <div id="filterresults">
+    <div id="addingwiprogress" style="display: none">
+	<div class="smallProgress"></div>
+	<div class="statusText">adding work item...</div>
+    </div>
+  </div>
+
+  <div class="colDest colDest-top">&nbsp;</div>
+  <div class="colDest colDest-bottom">&nbsp;</div>
+  <div id="filter">
+ 
+  </div>
+
+
+  <div id="columns"></div>
+  <div id="newfilter"></div>
+		
+<table class="summary" id="filtersummary">
+  <tr>
+    <th class="innerheading" colspan="2">Filter Summary</th>
+    </tr>
+<tr>
+<td>Total</td><td id="tdSummaryTotal"></td>
+</tr>
+<tr>
+<td>No Estimate</td><td id="tdNoEstimate"></td>
+</tr>
+<tr>
+<td>Work Remaining</td><td id="tdWorkRemaining"></td>
+</tr>
+<tr>
+<td>Work Complete</td><td id="tdWorkComplete"></td>
+</tr>
+
+</table>
+
+
+</div>
+
+  <div  id="itemcontextmenu" style="display:none">
+ 	<div class="contextMenu shadow" >
+	  <ul>
+	    <li action="view" class="ctxMenuItem">View</li>
+	    <li action="edit" class="ctxMenuItem">Edit</li>
+	    <li action="logwork" class="ctxMenuItem">Log Work</li>
+	    <li action="changestatus" id="liChangeStatus" class="ctxMenuItem">Change Status<img class="ctxMenuItemImg" src="{{{STATICLINKROOT}}}/img/right_triangle_black.png" /></li>
+	    <li action="postpone" id="liPostpone" class="ctxMenuItem">Milestone<img class="ctxMenuItemImg" src="{{{STATICLINKROOT}}}/img/right_triangle_black.png" /></li>
+	  </ul>
+	</div>
+  </div>
+  <div id="colorSquare" class="buildColorSquare" style="display:none"></div>
+  <div id="divStatusSubmenu" class="filterContextSubmenu" style="display:none">
+
+    <div class="contextMenu shadow">
+      <ul id="ulContextStatus"></ul>
+    </div>
+  </div>
+
+  <div id="divPostponeSubmenu" class="filterContextSubmenu" style="display:none">
+    <div class="contextMenu shadow">
+    <ul id="ulContextPostpone"></ul>
+    </div>
+  </div>
+
+
+<div id="wiLoading" style="display:none">
+	<div class="smallProgress"></div>
+	<div id="divmainprogress" class="statusText"></div>
+</div>
+</div>
+</div>
+
+{{{<footer.html}}}

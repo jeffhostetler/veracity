@@ -1,0 +1,17 @@
+(Unchanged line 1.)
+(Unchanged line 2.)
+Line with information about Encoding: UTF-8 (no BOM).
+(Unchanged line 3.)
+(Unchanged line 4.)
+(Unchanged line 6.)
+(Unchanged line 7.)
+(Unchanged line with non-ASCII character "♪", which is an eighth note.)
+(Unchanged line 9.)
+(Unchanged line 10.)
+(Unchanged line 11.)
+(Unchanged line 12.)
+Line with information about eols: Unix-style LF.
+(Unchanged line 13.)
+(Unchanged line 14.)
+Line with information about newline at end of file: There is none!
+(Unchanged line 15.)

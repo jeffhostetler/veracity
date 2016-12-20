@@ -1,0 +1,16 @@
+blob
+mark :1
+data 0
+
+commit refs/heads/master
+mark :2
+committer <test@sourcegear.com> 1344365138 +0000
+data 11
+Added file.
+M 100644 :1 file1.txt
+
+tag rev2
+from :2
+tagger <test@sourcegear.com> 1344365161 +0000
+data 0
+

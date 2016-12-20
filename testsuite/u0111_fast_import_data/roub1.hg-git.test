@@ -1,0 +1,21 @@
+import roub1.hg-git.gfi
+
+commit 2
+user paul@roub.net
+time 1342399656
+comment one
+wc roub1.hg-git/2
+
+commit 4
+user paul@roub.net
+time 1342399661
+comment two
+parent 2
+wc roub1.hg-git/4
+
+leaf 4
+
+branch master
+status open
+commit 4
+wc roub1.hg-git/4

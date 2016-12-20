@@ -1,0 +1,205 @@
+# Introduction
+
+Assumed - you are running Windows Vista or Windows 7, and have Visual Studio
+2010 (or the equivalent Platform SDK) installed.  Using the Platform SDK or
+the Express Edition of Visual Studio means that you will be unable to build
+the Tortoise system components, however, because they require the ATL library
+which is not included in those toolsets.
+
+# Get the Source
+
+There are two options.
+
+ - Download the latest [Veracity tarball](http://veracity-scm.com/downloads.html).
+
+or
+
+ - Clone the public repository: [http://public.veracity-scm.com/repos/veracity](http://public.veracity-scm.com/repos/veracity). (Note that you won't be able to push to this repository.)
+    
+Unpack or checkout to the directory of your choice - for brevity, we'll pretend
+you put it under `%USERPROFILE%\v`, and so your source tree begins at
+`%USERPROFILE%\v\veracity`
+
+# Install Prerequisites
+
+### Install CMake
+
+Grab cmake from [cmake.org](http://www.cmake.org/cmake/resources/software.html).
+If you're using the Platform SDK, you'll need 2.8.4 or later, otherwise you'll
+need 2.8.3 or later.
+
+Install CMake, making sure to add cmake to the PATH variable when prompted.
+
+### Install Cygwin
+
+Cygwin is used to run a script that builds Veracity's third-party dependencies.
+That is the only thing it is used for, so it is possible to build and run
+Veracity without installing cygwin, but you will need to build the third-party
+dependencies by hand instead of using the script to do it for you. It's a long
+process, but you can just read throught the script and and do what it would do.
+
+Visit [cygwin.com](http://cygwin.com/), grab and run the setup utility
+from there. In addition to the stock Cygwin tools, you'll also need:
+
+* patch (under Utils)
+* unzip (under Archive)
+* curl (under Net)
+
+#### Add cygwin to PATH
+
+C:\\cygwin\\bin needs to be in your path for building the third-party libraries
+and for running the test suite. You can add it temporarily in a command prompt,
+e.g.
+
+    PATH=%PATH%;C:\cygwin\bin
+
+or add it permanently to your Windows user's path.
+
+# Create a Veracity Build Directory
+
+You must open a Command Prompt that has the correct environment configured.  All
+the supported toolsets come with shortcuts in the Windows Start menu that will
+configure such a prompt for you automatically:
+
+ - For Visual Studio, look for "Visual Studio Command Prompt (2010)" (or "Visual
+   Studio x64 Win64 Command Prompt (2010)" for 64-bit builds).
+
+ - For the Platform SDK, look for "Windows SDK x.y Command Prompt" (where x.y is
+   the version you have installed, i.e. 7.1).
+
+If (and only if) you're going to be building 64-bit builds with the Platform SDK,
+then you must also manually set one environment variable in the resulting command
+prompt:
+
+    set Platform=X64
+
+From that command prompt, `cmake` will create a Visual Studio solution or NMake
+Makefiles for you. You just need to give it a place to work. For example, let's
+create a neighbor of our source directory.
+
+    mkdir %USERPROFILE%\v\debug
+
+Then, to create a Visual Studio 2010 solution:
+
+    cd %USERPROFILE%\v\debug
+    cmake -G "Visual Studio 10" ..\veracity
+
+Or, to create a solution for a 64-bit build:
+
+    cd %USERPROFILE%\v\debug
+    cmake -G "Visual Studio 10 Win64" ..\veracity
+
+If using the Platform SDK, generate makefiles for NMake instead (this is also an
+option for Visual Studio users, if you'd rather build with NMake than the IDE):
+
+    cd %USERPROFILE%\v\debug
+    cmake -G "NMake Makefiles" ..\veracity
+
+### Add vv-thirdparty bin to PATH
+
+The first time you perform cmake -G, the script will also download and build
+third party libraries Veracity needs, in `%USERPROFILE%\\v\\vv-thirdparty`,
+which takes a few minutes. As long as you keep your build trees in this folder,
+such that the build script can locate vv-thirdparty, this will only happen once.
+
+Once vv-thirdparty is created, you'll need to add the binary directory to your
+PATH:
+
+    set PATH=%PATH%;%USERPROFILE%\v\vv-thirdparty\x86\bin
+
+or for 64-bit builds:
+
+    set PATH=%PATH%;%USERPROFILE%\v\vv-thirdparty\amd64\bin
+
+# Build Veracity
+
+You now have a build tree, replete with Makefiles or Project files.  
+
+For Visual Studio users, simply open the solution,
+`%USERPROFILE%\v\debug\veracity.sln`, and build.  Note that although the
+solution will contain both "Debug" and "Release" configurations, only "Debug"
+will build properly.  To build "Release", you'll need to have CMake generate a
+separate release build tree.  See [the answer to this question](http://veracity-scm.com/qa/questions/790/build-from-source-on-windows-release-builds-fail)
+for more detail.
+
+Visual Studio Express Edition users have two additional steps here:
+
+ - When loading the solution, you'll receive messages about Solution Folders not
+   being supported, and it therefore failing to load them.  Just click OK through
+   all of them.  You'll get one final message that one or more things failed to
+   load, which you can also ignore.  You should just end up with a bunch of items
+   at the bottom of the project list that say "(unavailable)".  In other Visual
+   Studio editions, the other projects would be grouped inside those folders
+   instead of forming one large flat list.
+
+ - You should unload the `veracity_cache` and `VeracityTortoise` projects before
+   you build (right-click them and choose "Unload Project"), as they will fail to
+   build due to the lack of the ATL library in the Express Edition.
+
+For Platform SDK users (or Visual Studio users building with NMake instead of
+the IDE):
+
+    cd %USERPROFILE%\v\debug
+    nmake
+
+# Run the Test Suite
+
+Only builds that have passed the test suite on all of SourceGear's in-house
+build machines are ever published. To run the test suite for yourself:
+
+    cd %USERPROFILE%\v\debug
+    ctest
+
+All tests should pass. If there are failures, you can [consult the logs](http://veracity-scm.com/qa/questions/79/after-building-veracity-from-source-i-see-some-failures-in-the-test-suite-how-do-i-figure-out-what-failed).
+
+# Install Veracity
+
+### The Command Line Applications
+
+To "install" veracity on your computer, update your PATH again, this time to
+include the Veracity command line tools, vv and vscript.
+
+If you built with a Visual Studio IDE, add these to your PATH:
+
+    %USERPROFILE%\v\debug\src\cmd\Debug
+    %USERPROFILE%\v\debug\src\script\Debug
+
+If you built with NMake, add these:
+
+    %USERPROFILE%\v\debug\src\cmd
+    %USERPROFILE%\v\debug\src\script
+
+### Enable the server (and bug tracking)
+
+In order to enable Veracity's scrum bug tracking module or to run a veracity
+server you will also need to have a config setting called "server/files"
+pointed at a certain location. Run:
+
+    vv config set server/files "%USERPROFILE%\v\debug\src\server_files"
+
+### The Tortoise Client
+
+Important:  For Tortoise, Debug and Release builds make a very big difference.
+Only Release builds will be loaded by Windows Explorer.  Debug builds will only
+be loaded by Windows Explorer if there is a debugger attached to the explorer 
+process.  This is done to prevent a long-lived process from loading the dll, 
+which would prevent the dll from being overwritten on a build.
+
+If you want to try the Veracity Tortoise Client, which allows you to perform
+Veracity operations directly from Windows Explorer, you'll need to run one of
+the following commands from an *administrator* (elevated) command prompt:
+
+If you used Visual Studio for the build, run this command:
+
+    regsvr32.exe %USERPROFILE%\v\debug\src\tortoise\VeracityShellExtension\Release\VeracityTortoise.dll
+
+If your build was an NMake build:
+
+    regsvr32.exe %USERPROFILE%\v\debug\src\tortoise\VeracityShellExtension\VeracityTortoise.dll
+
+Note for 64-bit users: Windows Explorer on 64-bit systems is a 64-bit process.
+You must build Veracity as 64-bit in order to integrate with it.
+
+Lastly, keep in mind that VeracityTortoise.dll can't be built with Visual Studio
+Express Edition or the Platform SDK, so the DLL won't be there if you used one
+of those toolsets.

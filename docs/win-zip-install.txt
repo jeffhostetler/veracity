@@ -1,0 +1,23 @@
+Turning this zip file into a working Veracity installation takes just three steps:
+
+1. Extract it somewhere, like C:\veracity.
+
+2. Add that directory to your PATH environment variable.
+
+3. Run this command to enable the scrum module and the server:
+
+     vv config set server/files C:\veracity\server_files
+
+(but use the path where you unzipped it, not C:\veracity)
+
+You can find more getting started material here:
+http://veracity-scm.com/qa/questions/53/ive-installed-veracity-how-do-i-get-started-using-it
+
+We also recommend installing SourceGear Diffmerge.
+
+DiffMerge is a free, graphical application for file diffs and 
+merges. Veracity integration works nicely, out of the box. 
+Particularly if you don't have an alternate favorite tool, we
+highly recommend installing it. You can download a zip archive
+or an installer here: 
+http://www.sourcegear.com/diffmerge/downloads.php.
